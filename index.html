@@ -115,7 +115,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -133,6 +133,372 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/29/item4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CityFire">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CityFire的代码世界">
+      <meta itemprop="description" content="软件工程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | CityFire的代码世界">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/06/29/item4/" class="post-title-link" itemprop="url">1.DeducingTypes</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-06-29 16:19:52 / 修改时间：16:25:20" itemprop="dateCreated datePublished" datetime="2023-06-29T16:19:52+08:00">2023-06-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Item-4-Know-how-to-view-deduced-types"><a href="#Item-4-Know-how-to-view-deduced-types" class="headerlink" title="Item 4:Know how to view deduced types"></a>Item 4:Know how to view deduced types</h2><p>条款四:学会查看类型推导结果</p>
+<p>选择使用工具查看类型推导取决于软件开发过程中你想在哪个阶段显示类型推导信息，我们探究三种方案：在你编辑代码的时候获得类型推导的结果，在编译期间获得结果，在运行时获得结果</p>
+<h2 id="IDE编辑器"><a href="#IDE编辑器" class="headerlink" title="IDE编辑器"></a>IDE编辑器</h2><p>在IDE中的代码编辑器通常可以显示程序代码中变量，函数，参数的类型，你只需要简单的把鼠标移到它们的上面，举个例子，有这样的代码中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> theAnswer = <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> x = theAnswer;</span><br><span class="line"><span class="keyword">auto</span> y = &amp;theAnswer;</span><br></pre></td></tr></table></figure>
+<p>一个IDE编辑器可以直接显示x推导的结果为<strong>int</strong>，y推导的结果为<strong>const int*</strong></p>
+<p>为此，你的代码必须或多或少的处于可编译状态，因为IDE之所以能提供这些信息是因为一个C++编译器（或者至少是前端中的一个部分）运行于IDE中。如果这个编译器对你的代码不能做出有意义的分析或者推导，它就不会显示推导的结果。</p>
+<p>对于像int这样简单的推导，IDE产生的信息通常令人很满意。正如我们将看到的，如果更复杂的类型出现时，IDE提供的信息就几乎没有什么用了。</p>
+<h2 id="编译器诊断"><a href="#编译器诊断" class="headerlink" title="编译器诊断"></a>编译器诊断</h2><p>另一个获得推导结果的方法是使用编译器出错时提供的错误消息。这些错误消息无形的提到了造成我们编译错误的类型是什么。<br>举个例子，假如我们想看到之前那段代码中x和y的类型，我们可以首先声明一个类模板但不定义。就像这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;	<span class="comment">//只对TD进行声明</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TD</span>;			<span class="comment">//TD == &quot;Type Displayer&quot;</span></span><br></pre></td></tr></table></figure>
+<p>如果尝试实例化这个类模板就会引出一个错误消息，因为这里没有用来实例化的类模板定义。为了查看x和y的类型，只需要使用它们的类型去实例化TD：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TD&lt;<span class="keyword">decltype</span>(x)&gt; xType;	<span class="comment">//引出错误消息</span></span><br><span class="line">TD&lt;<span class="keyword">decltype</span>(y)&gt; yType;	<span class="comment">//x和y的类型</span></span><br></pre></td></tr></table></figure>
+<p>我使用<strong>variableNameType</strong>的结构来命名变量，因为这样它们产生的错误消息可以有助于我们查找。对于上面的代码，我的编译器产生了这样的错误信息，我取一部分贴到下面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">error: aggregate <span class="string">&#x27;TD&lt;int&gt; xType&#x27;</span> has incomplete type <span class="keyword">and</span> </span><br><span class="line">	cannot be defined</span><br><span class="line">error: aggregate <span class="string">&#x27;TD&lt;const int *&gt; yType&#x27;</span> has incomplete type <span class="keyword">and</span></span><br><span class="line">	cannot be defined</span><br></pre></td></tr></table></figure>
+<p>另一个编译器也产生了一样的错误，只是格式稍微改变了一下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">error: <span class="string">&#x27;xType&#x27;</span> uses undefined <span class="keyword">class</span> <span class="string">&#x27;TD&lt;int&gt;&#x27;</span></span><br><span class="line">error: <span class="string">&#x27;yType&#x27;</span> uses undefined <span class="keyword">class</span> <span class="string">&#x27;TD&lt;const int *&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>除了格式不同外，几乎所有我测试过的编译器都产生了这样有用的错误消息。</p>
+<h2 id="运行时输出"><a href="#运行时输出" class="headerlink" title="运行时输出"></a>运行时输出</h2><p>使用<strong>printf</strong>的方法使类型信息只有在运行时才会显示出来（尽管我不是非常建议你使用printf），但是它提供了一种格式化输出的方法。现在唯一的问题是只需对于你关心的变量使用一种优雅的文本表示。“这有什么难的“，你这样想”这正是typeid和std::type_info::name的价值所在”。为了实现我们我们想要查看x和y的类型的需求，你可能会这样写：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::cout&lt;&lt;<span class="built_in">typeid</span>(x).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;	<span class="comment">//显示x和y的类型</span></span><br><span class="line">std::cout&lt;&lt;<span class="built_in">typeid</span>(y).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>这种方法对一个对象如x或y调用<strong>typeid</strong>产生一个<strong>std::type_info</strong>的对象，然后<strong>std::type_info</strong>里面的成员函数**name()**来产生一个C风格的字符串表示变量的名字。</p>
+<p>调用<strong>std::type_info::name</strong>不保证返回任何有意义的东西，但是库的实现者尝试尽量使它们返回的结果有用。实现者们对于“有用”有不同的理解。举个例子，GNU和Clang环境下x会显示为<strong>i</strong>，y会显示为<strong>PKi</strong>，这样的输出你必须要问问编译器实现者们才能知道他们的意义：i表示int，PK表示<strong>const to konst（const）</strong>。Microsoft的编译器输出得更直白一些：对于x输出“int“对于y输出”int const*“</p>
+<p>因为对于x和y来说这样的结果是正确的，你可能认为问题已经接近了，别急，考虑一个更复杂的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(<span class="type">const</span> T&amp; param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">std::vector&lt;Widget&gt; <span class="title">createVec</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span> vw = <span class="built_in">createVec</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!vw.<span class="built_in">empty</span>())&#123;</span><br><span class="line">	<span class="built_in">f</span>(&amp;vw[<span class="number">0</span>]);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这段代码中包含了一个用户定义的类型Widget，一个STL容器和一个auto变量vw，这个更现实的情况是你可能在会遇到的并且想获得他们类型推导的结果，比如模板类型参数T，比如函数参数param。</p>
+<p>从这里中我们不难看出typeid的问题所在。我们添加一些代码来显示类型：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(<span class="type">const</span> T&amp; param)</span></span>&#123;</span><br><span class="line">	<span class="keyword">using</span> std::cout;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;T=		&quot;</span>&lt;&lt;<span class="built_in">typeid</span>(T).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;param =	&quot;</span>&lt;&lt;<span class="built_in">typeid</span>(param).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>GNU和Clang执行这段代码将会输出这样的结果</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		PK6Widget</span><br><span class="line">param=	PK6Widget</span><br></pre></td></tr></table></figure>
+<p>我们早就知道在这些编译器中PK表示“指向常量”，所以只有数字6对我们来说是神奇的。其实数字6是类名称的字符串长度，所以这些编译器高数我们T和param都是**const Widget***。</p>
+<p>Microsoft的编译器也同意上述言论：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		<span class="keyword">class</span> Widget <span class="type">const</span> *</span><br><span class="line">param=	<span class="keyword">class</span> Widget <span class="type">const</span> *</span><br></pre></td></tr></table></figure>
+<p>这三个独立的编译器产生了相同的信息而且非常准确，当然看起来不是那么准确。在模板f中，param的类型是**const T&amp;<strong>。难道你们不觉得T和param相同类型很奇怪吗？比如T是int，param的类型应该是</strong>const int&amp;**而不是相同类型才对吧。</p>
+<p>遗憾的是，事实就是这样，<strong>std::type_info::name</strong>的结果并不总是可信的，就像上面一样三个编译器都犯了相同的错误。因为<strong>std::type_info::name</strong>被批准犯这样的错。正如Item1提到的如果传递的是一个引用，那么引用部分将被忽略，如果忽略后还具有常量性或者易变性，那么常量性或者易变性也会被忽略。那就是为什么**const Widget *const &amp;<strong>类型会输出</strong>const Widget ***，首先引用被忽略，然后这个指针自身的常量性被忽略，剩下的就是指针指向一个常量对象。</p>
+<p>同样遗憾的是，IDE编辑器显示的类型信息也不总是可靠的，或者说不总是有用的。还是一样的例子，一个IDE编辑器可能会把T的类型显示为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::_Simple_types&lt;std::_Wrap_alloc&lt;std::_Vec_base_types&lt;Widget,</span><br><span class="line">std::allocator&lt;Widget&gt;&gt;::_Alloc&gt;::value_type&gt;::value_type *</span><br></pre></td></tr></table></figure>
+<p>同样把param的类型显示为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> std::_Simple_types&lt;...&gt;::value_type *<span class="type">const</span>&amp;</span><br></pre></td></tr></table></figure>
+<p>这个比起T来说要简单一些，但是如果你不知道&lt;…&gt;表示编译器忽略T的类型那么可能你还是会产生困惑。如果你运气好点你的IDE可能表现得比这个要好一些。</p>
+<p>比起运气如果你更倾向于依赖库，那么你乐意被告知<strong>std::type_info::name</strong>不怎么好，Boost TypeIndex Library（通常写作Boost.TypeIndex）是更好的选择。这个库不是标准C++的一部分，也不时IDE或者TD这样的模板。Boost TypeIndex是跨平台，开源，有良好的开源协议的库，这意味着使用Boost和STL一样具有高度可移植性。</p>
+<p>这里是如何使用Boost.TypeIndex得到f的类型的代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;boost/type_index.hpp&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(<span class="type">const</span> T&amp; param)</span></span>&#123;</span><br><span class="line">	<span class="keyword">using</span> std::cout;</span><br><span class="line">	<span class="keyword">using</span> boost::type_index::type_id_with_cvr;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//显示T</span></span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;T=	&quot;</span></span><br><span class="line">	        &lt;&lt;<span class="built_in">type_id_with_cvr</span>&lt;T&gt;().<span class="built_in">pretty_name</span>()</span><br><span class="line">	        &lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	<span class="comment">//显示param类型</span></span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;param=	&quot;</span></span><br><span class="line">	        &lt;&lt;<span class="built_in">type_id_with_cvr</span>&lt;<span class="keyword">decltype</span>(param)&gt;().<span class="built_in">pretty_name</span>()</span><br><span class="line">	        &lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>boost::type_index::type_id_with_cvr</strong>获取一个类型实参，它不消除实参的常量性，易变性和引用修饰符，然后<strong>pretty_name</strong>成员函数输出一个我们能看懂的友好内容。<br>基于这个f的实现版本，再次考虑那个产生错误类型信息的调用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vetor&lt;Widget&gt; <span class="title">createVec</span><span class="params">()</span></span>;</span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span> vw = <span class="built_in">createVec</span>();</span><br><span class="line"><span class="keyword">if</span>(!vw.<span class="built_in">empty</span>())&#123;</span><br><span class="line">	<span class="built_in">f</span>(&amp;vw[<span class="number">0</span>]);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在GNU和Clang的编译器环境下，使用Boost.TypeIndex版本的f最后会产生下面的输出：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		Widget <span class="type">const</span> *</span><br><span class="line">param=	Widget <span class="type">const</span> * <span class="type">const</span>&amp;</span><br></pre></td></tr></table></figure>
+<p>在Microsoft的编译器环境下，结果也是极其相似：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		<span class="keyword">class</span> Widget <span class="type">const</span> *</span><br><span class="line">param=	<span class="keyword">class</span> Widget <span class="type">const</span> * <span class="type">const</span>&amp;</span><br></pre></td></tr></table></figure>
+<p>这样近乎一致的结果是很不错的，但是请记住IDE，编译器错误诊断或者Boost.TypeIndex只是用来帮助你理解编译器推导的类型是什么。它们是有用的，但是作为本章结束语我想说它们根本不能让你不用理解Item1-3提到的。</p>
+<p><strong>记住</strong></p>
+<ul>
+<li>类型推断可以从IDE看出，从编译器报错看出，从一些库的使用看出</li>
+<li>这些工具可能既不准确也无帮助，所以理解C++类型推导规则才是最重要的</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/29/item3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CityFire">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CityFire的代码世界">
+      <meta itemprop="description" content="软件工程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | CityFire的代码世界">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/06/29/item3/" class="post-title-link" itemprop="url">1.DeducingTypes</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-06-29 16:19:46 / 修改时间：16:25:08" itemprop="dateCreated datePublished" datetime="2023-06-29T16:19:46+08:00">2023-06-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Item-3-Understand-decltype"><a href="#Item-3-Understand-decltype" class="headerlink" title="Item 3: Understand decltype"></a>Item 3: Understand decltype</h2><p>条款三:理解decltype</p>
+<p><strong>decltype</strong>是一个奇怪的东西。给它一个名字或者表达式<strong>decltype</strong>就会告诉你名字或者表达式的类型。通常，它会精确的告诉你你想要的结果。但有时候它得出的结果也会让你挠头半天，最后只能求助网上问答或参考资料寻求启示。</p>
+<p>我们将从一个简单的情况开始，没有任何令人惊讶的情况。相比模板类型推导和auto类型推导，decltype只是简单的返回名字或者表达式的类型：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> i=<span class="number">0</span>;                         <span class="comment">//decltype(i)是const int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">f</span><span class="params">(<span class="type">const</span> Widget&amp; w)</span></span>;      <span class="comment">//decltype(w)是const Widget&amp;</span></span><br><span class="line">                                                <span class="comment">//decltype(f)是bool(const Widget&amp;)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span>&#123;</span><br><span class="line">    <span class="type">int</span> x;                                  <span class="comment">//decltype(Point::x)是int</span></span><br><span class="line">    <span class="type">int</span> y;                                  <span class="comment">//decltype(Point::y)是int</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vector</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    T&amp; <span class="keyword">operator</span>[](std::<span class="type">size_t</span> index);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; v;                      <span class="comment">//decltype(v)是vector&lt;int&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span>(v[<span class="number">0</span>]==<span class="number">0</span>)                             <span class="comment">//decltype(v[0])是int&amp;</span></span><br></pre></td></tr></table></figure>
+<p>看见了吧？没有任何奇怪的东西。</p>
+<p>在C++11中，decltype最主要的用途就是用于函数模板返回类型，而这个返回类型依赖形参。举个例子，假定我们写一个函数，一个参数为容器，一个参数为索引值，这个函数支持使用方括号的方式访问容器中指定索引值的数据，然后在返回索引操作的结果前执行认证用户操作。函数的返回类型应该和索引操作返回的类型相同。</p>
+<p>对一个T类型的容器使用<strong>operator[]</strong> 通常会返回一个T&amp;对象，比如<strong>std::deque</strong>就是这样，但是<strong>std::vector</strong>有一个例外，对于**std::vector<bool><strong>，</strong>operator[]<strong>不会返回</strong>bool&amp;<strong>，它会返回一个有名字的对象类型（译注：MSVC的STL实现中返回的是</strong>std::_Vb_reference&lt;std::_Wrap_alloc&lt;std::allocator<unsigned int>&gt;&gt;<strong>）。关于这个问题的详细讨论请参见Item6，这里重要的是我们可以看到对一个容器进行</strong>operator[]**操作返回的类型取决于容器本身。</p>
+<p>使用<strong>decltype</strong>使得我们很容易去实现它，这是我们写的第一个版本，使用<strong>decltype</strong>计算返回类型，这个模板需要改良，我们把这个推迟到后面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">authAndAccess</span><span class="params">(Container&amp; c,Index i)</span></span></span><br><span class="line"><span class="function">-&gt;<span class="title">decltype</span><span class="params">(c[i])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">authenticateUser</span>();</span><br><span class="line">    <span class="keyword">return</span> c[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数名称前面的<strong>auto</strong>不会做任何的类型推导工作。相反的，他只是暗示使用了C++11的尾置返回类型语法，即在函数形参列表后面使用一个**-&gt;** 符号指出函数的返回类型，尾置返回类型的好处是我们可以在函数返回类型中使用函数参数相关的信息。在<strong>authAndAccess</strong>函数中，我们指定返回类型使用c和i。如果我们按照传统语法把函数返回类型放在函数名称之前， c和i就未被声明所以不能使用。</p>
+<p>在这种声明中，<strong>authAndAccess</strong>函数返回<strong>operator[]</strong> 应用到容器中返回的对象的类型，这也正是我们期望的结果。</p>
+<p>C++11允许自动推导单一语句的lambda表达式的返回类型， C++14扩展到允许自动推导所有的lambda表达式和函数，甚至它们内含多条语句。对于<strong>authAndAccess</strong>来说这意味着在C++14标准下我们可以忽略尾置返回类型，只留下一个<strong>auto</strong>。在这种形式下<strong>auto</strong>不再进行auto类型推导，取而代之的是它意味着编译器将会从函数实现中推导出函数的返回类型。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt; <span class="comment">//C++ 14版本</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">authAndAccess</span><span class="params">(Container&amp; c,Index i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">authenticateUser</span>();</span><br><span class="line">    <span class="keyword">return</span> c[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Item2解释了函数返回类型中使用<strong>auto</strong>编译器实际上是使用的模板类型推导的那套规则。如果那样的话就会这里就会有一些问题，正如我们之前讨论的，<strong>operator[]</strong> 对于大多数T类型的容器会返回一个<strong>T&amp;</strong> ,但是Item1解释了在模板类型推导期间，如果表达式是一个引用那么引用会被忽略。基于这样的规则，考虑它会对下面用户的代码有哪些影响：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::deque&lt;<span class="type">int</span>&gt; d;</span><br><span class="line">...</span><br><span class="line"><span class="built_in">authAndAccess</span>(d,<span class="number">5</span>)=<span class="number">10</span>;        <span class="comment">//认证用户，返回d[5]，</span></span><br><span class="line">                                                <span class="comment">//然后把10赋值给它</span></span><br><span class="line">                                                 <span class="comment">//无法通过编译器！</span></span><br></pre></td></tr></table></figure>
+<p>在这里<strong>d[5]<strong>本该返回一个</strong>int&amp;</strong> ，但是模板类型推导会剥去引用的部分，因此产生了<strong>int</strong>返回类型。函数返回的值是一个右值，上面的代码尝试把10赋值给右值，C++11禁止这样做，所以代码无法编译。</p>
+<p>要想让<strong>authAndAccess</strong>像我们期待的那样工作，我们需要使用<strong>decltype</strong>类型推导来推导它的返回值，比如指定<strong>authAndAccess</strong>应该返回一个和<strong>c[i]</strong> 表达式类型一样的类型。C++期望在某些情况下当类型被暗示时需要使用<strong>decltype</strong>类型推导的规则，C++14通过使用<strong>decltype(auto)</strong> 说明符使得这成为可能。我们第一次看见<strong>decltype(auto)</strong> 可能觉得非常的矛盾，（到底是decltype还是auto？），实际上我们可以这样解释它的意义：<strong>auto</strong>说明符表示这个类型将会被推导，<strong>decltype</strong>说明<strong>decltype</strong>的规则将会引用到这个推导过程中。因此我们可以这样写<strong>authAndAccess</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>)</span></span><br><span class="line"><span class="function"><span class="title">authAndAccess</span><span class="params">(Container&amp; c,Index i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">authenticateUser</span>();</span><br><span class="line">    <span class="keyword">return</span> c[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在authAndAccess将会真正的返回c[i]的类型。现在事情解决了，一般情况下c[i]返回<strong>T&amp;</strong> ，authAndAccess也会返回<br><strong>T&amp;</strong>,特殊情况下c[i]返回一个对象，authAndAccess也会返回一个对象。</p>
+<p><strong>decltype(auto)</strong> 的使用不仅仅局限于函数返回类型，当你想对初始化表达式使用decltype推导的规则，你也可以使用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Widget&amp; cw = w;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> myWidget1 = cw;            <span class="comment">//auto类型推导</span></span><br><span class="line">                                <span class="comment">//myWidget1的类型为Widget</span></span><br><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) myWidget2 = cw;  <span class="comment">//decltype类型推导</span></span><br><span class="line">                                <span class="comment">//myWidget2的类型是const Widget&amp;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是这里有两个问题困惑着你。一个是我之前提到的authAndAccess的改良至今都没有描述。让我们现在加上它。</p>
+<p>再看看C++14版本的authAndAccess：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) <span class="title">authAndAccess</span><span class="params">(Container&amp; c,Index i)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>容器通过传引用的方式传递非常量左值引用，因为返回一个引用允许用户可以修改容器。但是这意味着在这个函数里面不能传值调用，右值不能被绑定到左值引用上（除非这个左值引用是一个const，但是这里明显不是）。</p>
+<p>公认的向<strong>authAndAccess</strong>传递一个右值是一个<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Edge_case">edge case</a>。一个右值容器，是一个临时对象，通常会在authAndAccess调用结束被销毁，这意味着authAndAccess返回的引用将会成为一个悬置的(dangle)引用。但是使用向authAndAccess传递一个临时变量也并不是没有意义，有时候用户可能只是想简单的获得临时容器中的一个元素的拷贝，比如这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::deque&lt;std::string&gt; <span class="title">makeStringDeque</span><span class="params">()</span></span>;      <span class="comment">//工厂函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//从makeStringDeque中或得第五个元素的拷贝并返回</span></span><br><span class="line"><span class="keyword">auto</span> s = <span class="built_in">authAndAccess</span>(<span class="built_in">makeStringDeque</span>(),<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+<p>要想支持这样使用authAndAccess我们就得修改一下当前的声明使得它支持左值和右值。重载是一个不错的选择（一个函数重载声明为左值引用，另一个声明为右值引用），但是我们就不得不维护两个重载函数。另一个方法是使authAndAccess的引用可以绑定左值和右值，Item24解释了那正是通用引用能做的，所以我们这里可以使用通用引用进行声明：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Containter,<span class="keyword">typename</span> Index&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) <span class="title">authAndAccess</span><span class="params">(Container&amp;&amp; c,Index i)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>在这个模板中，我们不知道我们操纵的容器的类型是什么，那意味着我们相当于忽略了索引对象的可能，对一个未知类型的对象使用传值是通常对程序的性能有极大的影响在这个例子中还会造成不必要的拷贝，还会造成对象切片行为，以及给同事落下笑柄。但是就容器索引来说，我们遵照标准模板库对于对于索引的处理是有理由的，所以我们坚持传值调用。</p>
+<p>然而，我们还需要更新一下模板的实现让它能听从Item25的告诫应用<strong>std::forward</strong>实现通用引用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt;     <span class="comment">//最终的C++14版本</span></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>)</span></span><br><span class="line"><span class="function"><span class="title">authAndAccess</span><span class="params">(Container&amp;&amp; c,Index i)</span></span>&#123;</span><br><span class="line">    <span class="built_in">authenticateUser</span>();</span><br><span class="line">    <span class="keyword">return</span> std::forward&lt;Container&gt;(c)[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就能对我们的期望交上一份满意的答卷，但是这要求编译器支持C++14。如果你没有这样的编译器，你还需要使用C++11版本的模板，它看起来和C++14版本的极为相似，除了你不得不指定函数返回类型之外：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt;     <span class="comment">//最终的C++11版本</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span></span></span><br><span class="line"><span class="function"><span class="title">authAndAccess</span><span class="params">(Container&amp;&amp; c,Index i)</span></span></span><br><span class="line"><span class="function">-&gt;<span class="title">decltype</span><span class="params">(std::forward&lt;Container&gt;(c)[i])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">authenticateUser</span>();</span><br><span class="line">    <span class="keyword">return</span> std::forward&lt;Container&gt;(c)[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另一个问题是就像我在条款的开始唠叨的那样，decltype通常会产生你期望的结果，但并不总是这样。在极少数情况下它产生的结果可能让你很惊讶。老实说如果你不是一个大型库的实现者你不太可能会遇到这些异常情况。</p>
+<p>为了完全理解decltype的行为，你需要熟悉一些特殊情况。它们大多数都太过晦涩以至于几乎没有书进行有过权威的讨论，这本书也不例外，但是其中的一个会让我们更加理解decltype的使用。</p>
+<p>对一个名字使用decltype将会产生这个名字被声明的类型。名字是左值表达式，但那不影响decltype的行为，decltype确保产生的类型总是左值引用。换句话说，如果一个左值表达式除了名字外还有类型，那么decltype将会产生 <strong>T&amp;</strong> LEIX .这几乎没有什么太大影响，因为大多数左值表达式的类型天生具备一个左值引用修饰符。举个例子，函数返回左值，几乎也返回了左值引用。</p>
+<p>这个行为暗含的意义值得我们注意，在：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x =<span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>中，x是一个变量的名字，所以<strong>decltype(x)</strong> 是<strong>int</strong>。但是如果用一个小括号包覆这个名字，比如这样 <strong>(x)</strong> ，就会产生一个比名字更复杂的表达式。对于名字来说，<strong>x</strong>是一个左值，C++11定义了表达式 <strong>(x)</strong> 也是一个左值。因此<strong>decltype((x))</strong> 是<strong>int&amp;</strong> 。用小括号覆盖一个名字可以改变decltype对于名字产生的结果。</p>
+<p>在C++11中这稍微有点奇怪，但是由于C++14允许了<strong>decltype(auto)</strong> 的使用，这意味着你在函数返回语句中细微的改变就可以影响类型的推导：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) <span class="title">f1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="number">0</span>;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> x;           <span class="comment">//decltype(x）是int，所以f1返回int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) <span class="title">f2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> x =<span class="number">0l</span>;</span><br><span class="line">    <span class="keyword">return</span> (x);         <span class="comment">//decltype((x))是int&amp;，所以f2返回int&amp;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意不仅f2的返回类型不同于f1，而且它还引用了一个局部变量！这样的代码将会把你送上未定义行为的特快列车，一辆你绝对不想上第二次的车。</p>
+<p>当使用<strong>decltype(auto)</strong> 的时候一定要加倍的小心，在表达式中看起来无足轻重的细节将会影响到类型的推导。为了确认类型推导是否产出了你想要的结果，请参见Item4描述的那些技术。</p>
+<p>同时你也不应该忽略decltype这块大蛋糕。没错，decltype可能会偶尔产生一些令人惊讶的结果，但那毕竟是少数情况。通常，decltype都会产生你想要的结果，尤其是当你对一个名字使用decltype时，因为在这种情况下，decltype只是做一件本分之事：它产出名字的声明类型。</p>
+<p><strong>记住</strong></p>
+<ul>
+<li><strong>decltype</strong>总是不加修改的产生变量或者表达式的类型。</li>
+<li>对于T类型的左值表达式，<strong>decltype</strong>总是产出T的引用即**T&amp;**。</li>
+<li>C++14支持<strong>decltype(auto)</strong> ，就像auto一样，推导出类型，但是它使用自己的独特规则进行推导。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/29/item2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CityFire">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CityFire的代码世界">
+      <meta itemprop="description" content="软件工程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | CityFire的代码世界">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/06/29/item2/" class="post-title-link" itemprop="url">1.DeducingTypes</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-06-29 16:18:37 / 修改时间：16:24:31" itemprop="dateCreated datePublished" datetime="2023-06-29T16:18:37+08:00">2023-06-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Item-2-Understand-auto-type-deduction"><a href="#Item-2-Understand-auto-type-deduction" class="headerlink" title="Item 2:Understand auto type deduction"></a>Item 2:Understand auto type deduction</h2><p>条款二:理解auto类型推导</p>
+<p>如果你已经读过Item1的模板类型推导，那么你几乎已经知道了auto类型推导的大部分内容，至于为什么不是全部是因为这里有一个auto不同于模板类型推导的例外。但这怎么可能，模板类型推导包括模板，函数，形参，但是auto不处理这些东西啊。</p>
+<p>你是对的，但没关系。auto类型推导和模板类型推导有一个直接的映射关系。它们之间可以通过一个非常规范非常系统化的转换流程来转换彼此。</p>
+<p>在Item1中，模板类型推导使用下面这个函数模板来解释：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(ParmaType param)</span></span>;	<span class="comment">//使用一些表达式调用f</span></span><br></pre></td></tr></table></figure>
+<p>在f的调用中，编译器使用expr推导T和ParamType。当一个变量使用auto进行声明时，auto扮演了模板的角色，变量的类型说明符扮演了ParamType的角色。废话少说，这里便是更直观的代码描述，考虑这个例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x = <span class="number">27</span>;</span><br></pre></td></tr></table></figure>
+<p>这里x的类型说明符是auto，另一方面，在这个声明中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="keyword">auto</span> cx = x;</span><br></pre></td></tr></table></figure>
+<p>类型说明符是<strong>const auto</strong>。另一个：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="keyword">auto</span> &amp; rx=cx;</span><br></pre></td></tr></table></figure>
+<p>类型说明符是**const auto&amp;**。在这里例子中要推导x rx cx的类型，编译器的行为看起来就像是认为这里每个声明都有一个模板，然后使用合适的初始化表达式进行处理：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;	<span class="comment">//理想化的模板用来推导x的类型</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func_for_x</span><span class="params">(T param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">func_for_x</span>(<span class="number">27</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;	<span class="comment">//理想化的模板用来推导cx 的类型</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func_for_cx</span><span class="params">(<span class="type">const</span> T param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">func_for_cx</span>(x);</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;	<span class="comment">//理想化的模板用来推导rx的类型</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func_for_rx</span><span class="params">(<span class="type">const</span> T &amp; param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">func_for_rx</span>(x);</span><br></pre></td></tr></table></figure>
+<p>正如我说的，auto类型推导除了一个例外（我们很快就会讨论），其他情况都和模板类型推导一样。</p>
+<p>Item1把模板类型推导分成三个部分来讨论ParamType在不同情况下的类型。在使用<strong>auto</strong>作为类型说明符的变量声明中，类型说明符代替了ParamType，因此Item1描述的三个情景稍作修改就能适用于auto：</p>
+<ul>
+<li>类型说明符是一个指针或引用但不是通用引用</li>
+<li>类型说明符一个通用引用</li>
+<li>类型说明符既不是指针也不是引用</li>
+</ul>
+<p>我们早已看过情景一和情景三的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x = <span class="number">27</span>;            <span class="comment">//情景三</span></span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span> cx = x;      <span class="comment">//情景三</span></span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span> &amp; rx=cx;     <span class="comment">//情景一</span></span><br></pre></td></tr></table></figure>
+<p>Item1讨论并总结了数组和函数如何退化为指针，那些内容也同样适用于auto类型推导</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span> name[] =     <span class="comment">//name的类型是const char[13]</span></span><br><span class="line"> <span class="string">&quot;R. N. Briggs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> arr1 = name;       <span class="comment">//arr1的类型是const char*</span></span><br><span class="line"><span class="keyword">auto</span>&amp; arr2 = name;      <span class="comment">//arr2的类型是const char(&amp;)[13]</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">someFunc</span><span class="params">(<span class="type">int</span>,<span class="type">double</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> func1=someFunc;    <span class="comment">//func1的类型是void(int,double)</span></span><br><span class="line"><span class="keyword">auto</span>&amp; func2 = someFunc; <span class="comment">//func2的类型是void(&amp;)(int,double)</span></span><br></pre></td></tr></table></figure>
+<p>就像你看到的那样auto类型推断和模板类型推导一样几乎一样的工作，它们就像一个硬币的两面。</p>
+<p>讨论完相同点接下来就是不同点，前面我们已经说到auto类型推导和模板类型推导有一个例外使得它们的工作方式不同，接下来我们要讨论的就是那个例外。<br>我们从一个简单的例子开始，如果你想用一个int值27来声明一个变量，C++98提供两种选择：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x1=<span class="number">27</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">x2</span><span class="params">(<span class="number">27</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>C++11由于也添加了用于支持统一初始化（<strong>uniform initialization</strong>）的语法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x3=&#123;<span class="number">27</span>&#125;;</span><br><span class="line"><span class="type">int</span> x47&#123;<span class="number">27</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>总之，这四种不同的语法只会产生一个相同的结果：变量类型为int值为27</p>
+<p>但是Item5解释了使用auto说明符代替指定类型说明符的好处，所以我们应该很乐意把上面声明中的<strong>int</strong>替换为<strong>auto</strong>，我们会得到这样的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x1=<span class="number">27</span>;</span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">x2</span><span class="params">(<span class="number">27</span>)</span></span>;</span><br><span class="line"><span class="keyword">auto</span> x3=&#123;<span class="number">27</span>&#125;;</span><br><span class="line"><span class="keyword">auto</span> x4&#123;<span class="number">27</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>这些声明都能通过编译，但是他们不像替换之前那样有相同的意义。前面两个语句确实声明了一个类型为int值为27的变量，但是后面两个声明了一个存储一个元素27的 **std::initializer_list&lt;int&gt;**类型的变量。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x1=<span class="number">27</span>;         <span class="comment">//类型是int，值是27</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">x2</span><span class="params">(<span class="number">27</span>)</span></span>;        <span class="comment">//同上</span></span><br><span class="line"><span class="keyword">auto</span> x3=&#123;<span class="number">27</span>&#125;;       <span class="comment">//类型是std::initializer_list&lt;int&gt;,值是&#123;27&#125;</span></span><br><span class="line"><span class="keyword">auto</span> x4&#123;<span class="number">27</span>&#125;;        <span class="comment">//同上</span></span><br></pre></td></tr></table></figure>
+<p>这就造成了auto类型推导不同于模板类型推导的特殊情况。当用auto声明的变量使用花括号进行初始化，auto类型推导会推导出auto的类型为 <strong>std::initializer_list</strong>。如果这样的一个类型不能被成功推导（比如花括号里面包含的是不同类型的变量），编译器会拒绝这样的代码！</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x5=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3.0</span>&#125;;      <span class="comment">//错误！auto类型推导不能工作</span></span><br></pre></td></tr></table></figure>
+<p>就像注释说的那样，在这种情况下类型推导将会失败，但是对我们来说认识到这里确实发生了两种类型推导是很重要的。一种是由于auto的使用：x5的类型不得不被推导，因为x5使用花括号的方式进行初始化，x5必须被推导为 <strong>std::initializer_list</strong>,但是 <strong>std::initializer_list</strong>是一个模板。<br>**std::initializer_list<T>**会被实例化，所以这里T也会被推导。 另一种推导也就是模板类型推导被归入第二种推导。在这个例子中推导之所以出错是因为在花括号中的值并不是同一种类型。</p>
+<p>对于花括号的处理是auto类型推导和模板类型推导唯一不同的地方。当使用auto的变量使用花括号的语法进行初始化的时候，会推导出**std::initializer_list<T>**的实例化，但是对于模板类型推导这样就行不通：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x=&#123;<span class="number">11</span>,<span class="number">23</span>,<span class="number">9</span>&#125;;	<span class="comment">//x的类型是std::initializer_list&lt;int&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span>  <span class="title">f</span><span class="params">(T param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">f</span>(&#123;<span class="number">11</span>,<span class="number">23</span>,<span class="number">9</span>&#125;);		<span class="comment">//错误！不能推导出T</span></span><br></pre></td></tr></table></figure>
+<p>然而如果指定T是<strong>std::initializer</strong>而留下未知T,模板类型推导就能正常工作：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(std::initializer_list&lt;T&gt; initList)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">f</span>(&#123;<span class="number">11</span>,<span class="number">23</span>,<span class="number">9</span>&#125;);		<span class="comment">//T被推导为int，initList的类型被推导为std::initializer_list&lt;int&gt;</span></span><br></pre></td></tr></table></figure>
+<p>因此auto类型推导和模板类型推导的真正区别在于auto类型推导假定花括号表示<strong>std::initializer_list</strong>而模板类型推导不会这样（确切的说是不知道怎么办）。</p>
+<p>你可能想知道为什么auto类型推导对于花括号和模板类型推导有不同的处理方式。我也想知道。哎，我至今没找到一个令人信服的解释。但是规则就是规则，这意味着你必须记住如果你使用auto声明一个变量，并用花括号进行初始化，auto类型推导总会得出std::initializer_list的结果。如果你使用<strong>uniform initialization（花括号的方式进行初始化）</strong>用得很爽你就得记住这个例外以免犯错，在C++11编程中一个典型的错误就是偶然使用了**std::initializer_list<T>**类型的变量,这个陷阱也导致了很多C++程序员抛弃花括号初始化，只有不得不使用的时候再做考虑。</p>
+<p>对于C++11故事已经说完了。但是对于C++14故事还在继续，C++14允许auto用于函数返回值并会被推导（参见Item3），而且C++14的lambda函数也允许在形参中使用auto。但是在这些情况下虽然表面上使用的是auto但是实际上是模板类型推导的那一套规则在工作，所以说下面这样的代码不会通过编译：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">createInitList</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;     <span class="comment">//错误！推导失败</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样在C++14的lambda函数中这样使用auto也不能通过编译：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; v;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> resetV = [&amp;v](<span class="type">const</span> <span class="keyword">auto</span> &amp; newValue)&#123;v=newValue;&#125;; <span class="comment">//C++14</span></span><br><span class="line">...</span><br><span class="line"><span class="built_in">reset</span>(&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;);         <span class="comment">//错误！推导失败</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>记住</strong>：</p>
+<ul>
+<li>auto类型推导通常和模板类型推导相同，但是auto类型推导假定花括号初始化代表<strong>std::initializer_list</strong>而模板类型推导不这样做</li>
+<li>在C++14中auto允许出现在函数返回值或者lambda函数形参中，但是它的工作机制是模板类型推导那一套方案。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -160,7 +526,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/06/28/article-title/" class="post-title-link" itemprop="url">CHAPTER 1 Deducing Types</a>
+          <a href="/2023/06/28/article-title/" class="post-title-link" itemprop="url">1.DeducingTypes</a>
         </h2>
 
         <div class="post-meta-container">
@@ -170,9 +536,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2023-06-28 15:32:11 / 修改时间：16:46:28" itemprop="dateCreated datePublished" datetime="2023-06-28T15:32:11+08:00">2023-06-28</time>
+      <time title="创建时间：2023-06-28 15:32:11" itemprop="dateCreated datePublished" datetime="2023-06-28T15:32:11+08:00">2023-06-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-06-29 16:24:45" itemprop="dateModified" datetime="2023-06-29T16:24:45+08:00">2023-06-29</time>
     </span>
 
   
@@ -335,7 +707,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-06-28 00:17:05 / 修改时间：16:48:35" itemprop="dateCreated datePublished" datetime="2023-06-28T00:17:05+08:00">2023-06-28</time>
+      <time title="创建时间：2023-06-28 00:17:05 / 修改时间：16:52:14" itemprop="dateCreated datePublished" datetime="2023-06-28T00:17:05+08:00">2023-06-28</time>
     </span>
 
   
