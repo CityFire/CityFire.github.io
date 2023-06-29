@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.17.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="CHAPTER 2 auto从概念上来说，auto要多简单有多简单，但是它比看起来要微妙一些。使用它可以存储类型，当然，它也会犯一些错误，而且比之手动声明一些复杂类型也会存在一些性能问题。此外，从程序员的角度来说，如果按照符合规定的流程走，那auto类型推导的一些结果是错误的。当这些情况发生时，对我们来说引导auto产生正确的结果是很重要的，因为严格按照说明书上面的类型写声明虽然可行但是最好避免。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="auto关键字 条款5:优先考虑auto而非显式类型声明">
+<meta property="og:url" content="http://example.com/2023/06/29/item5/index.html">
+<meta property="og:site_name" content="CityFire的代码世界">
+<meta property="og:description" content="CHAPTER 2 auto从概念上来说，auto要多简单有多简单，但是它比看起来要微妙一些。使用它可以存储类型，当然，它也会犯一些错误，而且比之手动声明一些复杂类型也会存在一些性能问题。此外，从程序员的角度来说，如果按照符合规定的流程走，那auto类型推导的一些结果是错误的。当这些情况发生时，对我们来说引导auto产生正确的结果是很重要的，因为严格按照说明书上面的类型写声明虽然可行但是最好避免。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-29T08:56:13.550Z">
+<meta property="article:modified_time" content="2023-06-29T08:59:05.297Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/06/29/item5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/06/29/item5/","path":"2023/06/29/item5/","title":"auto关键字 条款5:优先考虑auto而非显式类型声明"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>auto关键字 条款5:优先考虑auto而非显式类型声明 | CityFire的代码世界</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">CityFire的代码世界</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">业精于勤，勤于思考</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CHAPTER-2-auto"><span class="nav-number">1.</span> <span class="nav-text">CHAPTER 2 auto</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Item-5-Prefer-auto-to-explicit-type-declarations"><span class="nav-number">1.1.</span> <span class="nav-text">Item 5:Prefer auto to explicit type declarations</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CityFire</p>
+  <div class="site-description" itemprop="description">软件工程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/29/item5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CityFire">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CityFire的代码世界">
+      <meta itemprop="description" content="软件工程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="auto关键字 条款5:优先考虑auto而非显式类型声明 | CityFire的代码世界">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          auto关键字 条款5:优先考虑auto而非显式类型声明
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-06-29 16:56:13 / 修改时间：16:59:05" itemprop="dateCreated datePublished" datetime="2023-06-29T16:56:13+08:00">2023-06-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="CHAPTER-2-auto"><a href="#CHAPTER-2-auto" class="headerlink" title="CHAPTER 2 auto"></a>CHAPTER 2 auto</h1><p>从概念上来说，auto要多简单有多简单，但是它比看起来要微妙一些。使用它可以存储类型，当然，它也会犯一些错误，而且比之手动声明一些复杂类型也会存在一些性能问题。此外，从程序员的角度来说，如果按照符合规定的流程走，那auto类型推导的一些结果是错误的。当这些情况发生时，对我们来说引导auto产生正确的结果是很重要的，因为严格按照说明书上面的类型写声明虽然可行但是最好避免。</p>
+<p>本章简单的覆盖了auto的里里外外。</p>
+<h2 id="Item-5-Prefer-auto-to-explicit-type-declarations"><a href="#Item-5-Prefer-auto-to-explicit-type-declarations" class="headerlink" title="Item 5:Prefer auto to explicit type declarations"></a>Item 5:Prefer auto to explicit type declarations</h2><p>条款五:优先考虑auto而非显式类型声明</p>
+<p>哈，开心一下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x;</span><br></pre></td></tr></table></figure>
+<p>等等，该死！我忘记了初始化x，所以x的值是不确定的。它可能会被初始化为0，这得取决于工作环境。哎。</p>
+<p>别介意，让我们转换一个话题， 对一个局部变量使用解引用迭代器的方式初始化：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> It&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dwim</span><span class="params">(It b, It e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(b!=e)&#123;</span><br><span class="line">		<span class="keyword">typename</span> std::iterator_traits&lt;It&gt;::value_type</span><br><span class="line">		currValue = *b;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>嘿！<code>typename std::iterator_traits&lt;It&gt;::value_type</code>是想表达迭代器指向的元素的值的类型吗？我无论如何都说不出它是多么有趣这样的话，该死！等等，我早就说过了吗？</p>
+<p>好吧，声明一个局部变量，变量的类型只有编译后知道，这里必须使用’typename’指定，该死!</p>
+<p>该死该死该死，C++编程不应该是这样不愉快的体验。</p>
+<p>别担心，它只在过去是这样，到了C++11所有的这些问题都消失了，这都多亏了auto。auto变量从初始化表达式中推导出类型，所以我们必须初始化。这意味着当你在现代化C++的高速公路上飞奔的同时你不得不对只声明不初始化变量的老旧方法说拜拜：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x1;				<span class="comment">//潜在的未初始化的变量</span></span><br><span class="line">	</span><br><span class="line"><span class="keyword">auto</span> x2;			<span class="comment">//错误！必须要初始化</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> x3=<span class="number">0</span>;			<span class="comment">//没问题，x已经定义了</span></span><br></pre></td></tr></table></figure>
+<p>而且即使初始化表达式使用解引用迭代器也不会对你的高速驾驶有任何影响</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> It&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dwim</span><span class="params">(It b,It e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(b!=e)&#123;</span><br><span class="line">		<span class="keyword">auto</span> currValue = *b;</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为auto使用Item2所述的auto类型推导技术，它甚至能表示一些只有编译器才知道的类型：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> derefUPLess = [](<span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p1,	<span class="comment">//专用于Widget类型的比较函数</span></span><br><span class="line"><span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p2)&#123;<span class="keyword">return</span> *p1&lt;*p2;&#125;;</span><br></pre></td></tr></table></figure>
+<p>很酷对吧，如果使用C++14，将会变得更酷，因为lambda表达式中的形参也可以使用auto：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> derefUPLess = [](<span class="type">const</span> <span class="keyword">auto</span>&amp; p1,<span class="type">const</span> <span class="keyword">auto</span>&amp; p2)&#123;<span class="keyword">return</span> *p1&lt;*p2;&#125;;</span><br></pre></td></tr></table></figure>
+<p>尽管这很酷，但是你可能会想我们完全不需要使用auto声明局部变量来保存一个闭包，因为我们可以使用<code>std::function</code>对象。<br>没错，我们的确可以那么做，但是事情可能不是完全如你想的那样。当然现在你可能会问：<code>std::function</code>对象到底是什么，让我来给你解释一下：</p>
+<p><code>std::function</code>是一个C++11标准模板库中的一个模板，它泛化了函数指针的概念。与函数指针只能指向函数不同，<code>std::function</code>可以指向任何可调用对象，也就是那些像函数一样能进行调用的东西。当你声明函数指针时你必须指定函数类型（即函数签名），同样当你创建<code>std::function</code>对象时你也需要提供函数签名，由于它是一个模板所以你需要在它的模板参数里面提供。举个例子，假设你想声明一个<code>std::function</code>对象func使他指向一个可调用对象，比如一个具有这样函数签名的函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bool</span>(<span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p1,</span><br><span class="line"><span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p2);</span><br></pre></td></tr></table></figure>
+<p>你就得这么写：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::function&lt;<span class="type">bool</span>(<span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p1,</span><br><span class="line"><span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p2)&gt; func;</span><br></pre></td></tr></table></figure>
+<p>因为lambda表达式能产生一个可调用对象，所以我们现在可以把闭包存放到<code>std::function</code>对象中。这意味着我们可以不使用auto写出C++11版的<strong>dereUPLess</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::function&lt;<span class="type">bool</span>(<span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p1,</span><br><span class="line"><span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p2)&gt;</span><br><span class="line">dereUPLess = [](<span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p1,</span><br><span class="line"><span class="type">const</span> std::unique_ptr&lt;Widget&gt; &amp;p2)&#123;<span class="keyword">return</span> *p1&lt;*p2;&#125;;</span><br></pre></td></tr></table></figure>
+<p>语法冗长不说，还需要重复写很多形参类型，使用<code>std::function</code>还不如使用auto。用auto声明的变量保存一个闭包这个变量将会得到和闭包一样的类型。</p>
+<p>实例化<code>std::function</code>并声明一个对象这个对象将会有固定的大小。当使用这个对象保存一个闭包时它可能大小不足不能存储，这个时候<code>std::function</code>的构造函数将会在堆上面分配内存来存储，这就造成了使用<code>std::function</code>比auto会消耗更多的内存。并且通过具体实现我们得知通过std::function调用一个闭包几乎无疑比auto声明的对象调用要慢。<br>换句话说，std::function方法比auto方法要更耗空间且更慢，并且比起写一大堆类型使用auto要方便得多。在这场存储闭包的比赛中，auto无疑取得了胜利（也可以使用std::bind来生成一个闭包，但在Item34我会尽我最大努力说服你使用lambda表达式代替std::bind)</p>
+<p>使用auto除了使用未初始化的无效变量，省略冗长的声明类型，直接保存闭包外，它还有一个好处是可以避免一个问题，我称之为依赖类型快捷方式的问题。你将看到这样的代码——甚至你会这么写：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; v;</span><br><span class="line"><span class="type">unsigned</span> sz = v.<span class="built_in">size</span>();</span><br></pre></td></tr></table></figure>
+<p><code>v.size()</code>的标准返回类型是<code>std::vector&lt;int&gt;::size_type</code>,但是很多程序猿都知道<code>std::vector&lt;int&gt;::size_type</code>实际上被指定为无符号整型，所以很多人都认为用<code>unsigned</code>比写那一长串的标准返回类型方便。这会造成一些有趣的结果。<br>举个例子，在<strong>Windows 32-bit</strong>上<code>std::vector&lt;int&gt;::size_type</code>和<code>unsigned int</code>都是一样的类型，但是在<strong>Windows 64-bit</strong>上<code>std::vector&lt;int&gt;::size_type</code>是64位，<code>unsigned int</code>是32位。这意味着这段代码在Windows 32-bit上正常工作，但是当把应用程序移植到Windows 64-bit上时就可能会出现一些问题。<br>谁愿意花时间处理这些细枝末节的问题呢？</p>
+<p>所以使用auto可以确保你的不需要浪费时间：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> sz =v.<span class="built_in">size</span>();</span><br></pre></td></tr></table></figure>
+<p>你还是不相信使用auto是多么明智的选择？考虑下面的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">std::unordered_map&lt;std::string,<span class="type">int</span>&gt; m;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">for</span>(<span class="type">const</span> std::pair&lt;std::string,<span class="type">int</span>&gt;&amp; p : m)</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看起来好像很合情合理的表达，但是这里有一个问题，你看到了吗？</p>
+<p>要想看到错误你就得知道<code>std::unordered_map</code>的key是一个常量，所以<code>std::pair</code>的类型不是<code>std::pair&lt;std::string,int&gt;</code>而是<code>std::pair&lt;const std::string,int&gt;</code>。编译器会努力的找到一种方法把前者转换为后者。它会成功的，因为它会创建一个临时对象，这个临时对象的类型是p想绑定到的对象的类型，即m中元素的类型，然后把p的引用绑定到这个临时对象上。在每个循环迭代结束时，临时对象将会销毁，如果你写了这样的一个循环，你可能会对它的一些行为感到非常惊讶，因为你确信你只是让成为p指向m中各个元素的引用而已。</p>
+<p>使用auto可以避免这些很难被意识到的类型不匹配的错误：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span> &amp; p : m)</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样无疑更具效率，且更容易书写。而且，这个代码有一个非常吸引人的特性，如果你把p换成是指向m中各个元素的指针，在没有auto的版本中p会指向一个临时变量，这个临时变量在每次迭代完成时会被销毁!</p>
+<p>后面这两个例子说明了显式的指定类型可能会导致你不像看到的类型转换。如果你使用auto声明目标变量你就不必担心这个问题。</p>
+<p>基于这些原因我建议你优先考虑auto而非显式类型声明。然而auto也不是完美的。每个auto变量都从初始化表达式中推导类型，有一些表达式的类型和我们期望的大相径庭。关于在哪些情况下会发生这些问题，以及你可以怎么解决这些问题我们在Item2和6讨论，所以这里我不再赘述。我想把注意力放到你可能关心的另一点：使用auto代替传统类型声明对源码可读性的影响。</p>
+<p>首先，深呼吸，放松，auto是<strong>可选项</strong>，不是<strong>命令</strong>，在某些情况下如果你的专业判断告诉你使用显式类型声明比auto要更清晰更易维护，那你就不必再坚持使用auto。牢记C++没有在其他众所周知的语言所拥有的类型接口上开辟新土地。</p>
+<p>其他静态类型的过程式语言（如C#,D,Sacla,Visual Basic等)或多或少的都有那些非静态类型的函数式语言（如ML,Haskell,OCaml.F#等）的特性。在某种程度上，几乎没有显式类型使得动态类型语言Perl,Python,Ruby等取得了成功，软件开发社区对于类型接口有丰富的经验，他们展示了在维护大型工业强度的代码上使用这种技术没有任何争议。</p>
+<p>一些开发者也担心使用auto就不能瞥一眼源代码便知道对象的类型，然而，IDE扛起了部分担子，在很多情况下，少量显示一个对象的类型对于知道对象的确切类型是有帮助的，这通常已经足够了。举个例子，要想知道一个对象是容器还是计数器还是智能指针，不需要知道它的确切类型，一个适当的变量名称就能告诉我们大量的抽象类型信息。</p>
+<p>真正的问题是显式指定类型可以避免一些微妙的错误，以及更具效率和正确性，而且，如果初始化表达式改变变量的类型也会改变，这意味着使用auto可以帮助我们完成一些重构工作。举个例子，如果一个函数返回类型被声明为int，但是后来你认为将它声明为long会更好，调用它作为初始化表达式的变量会自动改变类型，但是如果你不使用auto你就不得不在源代码中挨个找到调用地点然后修改它们。</p>
+<p><strong>记住</strong></p>
+<ul>
+<li>auto变量必须初始化，通常它可以避免一些移植性和效率性的问题，也使得重构更方便，还能让你少打几个字。</li>
+<li>正如Item2和6讨论的，auto类型的变量可能会踩到一些陷阱。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/29/item4/" rel="prev" title="类型推导 条款4:知道如何查看类型推导">
+                  <i class="fa fa-chevron-left"></i> 类型推导 条款4:知道如何查看类型推导
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/06/29/item6/" rel="next" title="auto关键字 条款6:当auto推导出非预期类型时应当使用显式的类型初始化">
+                  auto关键字 条款6:当auto推导出非预期类型时应当使用显式的类型初始化 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CityFire</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.17.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Item 9:Prefer alias declarations to typedefs条款九:优先考虑别名声明而非typedefs 我相信每个人都同意使用STL容器是个好主意，并且我希望Item18能说服你让你觉得使用std:unique_ptr也是个好主意，但我猜没有人喜欢写上几次 std::unique_ptr&lt;std::unordered_map&lt;std::string,std">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用现代C++ 条款9:优先考虑别名声明而非typedefs">
+<meta property="og:url" content="http://example.com/2023/06/29/item9/index.html">
+<meta property="og:site_name" content="CityFire的代码世界">
+<meta property="og:description" content="Item 9:Prefer alias declarations to typedefs条款九:优先考虑别名声明而非typedefs 我相信每个人都同意使用STL容器是个好主意，并且我希望Item18能说服你让你觉得使用std:unique_ptr也是个好主意，但我猜没有人喜欢写上几次 std::unique_ptr&lt;std::unordered_map&lt;std::string,std">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-29T08:56:32.029Z">
+<meta property="article:modified_time" content="2023-06-29T09:06:57.907Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/06/29/item9/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/06/29/item9/","path":"2023/06/29/item9/","title":"使用现代C++ 条款9:优先考虑别名声明而非typedefs"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用现代C++ 条款9:优先考虑别名声明而非typedefs | CityFire的代码世界</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">CityFire的代码世界</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">业精于勤，勤于思考</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Item-9-Prefer-alias-declarations-to-typedefs"><span class="nav-number">1.</span> <span class="nav-text">Item 9:Prefer alias declarations to typedefs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%91%E6%B3%A8"><span class="nav-number">2.</span> <span class="nav-text">译注</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CityFire</p>
+  <div class="site-description" itemprop="description">软件工程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/29/item9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CityFire">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CityFire的代码世界">
+      <meta itemprop="description" content="软件工程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用现代C++ 条款9:优先考虑别名声明而非typedefs | CityFire的代码世界">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用现代C++ 条款9:优先考虑别名声明而非typedefs
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-06-29 16:56:32 / 修改时间：17:06:57" itemprop="dateCreated datePublished" datetime="2023-06-29T16:56:32+08:00">2023-06-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Item-9-Prefer-alias-declarations-to-typedefs"><a href="#Item-9-Prefer-alias-declarations-to-typedefs" class="headerlink" title="Item 9:Prefer alias declarations to typedefs"></a>Item 9:Prefer alias declarations to typedefs</h2><p>条款九:优先考虑别名声明而非typedefs</p>
+<p>我相信每个人都同意使用STL容器是个好主意，并且我希望Item18能说服你让你觉得使用<strong>std:unique_ptr</strong>也是个好主意，但我猜没有人喜欢写上几次 <code>std::unique_ptr&lt;std::unordered_map&lt;std::string,std::string&gt;&gt;</code>这样的类型，它可能会让你患上腕管综合征的风险大大增加。</p>
+<p>避免上述医疗悲剧也很简单，引入<strong>typedef</strong>即可：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span>  std::unique_ptr&lt;std::unordered_map&lt;std::string, std::string&gt;&gt;  UPtrMapSS; </span><br></pre></td></tr></table></figure>
+<p>但<strong>typedef</strong>是C++98的东西。虽然它可以在C++11中工作，但是C++11也提供了一个别名声明（alias declaration）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UPtrMapSS =  std::unique_ptr&lt;std::unordered_map&lt;std::string, std::string&gt;&gt;;</span><br></pre></td></tr></table></figure>
+<p>由于这里给出的<strong>typedef</strong>和别名声明做的都是完全一样的事情，我们有理由想知道会不会出于一些技术上的原因两者有一个更好。</p>
+<p>这里，在说它们之前我想提醒一下很多人都发现当声明一个函数指针时别名声明更容易理解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FP是一个指向函数的指针的同义词，它指向的函数带有int和const std::string&amp;形参，不返回任何东西</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*FP)</span><span class="params">(<span class="type">int</span>, <span class="type">const</span> std::string&amp;)</span></span>;      <span class="comment">// typedef</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//同上</span></span><br><span class="line"><span class="keyword">using</span> FP = <span class="built_in">void</span> (*)(<span class="type">int</span>, <span class="type">const</span> std::string&amp;);     <span class="comment">// 别名声明</span></span><br></pre></td></tr></table></figure>
+
+<p>当然，两个结构都不是非常让人满意，没有人喜欢花大量的时间处理函数指针类型的别名 _[0]_，所以至少在这里，没有一个吸引人的理由让你觉得别名声明比<strong>typedef</strong>好。</p>
+<p>不过有一个地方使用别名声明吸引人的理由是存在的：模板。特别的，别名声明可以被模板化但是<strong>typedef</strong>不能。<br>这使得C++11程序员可以很直接的表达一些C++98程序员只能把<strong>typedef</strong>嵌套进模板化的<strong>struct</strong>才能表达的东西，<br>考虑一个链表的别名，链表使用自定义的内存分配器，<strong>MyAlloc</strong>。</p>
+<p>使用别名模板，这真是太容易了：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">using</span> MyAllocList = std::list&lt;T,MyAlloc&lt;T&gt;&gt;;</span><br><span class="line"></span><br><span class="line">MyAllocList&lt;Widget&gt; lw;</span><br></pre></td></tr></table></figure>
+<p>使用<strong>typedef</strong>，你就只能从头开始：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;                     </span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">MyAllocList</span> &#123;                    </span><br><span class="line">    <span class="keyword">typedef</span> std::list&lt;T, MyAlloc&lt;T&gt;&gt; type;  </span><br><span class="line">&#125;;                                      </span><br><span class="line">MyAllocList&lt;Widget&gt;::type lw;         </span><br></pre></td></tr></table></figure>
+<p>更糟糕的是，如果你想使用在一个模板内使用<strong>typedef</strong>声明一个持有链表的对象，而这个对象又使用了模板参数，你就不得不在在<strong>typedef</strong>前面加上<strong>typename</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123;                     </span><br><span class="line"><span class="keyword">private</span>:                               </span><br><span class="line">    <span class="keyword">typename</span> MyAllocList&lt;T&gt;::type list;    </span><br><span class="line">    … </span><br><span class="line">&#125;; </span><br></pre></td></tr></table></figure>
+<p>这里<strong>MyAllocList<T>::type</strong>使用了一个类型，这个类型依赖于模板参数<strong>T</strong>。<br>因此<strong>MyAllocList<T>::type</strong>是一个依赖类型，在C++很多讨人喜欢的规则中的一个提到必须要在依赖类型名前加上<strong>typename</strong>。<br>如果使用别名声明定义一个<strong>MyAllocList</strong>，就不需要使用<strong>typename</strong>（同时省略麻烦的<b>::type</b>后缀），</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">using</span> MyAllocList = std::list&lt;T, MyAlloc&lt;T&gt;&gt;;  <span class="comment">// as before</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123; </span><br><span class="line"><span class="keyword">private</span>:  </span><br><span class="line">    MyAllocList&lt;T&gt; list;                    </span><br><span class="line">     …                                            </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>对你来说，<strong>MyAllocList<T><strong>（使用了模板别名声明的版本）可能看起来和</strong>MyAllocList<T>::type</strong>（使用<strong>typedef</strong>的版本）一样都应该依赖模板参数<strong>T</strong>，但是你不是编译器。<br>当编译器处理<strong>Widget</strong>模板时遇到<strong>MyAllocList<T><strong>（使用模板别名声明的版本），它们知道</strong>MyAllocList<T><strong>是一个类型名，<br>因为</strong>MyAllocList</strong>是一个别名模板。它一定是一个类型名。因此<strong>MyAllocList<T><strong>就是一个非依赖类型，就不要求必须使用</strong>typename</strong>。</p>
+<p>当编译器在<strong>Widget</strong>的模板中看到<strong>MyAllocList<T>::type</strong>（使用<strong>typedef</strong>的版本），它不能确定那是一个类型的名称。<br>因为可能存在<strong>MyAllocList</strong>的一个特化版本没有<strong>MyAllocList<T>::type</strong>。<br>那听起来很不可思议，但不要责备编译器穷尽考虑所有可能。<br>举个例子，一个误入歧途的人可能写出这样的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Wine</span> &#123; … &#125;;</span><br><span class="line"><span class="keyword">template</span>&lt;&gt;                       <span class="comment">// 当T是Wine</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyAllocList</span>&lt;Wine&gt; &#123;        <span class="comment">// 特化MyAllocList</span></span><br><span class="line"><span class="keyword">private</span>:  </span><br><span class="line">    <span class="keyword">enum class</span> <span class="title class_">WineType</span>            <span class="comment">// 参见Item10了解  </span></span><br><span class="line">    &#123; White, Red, Rose &#125;;          <span class="comment">// &quot;enum class&quot;</span></span><br><span class="line">    WineType type;                 <span class="comment">// 在这个类中，type是</span></span><br><span class="line">    …                              <span class="comment">// 一个数据成员！</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>就像你看到的，<strong>MyAllocList<Wine>::type</strong>不是一个类型。<br>如果<strong>Widget</strong>使用<strong>Wine</strong>实例化，在<strong>Widget</strong>模板中的<strong>MyAllocList<Wine>::type</strong>将会是一个数据成员，不是一个类型。<br>在<strong>Widget</strong>模板内，如果<strong>MyAllocList<Wine>::type</strong>表示的类型依赖于<strong>T</strong>，编译器就会坚持要求你在前面加上<strong>typename</strong>。</p>
+<p>如果你尝试过模板元编程（TMP）， 你一定会碰到取模板类型参数然后基于它创建另一种类型的情况。<br>举个例子，给一个类型<strong>T</strong>，如果你想去掉<strong>T</strong>的常量修饰和引用修饰，比如你想把<strong>const std::string&amp;<strong>变成</strong>const std::string</strong>。<br>又或者你想给一个类型加上<strong>const</strong>或左值引用，比如把<strong>Widget</strong>变成<strong>const Widget</strong>或<strong>Widget&amp;<strong>。<br>（如果你没有用过玩过模板元编程，太遗憾了，因为如果你真的想成为一个高效C++程序员 _[1]_，至少你需要熟悉C++的基础。你可以看看我在Item23，27提到的类型转换）。<br>C++11在<em>type traits</em>中给了你一系列工具去实现类型转换，如果要使用这些模板请包含头文件<b><type_traits></b>。<br>里面不全是类型转换的工具，也包含一些<code>predictable</code>接口的工具。给一个类型</strong>T</strong>，你想将它应用于转换中，结果类型就是<strong>std::transformation&lt;T&gt;::type</strong>，比如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::remove_const&lt;T&gt;::type           <span class="comment">// 从const T中产出T</span></span><br><span class="line">std::remove_reference&lt;T&gt;::type       <span class="comment">// 从T&amp;和T&amp;&amp;中产出T</span></span><br><span class="line">std::add_lvalue_reference&lt;T&gt;::type   <span class="comment">// 从T中产出T&amp;</span></span><br></pre></td></tr></table></figure>
+<p>注释仅仅简单的总结了类型转换做了什么，所以不要太随便的使用。<br>在你的项目使用它们之前，你最好看看它们的详细说明书。<br>尽管写了一些，但我这里不是想给你一个关于type traits使用的教程。注意类型转换尾部的<b>::type</b>。<br>如果你在一个模板内部使用类型参数，你也需要在它们前面加上<strong>typename</strong>。<br>至于为什么要这么做是因为这些type traits是通过在<strong>struct</strong>内嵌套<strong>typedef</strong>来实现的。<br>是的，它们使用类型别名 <em>[2]</em> 技术实现，而正如我之前所说这比别名声明要差。</p>
+<p>关于为什么这么实现是有历史原因的，但是我们跳过它（我认为太无聊了），因为标准委员会没有及时认识到别名声明是更好的选择，所以直到C++14它们才提供了使用别名声明的版本。<br>这些别名声明有一个通用形式：对于C++11的类型转换<strong>std::transformation<T>::type</strong>在C++14中变成了**std::transformation_t.**。<br>举个例子或许更容易理解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">std::remove_const&lt;T&gt;::type           <span class="comment">// C++11: const T → T </span></span><br><span class="line">std::<span class="type">remove_const_t</span>&lt;T&gt;               <span class="comment">// C++14 等价形式</span></span><br><span class="line"></span><br><span class="line">std::remove_reference&lt;T&gt;::type       <span class="comment">// C++11: T&amp;/T&amp;&amp; → T </span></span><br><span class="line">std::<span class="type">remove_reference_t</span>&lt;T&gt;           <span class="comment">// C++14 等价形式</span></span><br><span class="line"></span><br><span class="line">std::add_lvalue_reference&lt;T&gt;::type   <span class="comment">// C++11: T → T&amp; </span></span><br><span class="line">std::<span class="type">add_lvalue_reference_t</span>&lt;T&gt;       <span class="comment">// C++14 等价形式</span></span><br></pre></td></tr></table></figure>
+<p>C++11的的形式在C++14中也有效，但是我不能理解为什么你要去用它们。<br>就算你没有使用C++14，使用别名模板也是小儿科<br>只需要C++11，甚至每个小孩都能仿写。<br>对吧？如果你有一份C++14标准，就更简单了，只需要复制粘贴：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt; </span><br><span class="line"><span class="keyword">using</span> <span class="type">remove_const_t</span> = <span class="keyword">typename</span> remove_const&lt;T&gt;::type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt; </span><br><span class="line"><span class="keyword">using</span> <span class="type">remove_reference_t</span> = <span class="keyword">typename</span> remove_reference&lt;T&gt;::type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt; </span><br><span class="line"><span class="keyword">using</span> <span class="type">add_lvalue_reference_t</span> =  <span class="keyword">typename</span> add_lvalue_reference&lt;T&gt;::type; </span><br></pre></td></tr></table></figure>
+<p>看见了吧？不能再简单了。</p>
+<p><strong>记住</strong></p>
+<ul>
+<li>typedef不支持模板化，但是别名声明支持。</li>
+<li>别名模板避免了使用”<b>::type</b>“后缀，而且在模板中使用<strong>typedef</strong>还需要在前面加上<strong>typename</strong></li>
+<li>C++14提供了C++11所有类型转换的别名声明版本</li>
+</ul>
+<h2 id="译注"><a href="#译注" class="headerlink" title="译注"></a>译注</h2><p>[0] 即FP</p>
+<p>[1] 哈，这大概是作为《Modern C++ Design -Generic Programming and Design Pattern Applied》的作者的Scott Meyes才能说出的话。</p>
+<p>[2] 作者所言的类型别名是泛指typedef和using语法进行的别名操作，根据上下文这里的类型别名指的是使用typedef</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/29/item8/" rel="prev" title="使用现代C++ 条款8:优先考虑nullptr而非0和NULL">
+                  <i class="fa fa-chevron-left"></i> 使用现代C++ 条款8:优先考虑nullptr而非0和NULL
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/06/29/item10/" rel="next" title="使用现代C++ 条款10:优先考虑限域枚举而非未限域枚举">
+                  使用现代C++ 条款10:优先考虑限域枚举而非未限域枚举 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CityFire</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

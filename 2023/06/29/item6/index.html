@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.17.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Item 6:Use the explicitly typed initializer idiom when auto deduces undesired types.条款六:auto推导若非己愿，使用显式类型初始化惯用法 在Item5中解释了比起显式指定类型使用auto声明变量有若干技术优势，但是有时当你想向左转auto却向右转。举个例子，假如我有一个函数，参数为Widget，返回一个std::">
+<meta property="og:type" content="article">
+<meta property="og:title" content="auto关键字 条款6:当auto推导出非预期类型时应当使用显式的类型初始化">
+<meta property="og:url" content="http://example.com/2023/06/29/item6/index.html">
+<meta property="og:site_name" content="CityFire的代码世界">
+<meta property="og:description" content="Item 6:Use the explicitly typed initializer idiom when auto deduces undesired types.条款六:auto推导若非己愿，使用显式类型初始化惯用法 在Item5中解释了比起显式指定类型使用auto声明变量有若干技术优势，但是有时当你想向左转auto却向右转。举个例子，假如我有一个函数，参数为Widget，返回一个std::">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-29T08:56:17.825Z">
+<meta property="article:modified_time" content="2023-06-29T09:00:57.967Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/06/29/item6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/06/29/item6/","path":"2023/06/29/item6/","title":"auto关键字 条款6:当auto推导出非预期类型时应当使用显式的类型初始化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>auto关键字 条款6:当auto推导出非预期类型时应当使用显式的类型初始化 | CityFire的代码世界</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">CityFire的代码世界</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">业精于勤，勤于思考</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Item-6-Use-the-explicitly-typed-initializer-idiom-when-auto-deduces-undesired-types"><span class="nav-number">1.</span> <span class="nav-text">Item 6:Use the explicitly typed initializer idiom when auto deduces undesired types.</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CityFire</p>
+  <div class="site-description" itemprop="description">软件工程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/29/item6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CityFire">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CityFire的代码世界">
+      <meta itemprop="description" content="软件工程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="auto关键字 条款6:当auto推导出非预期类型时应当使用显式的类型初始化 | CityFire的代码世界">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          auto关键字 条款6:当auto推导出非预期类型时应当使用显式的类型初始化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-06-29 16:56:17 / 修改时间：17:00:57" itemprop="dateCreated datePublished" datetime="2023-06-29T16:56:17+08:00">2023-06-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Item-6-Use-the-explicitly-typed-initializer-idiom-when-auto-deduces-undesired-types"><a href="#Item-6-Use-the-explicitly-typed-initializer-idiom-when-auto-deduces-undesired-types" class="headerlink" title="Item 6:Use the explicitly typed initializer idiom when auto deduces undesired types."></a>Item 6:Use the explicitly typed initializer idiom when auto deduces undesired types.</h2><p>条款六:auto推导若非己愿，使用显式类型初始化惯用法</p>
+<p>在Item5中解释了比起显式指定类型使用auto声明变量有若干技术优势，但是有时当你想向左转auto却向右转。举个例子，假如我有一个函数，参数为Widget，返回一个<code>std::vector&lt;bool&gt;</code>，这里的bool表示Widget是否提供一个独有的特性。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="type">bool</span>&gt; <span class="title">features</span><span class="params">(<span class="type">const</span> Widget&amp; w)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>更进一步假设5表示是否Widget具有高优先级，我们可以写这样的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> highPriority = <span class="built_in">features</span>(w)[<span class="number">5</span>];</span><br><span class="line">...</span><br><span class="line"><span class="built_in">processWidget</span>(w,highPriority);</span><br></pre></td></tr></table></figure>
+<p>这个代码没有任何问题。它会正常工作，但是如果我们使用auto代替显式指定类型做一些看起来很无害的改变：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> highPriority = <span class="built_in">features</span>(w)[<span class="number">5</span>];</span><br><span class="line">...</span><br><span class="line"><span class="built_in">processWidget</span>(w,highPriority);		<span class="comment">//未定义行为！</span></span><br></pre></td></tr></table></figure>
+<p>就像注释说的，这个processWidget是一个未定义行为。为什么呢？答案有可能让你很惊讶，使用auto后highPriority不再是bool类型。虽然从概念上来说<code>std::vector&lt;bool&gt;</code>意味着存放bool，但是<code>std::vector&lt;bool&gt;</code>的<code>operator[]</code>不会返回容器中元素的引用，取而代之它返回一个<code>std::vector&lt;bool&gt;::reference</code>的对象（一个嵌套于<code>std::vector&lt;bool&gt;中的类）</code>。<br><code>std::vector&lt;bool&gt;::reference</code>之所以存在是因为<code>std::vector&lt;bool&gt;</code>指定了它作为代理类。<code>operator[]</code>返回一个代理类来扮演bool&amp;。要想成功扮演这个角色，bool&amp;适用的上下文<code>std::vector&lt;bool&gt;::reference</code>也必须一样能适用。基于这个特性<code>std::vector&lt;bool&gt;::reference</code>可以隐式的转化为bool（不是bool&amp;，是bool！要想完整的解释<code>std::vector&lt;bool&gt;::reference</code>能模拟bool&amp;的行为所使用的一堆技术可能扯得太远了，所以这里简单地说隐式类型转换只是这个大型马赛克的一小块）</p>
+<p>有了这些信息，我们再来看看原始代码的一部分：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> highPriority = <span class="built_in">features</span>(w)[<span class="number">5</span>];     <span class="comment">//显式的声明highPriority的类型</span></span><br></pre></td></tr></table></figure>
+<p>这里，feature返回一个<code>std::vector&lt;bool&gt;</code>对象后再调用<code>operator[]</code>，<code>operator[]</code>将会返回一个<code>std::vector&lt;bool&gt;::reference</code>对象，然后再通过隐式转换赋值给bool变量highPriority。highPriority因此表示的是features返回的vector中的第五个bit，这也正如我们所期待的那样。<br>然后再对照一下当使用auto时发生了什么：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> highPriority = <span class="built_in">features</span>(w)[<span class="number">5</span>];     <span class="comment">//推导highPriority的类型</span></span><br></pre></td></tr></table></figure>
+<p>同样的，feature返回一个<code>std::vector&lt;bool&gt;</code>对象，再调用<code>operator[]</code>，<code>operator[]</code>将会返回一个<code>std::vector&lt;bool&gt;::reference</code>对象，但是现在这里有一点变化了，auto推导highPriority的类型为<code>std::vector&lt;bool&gt;::reference</code>，但是highPriority对象没有第五bit的值。</p>
+<p>这个值取决于<code>std::vector&lt;bool&gt;::reference</code>的具体实现。其中的一种实现是这样的（<code>std::vector&lt;bool&gt;::reference</code>）对象包含一个指向word的指针，然后加上方括号中的偏移实现被引用bit这样的行为。然后再来考虑highPriority初始化表达的意思，注意这里假设<code>std::vector&lt;bool&gt;::reference</code>就是刚提到的实现方式。</p>
+<p>调用feature将返回一个std::vector<bool>，这个对象没有名字，为了方便我们的讨论，我这里叫他temp，<code>operator[]</code>被temp调用，然后然后的<code>std::vector&lt;bool&gt;::reference</code>包含一个指针，这个指针指向一个temp里面的word，加上相应的偏移,。highPriority是一个<code>std::vector&lt;bool&gt;::reference</code>的拷贝，所以highPriority也包含一个指针，指向temp中的一个word，加上合适的偏移，这里是5.在这个语句解释的时候temp将会被销毁，因为它是一个临时变量。因此highPriority包含一个悬置的指针，如果用于processWidget调用中将会造成未定义行为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">processWidget</span>(w,highPriority);      <span class="comment">//未定义行为！</span></span><br><span class="line">                                    <span class="comment">//highPriority包含一个悬置指针</span></span><br></pre></td></tr></table></figure>
+<p><code>std::vector&lt;bool&gt;::reference</code>是一个代理类的例子：所谓代理类就是以模仿和增强一些类型的行为为目的而存在的类。很多情况下都会使用代理类，<code>std::vector&lt;bool&gt;::reference</code>展示了对<code>std::vector&lt;bool&gt;</code>使用<code>operator[]</code>来实现引用bit这样的行为。另外，C++标准模板库中的智能指针也是用代理类实现了对原始指针的资源管理行为。代理类的功能已被大家广泛接受。事实上，“Proxy”设计模式是软件设计这座万神庙中一直都存在的高级会员。</p>
+<p>一些代理类被设计于用以对客户可见。比如<code>std::shared_ptr</code>和<code>std::unique_ptr</code>。其他的代理类则与之相反，比如<code>std::vector&lt;bool&gt;::reference</code>和<code>std::bitset::reference</code>。</p>
+<p>在后者的阵营里一些C++库也是用了表达式模板的黑科技。这些库通常被用于提高数值运算的效率。给出一个矩阵类Matrix和矩阵对象m1，m2，m3，m4，举个例子，这个表达式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Matrix sum = m1 + m2 + m3 + m4;</span><br></pre></td></tr></table></figure>
+<p>可以使计算更加高效，只需要使让<code>operator+</code>返回一个代理类代理结果而不是返回结果本身。也就是说，对两个Matrix对象使用<code>operator+</code>将会返回如<code>Sum&lt;Matrix,Matrix&gt;</code>这样的代理类作为结果而不是直接返回一个Matrix对象。在<code>std::vector&lt;bool&gt;::reference</code>和bool中存在一个隐式转换，同样对于Matrix来说也可以存在一个隐式转换允许Matrix的代理类转换为Matrix，这让表达式等号右边能产生代理对象来初始化Sum。客户应该避免看到实际的类型。</p>
+<p>作为一个通则，不可见的代理类通常不适用于auto。这样类型的对象的生命期通常不会设计为能活过一条语句，所以创建那样的对象你基本上就走向了违反程序库设计基本假设的道路.<code>std::vector&lt;bool&gt;::reference</code>就是这种情况，我们看到违反这个基本假设将导致未定义行为。</p>
+<p>因此你想避开这种形式的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> someVar = expression of <span class="string">&quot;invisible&quot;</span> proxy <span class="keyword">class</span> type;</span><br></pre></td></tr></table></figure>
+<p>但是你怎么能意识到你正在使用代理类？它们被设计为不可见，至少概念上说是这样！每当你发现它们，你真的应该舍弃Item5演示的auto所具有的诸多好处吗？</p>
+<p>让我们首先回到如何找到它们的问题上。虽然代理类都在程序员日常使用的雷达下方飞行，但是很多库都证明它们可以上方飞行。当你越熟悉你使用的库的基本设计理念，你的思维就会越活跃，不至于思维僵化认为代理类只能在这些库中使用。</p>
+<p>当缺少文档的时候，可以去看看头文件。很少会出现源代码全都用代理对象，它们通常用于一些函数的返回类型，所以通常能从函数签名中看出它们的存在。这里有一份来自C++ STANDARD的说明书：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> std&#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">Allocator</span>&gt;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">vector</span>&lt;<span class="type">bool</span>,Allocator&gt;&#123;</span><br><span class="line">        <span class="keyword">public</span>:</span><br><span class="line">        <span class="keyword">class</span> <span class="title class_">reference</span>&#123;...&#125;;</span><br><span class="line"></span><br><span class="line">        reference <span class="keyword">operator</span>[](size_type n);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设你知道对std::vector<T>使用<code>operator[]</code>通常会返回一个<strong>T&amp;</strong>,在这里operator[]不寻常的返回类型提示你它使用了代理类。多关注你使用的接口可以暴露代理类的存在。</p>
+<p>实际上， 很多开发者都是在跟踪一些令人困惑的复杂问题或在单元测试出错进行调试时才看到代理类的使用。不管你怎么发现它们的，当你不知道这个类型有没有被代理还想使用auto时你就不能单单只用一个auto。auto本身没什么问题，问题是auto不会推导出你想要的类型。解决方案是强制使用一个不同的类型推导形式，这种方法我通常称之为显式类型初始器惯用法（<em>the explicitly typed initialized idiom</em>)</p>
+<p>显式类型初始器惯用法使用auto声明一个变量，然后对表达式强制类型转换得出你期望的推导结果。举个例子，我们该怎么将这个惯用法施加到highPriority上？</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> highPriority = <span class="built_in">static_cast</span>&lt;<span class="type">bool</span>&gt;(<span class="built_in">features</span>(w)[<span class="number">5</span>]);</span><br></pre></td></tr></table></figure>
+<p>这里，feature(w)[5]还是返回一个<code>std::vector&lt;bool&gt;::reference</code>对象，就像之前那样，但是这个转型使得表达式类型为bool，然后auto才被用于推导highPriority。在运行时，对std::vector<bool>使用operator[]将返回一个std::vector<bool>::reference，然后强制类型转换使得它执行向bool的转型，在这个过程中指向<code>std::vector&lt;bool&gt;</code>的指针已经被解引用。这就避开了我们之前的未定义行为。然后5将被用于指向bit的指针，bool值被用于初始化highPriority。</p>
+<p>对于Matrix来说，显式类型初始器惯用法是这样的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> sum = <span class="built_in">static_cast</span>&lt;Matrix&gt;(m1+m2+m3+m4);</span><br></pre></td></tr></table></figure>
+<p>应用这个惯用法不限制初始化表达式产生一个代理类。它也可以用于强调你声明了一个变量类型，它的类型不同于初始化表达式的类型。举个例子，假设你有这样一个表达式计算公差值：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">calEpsilon</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<p><strong>calEpsilon</strong>清楚的表明它返回一个double，但是假设你知道对于这个程序来说使用float的精度已经足够了，而且你很关心double和float的大小。你可以声明一个float变量储存<strong>calEpsilon</strong>的计算结果。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> ep = <span class="built_in">calEpsilon</span>();</span><br></pre></td></tr></table></figure>
+<p>但是这几乎没有表明“我确实要减少函数返回值的精度”。使用显式类型初始器惯用法我们可以这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> ep = <span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(<span class="built_in">calEpsilon</span>());</span><br></pre></td></tr></table></figure>
+<p>处于同样的原因，如果你故意想用int类型存储一个表达式返回的float类型的结果，你也可以使用这个方法。假如你需要计算一个随机访问迭代器（比如std::vector,std::deque,std::array）中某元素的下标，你给它一个0.0到1.0的值表明这个元素离容器的头部有多远（0.5意味着位于容器中间）。进一步假设你很自信结果下标是int。如果容器是c，d是double类型变量，你可以用这样的方法计算容器下标：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> index = d * c.<span class="built_in">size</span>();</span><br></pre></td></tr></table></figure>
+<p>但是这种写法并没有明确表明你想将右侧的double类型转换成int类型，显式类型初始器可以帮助你正确表意：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> index = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(d * <span class="built_in">size</span>());</span><br></pre></td></tr></table></figure>
+
+<p><strong>记住</strong></p>
+<ul>
+<li>不可见的代理类可能会使auto从表达式中推导出“错误的”类型</li>
+<li>显式类型初始器惯用法强制auto推导出你想要的结果</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/29/item5/" rel="prev" title="auto关键字 条款5:优先考虑auto而非显式类型声明">
+                  <i class="fa fa-chevron-left"></i> auto关键字 条款5:优先考虑auto而非显式类型声明
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/06/29/item7/" rel="next" title="使用现代C++ 条款7:区别使用()和{}创建对象">
+                  使用现代C++ 条款7:区别使用()和{}创建对象 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CityFire</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
