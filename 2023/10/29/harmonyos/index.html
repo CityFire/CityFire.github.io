@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>华为鸿蒙生态初识 | CityFire的代码世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="应用模型HarmonyOS应用模型概况   随着系统的演进发展，HarmonyOS先后提供了两种应用模型：    FA（Feature Ability）模型：HarmonyOS早期版本开始支持的模型，已经不再主推。    Stage模型：HarmonyOS 3.1 Developer Preview版本开始新增的模型，是目前主推且会长期演进的模型。在该模型中，由于提供了AbilityStage、W">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>华为鸿蒙生态初识 | CityFire的代码世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="应用模型HarmonyOS应用模型概况   随着系统的演进发展，HarmonyOS先后提供了两种应用模型：  FA（Feature Ability）模型：HarmonyOS早期版本开始支持的模型，已经不再主推。  Stage模型：HarmonyOS 3.1 Developer Preview版本开始新增的模型，是目前主推且会长期演进的模型。在该模型中，由于提供了AbilityStage、Windo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="华为鸿蒙生态初识">
 <meta property="og:url" content="http://example.com/2023/10/29/harmonyos/index.html">
 <meta property="og:site_name" content="CityFire的代码世界">
-<meta property="og:description" content="应用模型HarmonyOS应用模型概况   随着系统的演进发展，HarmonyOS先后提供了两种应用模型：    FA（Feature Ability）模型：HarmonyOS早期版本开始支持的模型，已经不再主推。    Stage模型：HarmonyOS 3.1 Developer Preview版本开始新增的模型，是目前主推且会长期演进的模型。在该模型中，由于提供了AbilityStage、W">
+<meta property="og:description" content="应用模型HarmonyOS应用模型概况   随着系统的演进发展，HarmonyOS先后提供了两种应用模型：  FA（Feature Ability）模型：HarmonyOS早期版本开始支持的模型，已经不再主推。  Stage模型：HarmonyOS 3.1 Developer Preview版本开始新增的模型，是目前主推且会长期演进的模型。在该模型中，由于提供了AbilityStage、Windo">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
 <meta property="article:published_time" content="2023-10-29T09:45:20.043Z">
-<meta property="article:modified_time" content="2023-10-31T08:07:19.262Z">
+<meta property="article:modified_time" content="2023-10-31T08:29:51.611Z">
 <meta property="article:author" content="CityFire">
 <meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Go | Python | Dart | Lua | Js">
 <meta name="twitter:card" content="summary">
@@ -58,7 +58,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-10-31 16:07:19'
+  postUpdate: '2023-10-31 16:29:51'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -162,19 +162,34 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">华为鸿蒙生态初识</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-29T09:45:20.043Z" title="发表于 2023-10-29 17:45:20">2023-10-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-10-31T08:07:19.262Z" title="更新于 2023-10-31 16:07:19">2023-10-31</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="华为鸿蒙生态初识"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="应用模型"><a href="#应用模型" class="headerlink" title="应用模型"></a>应用模型</h2><h3 id="HarmonyOS应用模型概况"><a href="#HarmonyOS应用模型概况" class="headerlink" title="HarmonyOS应用模型概况"></a>HarmonyOS应用模型概况</h3><p>   随着系统的演进发展，HarmonyOS先后提供了两种应用模型：</p>
-<p>   <strong>FA（Feature Ability）模型：HarmonyOS早期版本开始支持的模型，已经不再主推。</strong></p>
-<p>   <strong>Stage模型：HarmonyOS 3.1 Developer Preview版本开始新增的模型，是目前主推且会长期演进的模型。在该模型中，由于提供了AbilityStage、WindowStage等类作为应用组件和Window窗口的“舞台”，因此称这种应用模型为Stage模型。</strong></p>
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">华为鸿蒙生态初识</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-29T09:45:20.043Z" title="发表于 2023-10-29 17:45:20">2023-10-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-10-31T08:29:51.611Z" title="更新于 2023-10-31 16:29:51">2023-10-31</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="华为鸿蒙生态初识"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="应用模型"><a href="#应用模型" class="headerlink" title="应用模型"></a>应用模型</h2><h3 id="HarmonyOS应用模型概况"><a href="#HarmonyOS应用模型概况" class="headerlink" title="HarmonyOS应用模型概况"></a>HarmonyOS应用模型概况</h3><p>   随着系统的演进发展，HarmonyOS先后提供了两种应用模型：</p>
+<ul>
+<li><p>FA（Feature Ability）模型：HarmonyOS早期版本开始支持的模型，已经不再主推。</p>
+</li>
+<li><p>Stage模型：HarmonyOS 3.1 Developer Preview版本开始新增的模型，是目前主推且会长期演进的模型。在该模型中，由于提供了AbilityStage、WindowStage等类作为应用组件和Window窗口的“舞台”，因此称这种应用模型为Stage模型。</p>
+</li>
+</ul>
 <p>   Stage模型之所以成为主推模型，源于其设计思想。Stage模型的设计基于如下出发点。</p>
-<h4 id="1-为复杂应用而设计"><a href="#1-为复杂应用而设计" class="headerlink" title="1.为复杂应用而设计"></a>1.为复杂应用而设计</h4><p>   <strong>多个应用组件共享同一个ArkTS引擎（运行ArkTS语言的虚拟机）实例，应用组件之间可以方便的共享对象和状态，同时减少复杂应用运行对内存的占用。</strong><br>   <strong>采用面向对象的开发方式，使得复杂应用代码可读性高、易维护性好、可扩展性强。</strong></p>
+<h4 id="1-为复杂应用而设计"><a href="#1-为复杂应用而设计" class="headerlink" title="1.为复杂应用而设计"></a>1.为复杂应用而设计</h4><ul>
+<li>多个应用组件共享同一个ArkTS引擎（运行ArkTS语言的虚拟机）实例，应用组件之间可以方便的共享对象和状态，同时减少复杂应用运行对内存的占用。</li>
+<li>采用面向对象的开发方式，使得复杂应用代码可读性高、易维护性好、可扩展性强。</li>
+</ul>
 <h4 id="2-支持多设备和多窗口形态"><a href="#2-支持多设备和多窗口形态" class="headerlink" title="2.支持多设备和多窗口形态"></a>2.支持多设备和多窗口形态</h4><pre><code> 应用组件管理和窗口管理在架构层面解耦：
 </code></pre>
-<p>   <strong>便于系统对应用组件进行裁剪（无屏设备可裁剪窗口）。</strong></p>
-<p>   <strong>便于系统扩展窗口形态。</strong></p>
-<p>   <strong>在多设备（如桌面设备和移动设备）上，应用组件可使用同一套生命周期。</strong></p>
+<ul>
+<li><p>便于系统对应用组件进行裁剪（无屏设备可裁剪窗口）。</p>
+</li>
+<li><p>便于系统扩展窗口形态。</p>
+</li>
+<li><p>在多设备（如桌面设备和移动设备）上，应用组件可使用同一套生命周期。</p>
+</li>
+</ul>
 <h4 id="3-平衡应用能力和系统管控成本"><a href="#3-平衡应用能力和系统管控成本" class="headerlink" title="3.平衡应用能力和系统管控成本"></a>3.平衡应用能力和系统管控成本</h4><pre><code> Stage模型重新定义应用能力的边界，平衡应用能力和系统管控成本。
 </code></pre>
-<p>   <strong>提供特定场景（如卡片、输入法）的应用组件，以便满足更多的使用场景。</strong><br>   <strong>规范化后台进程管理：为保障用户体验，Stage模型对后台应用进程进行了有序治理，应用程序不能随意驻留在后台，同时应用后台行为受到严格管理，防止恶意应用行为。</strong></p>
+<ul>
+<li>提供特定场景（如卡片、输入法）的应用组件，以便满足更多的使用场景。</li>
+<li>规范化后台进程管理：为保障用户体验，Stage模型对后台应用进程进行了有序治理，应用程序不能随意驻留在后台，同时应用后台行为受到严格管理，防止恶意应用行为。</li>
+</ul>
 <h3 id="通过对比认识FA模型与Stage模型"><a href="#通过对比认识FA模型与Stage模型" class="headerlink" title="通过对比认识FA模型与Stage模型"></a>通过对比认识FA模型与Stage模型</h3><p>   Stage模型与FA模型最大的区别在于：Stage模型中，多个应用组件共享同一个ArkTS引擎实例；而FA模型中，每个应用组件独享一个ArkTS引擎实例。因此在Stage模型中，应用组件之间可以方便的共享对象和状态，同时减少复杂应用运行对内存的占用。Stage模型作为主推的应用模型，开发者通过它能够更加便利地开发出分布式场景下的复杂应用。</p>
 <h2 id="典型开发场景"><a href="#典型开发场景" class="headerlink" title="典型开发场景"></a>典型开发场景</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.独立开发一个应用</span><br><span class="line">2.独立开发一个元服务</span><br><span class="line">3.同时开发应用和元服务</span><br></pre></td></tr></table></figure>
 <p>   开发者可以选择开发简单、场景聚焦的元服务，渐进迭代演进，按需组合元服务成为一个复杂的应用。对于大型游戏类应用，可以直接开发鸿蒙生态应用，针对智慧屏、车机、手表等设备，可以考虑开发元服务并提供万能卡片，让信息更加直接的呈现给用户。</p>
