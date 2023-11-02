@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
 <meta property="article:published_time" content="2023-08-19T04:44:38.657Z">
-<meta property="article:modified_time" content="2023-08-19T06:06:15.094Z">
+<meta property="article:modified_time" content="2023-11-02T06:49:53.276Z">
 <meta property="article:author" content="CityFire">
 <meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Go | Python | Dart | Lua | Js">
 <meta name="twitter:card" content="summary">
@@ -58,7 +58,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-08-19 14:06:15'
+  postUpdate: '2023-11-02 14:49:53'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -162,12 +162,12 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Kubernetes入门</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-19T04:44:38.657Z" title="发表于 2023-08-19 12:44:38">2023-08-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-19T06:06:15.094Z" title="更新于 2023-08-19 14:06:15">2023-08-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Kubernetes入门"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="K8s介绍"><a href="#K8s介绍" class="headerlink" title="K8s介绍"></a>K8s介绍</h2><h3 id="1-应用部署方式演变"><a href="#1-应用部署方式演变" class="headerlink" title="1.应用部署方式演变"></a>1.应用部署方式演变</h3><p>在部署应用程序的方式上，主要经历了三个时代：</p>
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Kubernetes入门</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-19T04:44:38.657Z" title="发表于 2023-08-19 12:44:38">2023-08-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-02T06:49:53.276Z" title="更新于 2023-11-02 14:49:53">2023-11-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Kubernetes入门"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="K8s介绍"><a href="#K8s介绍" class="headerlink" title="K8s介绍"></a>K8s介绍</h2><h3 id="1-应用部署方式演变"><a href="#1-应用部署方式演变" class="headerlink" title="1.应用部署方式演变"></a>1.应用部署方式演变</h3><p>在部署应用程序的方式上，主要经历了三个时代：</p>
 <ul>
 <li><strong>传统部署</strong>：互联网早期，会直接讲应用程序部署在物理机上<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">优点：简单，不需要其他技术的参与</span><br><span class="line">缺点：不能为应用程序定义资源使用边界，很难合理地分配计算资源，而且程序之间容易产生影响</span><br></pre></td></tr></table></figure></li>
 <li><strong>虚拟化部署</strong>：可以在一台物理机上运行多个虚拟机，每个虚拟机都是独立的一个环境<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">优点：程序环境不会相互产生影响，提供了一定程度的安全性</span><br><span class="line">缺点：增加了操作系统，浪费了部分资源</span><br></pre></td></tr></table></figure></li>
 <li><strong>容器化部署</strong>：与虚拟化类似，但是共享了操作系统<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">优点：</span><br><span class="line">  可以保证每个容器拥有自己的文件系统、CPU、内存、进程空间等</span><br><span class="line">  运行应用程序所需要的资源都被容器包装，并和底层基础架构解耦</span><br><span class="line">  容器化的应用程序可以跨云服务商、跨Linux操作系统发行版进行部署</span><br></pre></td></tr></table></figure>
-<img src="k8s.png" alt="Alt text"></li>
+<img src="k8s.png"></li>
 </ul>
 <p>容器化部署方式给我们带来很多的便利，但是也会出现一些问题，比如说：</p>
 <ul>
@@ -189,7 +189,7 @@
 <li><strong>版本回退</strong>：如果发现新发布的程序版本有问题，可以立即回退到原来的版本</li>
 <li><strong>存储编排</strong>：可以根据容器自身的需求自动创建存储卷</li>
 </ul>
-<p><img src="k8snode.png" alt="Alt text"></p>
+<p><img src="k8snode.png"></p>
 <h3 id="3-Kubernetes组件"><a href="#3-Kubernetes组件" class="headerlink" title="3.Kubernetes组件"></a>3.Kubernetes组件</h3><p>一个kubernetes集群主要是由**控制节点(master)<strong>、</strong>工作节点(node)**构成，每个节点上都会安装不同的组件。</p>
 <p><strong>master：集群的控制平面，负责集群的决策 （管理）</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ApiServer: 资源操作的唯一入口，接收用户输入的命令，提供认证、授权、API注册和发现等机制</span><br><span class="line"></span><br><span class="line">Scheduler: 负责集群资源调度，按照预定的调度策略将Pod调度到相应的node节点上</span><br><span class="line"></span><br><span class="line">ControllerManager: 负责维护集群的状态，比如程序部署安排、故障检测、自动扩展、滚动更新等</span><br><span class="line"></span><br><span class="line">Etcd：负责存储集群中各种资源对象的信息</span><br></pre></td></tr></table></figure>
@@ -197,7 +197,7 @@
 <p><strong>node：集群的数据平面，负责为容器提供运行环境 （干活）</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Kubelet : 负责维护容器的生命周期，即通过控制docker，来创建、更新、销毁容器</span><br><span class="line"></span><br><span class="line">KubeProxy : 负责提供集群内部的服务发现和负载均衡</span><br><span class="line"></span><br><span class="line">Docker : 负责节点上容器的各种操作</span><br></pre></td></tr></table></figure>
 
-<p><img src="13022150_627d503e5e3a681161.webp" alt="Alt text"></p>
+<p><img src="13022150_627d503e5e3a681161.webp"></p>
 <p>下面，以部署一个nginx服务来说明kubernetes系统各个组件调用关系：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.首先要明确，一旦kubernetes环境启动之后，master和node都会将自身的信息存储到etcd数据库中</span><br><span class="line">2.一个nginx服务的安装请求会首先被发送到master节点的apiServer组件</span><br><span class="line">3.apiServer组件会调用scheduler组件来决定到底应该把这个服务安装到哪个node节点上</span><br><span class="line">在此时，它会从etcd中读取各个node节点的信息，然后按照一定的算法进行选择，并将结果告知apiServer</span><br><span class="line">4.apiServer调用controller-manager去调度Node节点安装nginx服务</span><br><span class="line">5.kubelet接收到指令后，会通知docker，然后由docker来启动一个nginx的pod</span><br><span class="line">pod是kubernetes的最小操作单元，容器必须跑在pod中至此，</span><br><span class="line">6.一个nginx服务就运行了，如果需要访问nginx，就需要通过kube-proxy来对pod产生访问的代理</span><br></pre></td></tr></table></figure>
 <p>这样，外界用户就可以访问集群中的nginx服务了</p>
