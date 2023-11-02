@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
 <meta property="article:published_time" content="2023-07-01T07:48:21.833Z">
-<meta property="article:modified_time" content="2023-11-02T06:04:50.309Z">
+<meta property="article:modified_time" content="2023-11-02T08:34:14.233Z">
 <meta property="article:author" content="CityFire">
 <meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Go | Python | Dart | Lua | Js">
 <meta name="twitter:card" content="summary">
@@ -58,7 +58,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-11-02 14:04:50'
+  postUpdate: '2023-11-02 16:34:14'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -162,7 +162,7 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">谈谈架构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-01T07:48:21.833Z" title="发表于 2023-07-01 15:48:21">2023-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-02T06:04:50.309Z" title="更新于 2023-11-02 14:04:50">2023-11-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="谈谈架构"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="架构简介"><a href="#架构简介" class="headerlink" title="架构简介"></a>架构简介</h2><p>说到架构，不得不联想到建筑行业的框架基础。好了，不扯些没用的，今天的主题主要是软件系统方面。没有一个好的架构，系统想稳定的服务好每一次的更新迭代似乎已经成为了伪命题。也不是说这个是绝对的，因为总有些小的企业小的项目长期就是在这种没有顶层架构设计简单粗暴的处境中茁壮成长，同时还可能面临着代码耦合严重，强依赖，拆东墙补西墙，这个版本修完这个补丁，下个版本这个漏洞又原形毕露了，也可能牵一发而动全身。当然，不是说架构是一成不变的，一个成熟稳定又好的架构必定经过千锤百炼，会随着项目的更新迭代和业务需要而巧用各种设计模式来不断地进行重构，有时候甚至可能会完全推倒重新换一种更新更符合当下业务需求的架构。除此之外，每个软件开发周期也对应着不同风格的架构体系。</p>
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">谈谈架构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-01T07:48:21.833Z" title="发表于 2023-07-01 15:48:21">2023-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-02T08:34:14.233Z" title="更新于 2023-11-02 16:34:14">2023-11-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="谈谈架构"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="架构简介"><a href="#架构简介" class="headerlink" title="架构简介"></a>架构简介</h2><p>说到架构，不得不联想到建筑行业的框架基础。好了，不扯些没用的，今天的主题主要是软件系统方面。没有一个好的架构，系统想稳定的服务好每一次的更新迭代似乎已经成为了伪命题。也不是说这个是绝对的，因为总有些小的企业小的项目长期就是在这种没有顶层架构设计简单粗暴的处境中茁壮成长，同时还可能面临着代码耦合严重，强依赖，拆东墙补西墙，这个版本修完这个补丁，下个版本这个漏洞又原形毕露了，也可能牵一发而动全身。当然，不是说架构是一成不变的，一个成熟稳定又好的架构必定经过千锤百炼，会随着项目的更新迭代和业务需要而巧用各种设计模式来不断地进行重构，有时候甚至可能会完全推倒重新换一种更新更符合当下业务需求的架构。除此之外，每个软件开发周期也对应着不同风格的架构体系。</p>
 <h2 id="架构的不同风格"><a href="#架构的不同风格" class="headerlink" title="架构的不同风格"></a>架构的不同风格</h2><p>典型的企业级应用系统或者互联网应用系统一般都是通过Web提供一组业务服务能力。这类系统包括提供给用户操作的、运行于<code>浏览器</code>、<code>各大移动商店平台譬如AppStore</code>中、具有<code>UI</code>的业务逻辑展示和输入部分，运行于<code>服务器端</code>、用<code>前后端编程语言</code>构建的<code>业务逻辑</code>处理部分，以及用于存储<code>业务数据</code>的<code>关系数据库</code>或其他类型的存储软件。</p>
 <p>根据软件系统在运行期的表现风格和部署结构，我们可以粗略地将其划分为两大类：</p>
 <ol>
@@ -183,13 +183,14 @@
 <p>此外，传统的企业集成领域的EAI架构模式，本身还是各个系统独立部署，但是各系统之间的部分业务使用特定的技术打通了，因此我们可以看做是单体和分布式之间的过渡状态。</p>
 <p>也有人把如上的各个架构风格总结为4个大的架构发展阶段，如图所示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1）单体架构阶段</span><br><span class="line"></span><br><span class="line">2）垂直架构阶段</span><br><span class="line"></span><br><span class="line">3）SOA架构阶段</span><br><span class="line"></span><br><span class="line">4）微服务架构阶段</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/architecture.png"></p>
 <html>
 <center>
-    <image src="image/architecture.png">
     <center>
         <font color="darkgray" size="2">微服务架构发展阶段</font>
     </center>
-</image></center>
+</center>
 </html>
 
 <h2 id="1-单体架构：简单单体模式"><a href="#1-单体架构：简单单体模式" class="headerlink" title="1.单体架构：简单单体模式"></a>1.单体架构：简单单体模式</h2><p>简单单体模式是最简单的架构风格，所有的代码全都在一个项目中。这样研发团队的任何一个人都可以随时修改任意的一段代码，或者增加一些新的代码。开发人员也可以只在自己的电脑上就可以随时开发、调试、测试整个系统的功能。也不需要额外的一些依赖条件和准备步骤，我们就可以直接编译打包整个系统代码，创建一个可以发布的二进制版本。这种方式对于一个新团队的创立初期，需要迅速开始从0到1，抓住时机实现产品最短时间推向市场，可以省去各种额外的设计，直接上手干活，争取了时间，因而是非常有意义的。</p>
@@ -229,9 +230,8 @@
 
 <h3 id="2-4-SOA的两大基石：RPC与MQ"><a href="#2-4-SOA的两大基石：RPC与MQ" class="headerlink" title="2.4 SOA的两大基石：RPC与MQ"></a>2.4 SOA的两大基石：RPC与MQ</h3><p><code>SOA</code>关注于系统的服务化，不同系统服务间的相互通信就成为了一个重要的话题。并且随着<code>RPC</code>和<code>MQ</code>技术的发展，这两种技术逐渐成为<code>SOA</code>的两大基石，也是分布式技术体系里的重要基础设施。</p>
 <ol>
-<li><code>RPC（Remote Procedure Call，远程过程调用）</code><br>两个不同系统间的数据通信，往往可以通过<code>socket</code>+自定义数据报文来实现。但是这种方式比较繁琐，需要针对每个通信场景定义自己的数据格式和报文标准，甚至交互的行为、异常和错误的处理等等。有没有一种通用的技术手段呢？答案就是<code>RPC</code>技术。<br>RPC是一种通用性的系统通信手段，使得我们可以像调用本地方法一样调用远程系统提供的方法。<br>一个场景的<code>RPC</code>机制如图：<html>
+<li><code>RPC（Remote Procedure Call，远程过程调用）</code><br>两个不同系统间的数据通信，往往可以通过<code>socket</code>+自定义数据报文来实现。但是这种方式比较繁琐，需要针对每个通信场景定义自己的数据格式和报文标准，甚至交互的行为、异常和错误的处理等等。有没有一种通用的技术手段呢？答案就是<code>RPC</code>技术。<br>RPC是一种通用性的系统通信手段，使得我们可以像调用本地方法一样调用远程系统提供的方法。<br>一个场景的<code>RPC</code>机制如图：<br><img src="/images/RPC.png"><html>
 <center>
- <img src="images/images-hexo/RPC.png">
  <center>
      <font color="darkgray" size="2">RPC机制</font>
  </center>
@@ -246,23 +246,21 @@
 
 <p>这四种调用模式中，前两种最常见，后两种一般是RR和Oneway方式的包装，所以从本质上看，RPC一般对于客户端的来说是一种同步的远程服务调用技术。与其相对应的，一般来说MQ恰恰是一种异步的调用技术。</p>
 <ol>
-<li>MQ（Message Queue，消息队列）<br>异步的远程调用，如果能同时存在很多个请求，该如何处理呢？进一步地，由于不能立即拿到处理结果，假若需要考虑失败策略，重试次数等，应该怎么设计呢？<br>如果有N个不同系统相互之间都有RPC调用，这时候整个系统环境就是一个很大的网状结构，依赖关系有N*(N-1)&#x2F;2个。任何一个系统出问题，都会影响剩下N-1个系统，怎么降低这种耦合呢？如图所示：<html>
+<li>MQ（Message Queue，消息队列）<br>异步的远程调用，如果能同时存在很多个请求，该如何处理呢？进一步地，由于不能立即拿到处理结果，假若需要考虑失败策略，重试次数等，应该怎么设计呢？<br>如果有N个不同系统相互之间都有RPC调用，这时候整个系统环境就是一个很大的网状结构，依赖关系有N*(N-1)&#x2F;2个。任何一个系统出问题，都会影响剩下N-1个系统，怎么降低这种耦合呢？如图所示：<br><img src="/images/system_rely_relationship.png"><html>
 <center>
- <image src="image/system_rely_relationship.png">
  <center>
      <font color="darkgray" size="2">系统依赖关系</font>
  </center>
-</image></center>
+</center>
 </html></li>
 </ol>
-<p>基于这些问题，我们发展出来了消息队列（<code>MQ</code>）技术，所有的处理请求先作为一个消息发送到<code>MQ</code>（一般我们叫做<code>broker</code>），接着处理消息的系统从<code>MQ</code>拿到消息并进行处理。这样就实现了各个系统间的解耦，同时可以把失败策略、重试等作为一个机制，对各个应用透明，直接在MQ与各调用方的应用接口层面实现即可，如图所示：</p>
+<p>基于这些问题，我们发展出来了消息队列（<code>MQ</code>）技术，所有的处理请求先作为一个消息发送到<code>MQ</code>（一般我们叫做<code>broker</code>），接着处理消息的系统从<code>MQ</code>拿到消息并进行处理。这样就实现了各个系统间的解耦，同时可以把失败策略、重试等作为一个机制，对各个应用透明，直接在MQ与各调用方的应用接口层面实现即可，如图所示：<br><img src="/images/base_MQ_system_rely_relationship.png"></p>
 <html>
 <center>
-    <image src="image/base_MQ_system_rely_relationship.png">
     <center>
         <font color="darkgray" size="2">基于MQ的系统依赖关系</font>
     </center>
-</image></center>
+</center>
 </html>
 
 <p>一般来说，我们把发送消息的系统称为消息生产者（<code>message producer</code>），接受处理消息的系统称为消息消费者（<code>message consumer</code>）。<br>根据消息处理的特点，我们又可以总结两种消息模式：</p>
@@ -280,14 +278,13 @@
 <p>引用自<a target="_blank" rel="noopener" href="http://martinfowler.com/articles/microservices.html">http://martinfowler.com/articles/microservices.html</a> 通过Martin Flowler的这段微服务描述，可以抽象出以下几个关键点：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.由一些独立的服务共同组成应用系统</span><br><span class="line"></span><br><span class="line">2.每个服务单独布署、独立跑在自己的进程中</span><br><span class="line"></span><br><span class="line">3.每个服务都是独立的业务</span><br><span class="line"></span><br><span class="line">4.分布式管理</span><br></pre></td></tr></table></figure>
 
-<p>通过几个关键点可以看出微服务重在独立布署和独立业务，而所谓的微服务，并不是越小越好，而是通过团队规模和业务复杂度由粗到细的划分过程，所遵循的原则是松耦合和高内聚，如图所示：</p>
+<p>通过几个关键点可以看出微服务重在独立布署和独立业务，而所谓的微服务，并不是越小越好，而是通过团队规模和业务复杂度由粗到细的划分过程，所遵循的原则是松耦合和高内聚，如图所示：<br><img src="/images/microservice.png"></p>
 <html>
 <center>
-    <image src="image/microservice.png">
     <center>
         <font color="darkgray" size="2">微服务架构</font>
     </center>
-</image></center>
+</center>
 </html>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">松耦合</span><br><span class="line">修改一个服务不需要同时修改另一个，每个微服务都可以单独修改和布署</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">高内聚</span><br><span class="line">把相关的事务放在一起，把不相关的排除出去，聚集在一起的事务只能干同一件事</span><br></pre></td></tr></table></figure>
@@ -297,14 +294,13 @@
 <p>3、微服务与敏捷开发的思想高度结合在一起，服务的定义更加清晰，同时减少了企业ESB开发的复杂性。</p>
 <p>4、微服务是SOA思想的一种提炼！</p>
 <p>5、SOA是重ESB，微服务是轻网关。</p>
-<h3 id="3-3-大规模使用微服务"><a href="#3-3-大规模使用微服务" class="headerlink" title="3.3 大规模使用微服务"></a>3.3 大规模使用微服务</h3><p>使用微服务也就面临着由单体项目向微服务项目过渡，而采用了微服务架构后也就意味着服务之间的调用链路会比以前延长了很多，在调用链路上发生故障的几率也就随之增大，同时调用链路越长，性能越会受影响。微服务架构中是存在很多陷阱的，并不是简单的拿来使用就可以，所以企业要大规模使用微服务不仅仅是从思想和业务上面进行合理划分，还需要诸多技术组件以及高效的运维来协同合作，如图所示。</p>
+<h3 id="3-3-大规模使用微服务"><a href="#3-3-大规模使用微服务" class="headerlink" title="3.3 大规模使用微服务"></a>3.3 大规模使用微服务</h3><p>使用微服务也就面临着由单体项目向微服务项目过渡，而采用了微服务架构后也就意味着服务之间的调用链路会比以前延长了很多，在调用链路上发生故障的几率也就随之增大，同时调用链路越长，性能越会受影响。微服务架构中是存在很多陷阱的，并不是简单的拿来使用就可以，所以企业要大规模使用微服务不仅仅是从思想和业务上面进行合理划分，还需要诸多技术组件以及高效的运维来协同合作，如图所示。<br><img src="/images/microservice2.png"></p>
 <html>
 <center>
-    <image src="image/microservice2.png">
     <center>
         <font color="darkgray" size="2">微服务架构</font>
     </center>
-</image></center>
+</center>
 </html>
 ###
 
