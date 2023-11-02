@@ -206,7 +206,7 @@
 <p>对于这份代码，没有实现会在已经存在对象的位置<code>vs[0]</code>构造添加的<code>std::string</code>。而是，通过移动赋值的方式添加到需要的位置。但是移动赋值需要一个源对象，所以这意味着一个临时对象要被创建，而emplacement优于insertion的原因就是没有临时对象的创建和销毁，所以当通过赋值操作添加元素时，emplacement的优势消失殆尽。</p>
 <p>而且，向容器添加元素是通过构造还是赋值通常取决于实现者。但是，启发式仍然是有帮助的。基于节点的容器实际上总是使用构造器添加新元素，大多数标准库容器都是基于节点的。例外的容器只有<code>std::vector, std::deque, std::string</code>（<code>std::array</code>也不是基于节点的，但是它不支持emplacement和insertion）。在不是基于节点的容器中，你可以依靠<code>emplace_back</code>来使用构造向容器添加元素，对于<code>std::deque</code>，<code>emplace_front</code>也是一样的。</p>
 </li>
-<li><p><strong>传递的参数类型与容器的初始化类型不同。</strong> 再次强调，emplacement优于insertion通常基于以下事实：当传递的参数不是容器保存的类型时，接口不需要创建和销毁临时对象。当将类型为T的对象添加到container<T>时，没有理由期望emplacement比insertion运行的更快，因为不需要创建临时对象来满足insertion接口。</p>
+<li><p><strong>传递的参数类型与容器的初始化类型不同。</strong> 再次强调，emplacement优于insertion通常基于以下事实：当传递的参数不是容器保存的类型时，接口不需要创建和销毁临时对象。当将类型为T的对象添加到container<T>时，没有理由期望emplacement比insertion运行的更快，因为不需要创建临时对象来满足insertion接口。</T></p>
 </li>
 <li><p><strong>容器不拒绝重复项作为新值。</strong> 这意味着容器要么允许添加重复值，要么你添加的元素都是不重复的。这样要求的原因是为了判断一个元素是否已经存在于容器中，emplacement实现通常会创建一个具有新值的节点，以便可以将该节点的值与现有容器中节点的值进行比较。如果要添加的值不在容器中，则链接该节点。然后，如果值已经存在，emplacement创建的节点就会被销毁，意味着构造和析构时浪费的开销。这样的创建就不会在insertion函数中出现。</p>
 </li>

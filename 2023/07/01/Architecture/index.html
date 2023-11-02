@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
 <meta property="article:published_time" content="2023-07-01T07:48:21.833Z">
-<meta property="article:modified_time" content="2023-11-02T04:01:57.404Z">
+<meta property="article:modified_time" content="2023-11-02T04:09:48.804Z">
 <meta property="article:author" content="CityFire">
 <meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Go | Python | Dart | Lua | Js">
 <meta name="twitter:card" content="summary">
@@ -58,7 +58,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-11-02 12:01:57'
+  postUpdate: '2023-11-02 12:09:48'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -162,7 +162,7 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">谈谈架构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-01T07:48:21.833Z" title="发表于 2023-07-01 15:48:21">2023-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-02T04:01:57.404Z" title="更新于 2023-11-02 12:01:57">2023-11-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="谈谈架构"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="架构简介"><a href="#架构简介" class="headerlink" title="架构简介"></a>架构简介</h2><p>说到架构，不得不联想到建筑行业的框架基础。好了，不扯些没用的，今天的主题主要是软件系统方面。没有一个好的架构，系统想稳定的服务好每一次的更新迭代似乎已经成为了伪命题。也不是说这个是绝对的，因为总有些小的企业小的项目长期就是在这种没有顶层架构设计简单粗暴的处境中茁壮成长，同时还可能面临着代码耦合严重，强依赖，拆东墙补西墙，这个版本修完这个补丁，下个版本这个漏洞又原形毕露了，也可能牵一发而动全身。当然，不是说架构是一成不变的，一个成熟稳定又好的架构必定经过千锤百炼，会随着项目的更新迭代和业务需要而巧用各种设计模式来不断地进行重构，有时候甚至可能会完全推倒重新换一种更新更符合当下业务需求的架构。除此之外，每个软件开发周期也对应着不同风格的架构体系。</p>
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的代码世界"><span class="site-name">CityFire的代码世界</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">谈谈架构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-01T07:48:21.833Z" title="发表于 2023-07-01 15:48:21">2023-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-02T04:09:48.804Z" title="更新于 2023-11-02 12:09:48">2023-11-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="谈谈架构"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="架构简介"><a href="#架构简介" class="headerlink" title="架构简介"></a>架构简介</h2><p>说到架构，不得不联想到建筑行业的框架基础。好了，不扯些没用的，今天的主题主要是软件系统方面。没有一个好的架构，系统想稳定的服务好每一次的更新迭代似乎已经成为了伪命题。也不是说这个是绝对的，因为总有些小的企业小的项目长期就是在这种没有顶层架构设计简单粗暴的处境中茁壮成长，同时还可能面临着代码耦合严重，强依赖，拆东墙补西墙，这个版本修完这个补丁，下个版本这个漏洞又原形毕露了，也可能牵一发而动全身。当然，不是说架构是一成不变的，一个成熟稳定又好的架构必定经过千锤百炼，会随着项目的更新迭代和业务需要而巧用各种设计模式来不断地进行重构，有时候甚至可能会完全推倒重新换一种更新更符合当下业务需求的架构。除此之外，每个软件开发周期也对应着不同风格的架构体系。</p>
 <h2 id="架构的不同风格"><a href="#架构的不同风格" class="headerlink" title="架构的不同风格"></a>架构的不同风格</h2><p>典型的企业级应用系统或者互联网应用系统一般都是通过Web提供一组业务服务能力。这类系统包括提供给用户操作的、运行于<code>浏览器</code>、<code>各大移动商店平台譬如AppStore</code>中、具有<code>UI</code>的业务逻辑展示和输入部分，运行于<code>服务器端</code>、用<code>前后端编程语言</code>构建的<code>业务逻辑</code>处理部分，以及用于存储<code>业务数据</code>的<code>关系数据库</code>或其他类型的存储软件。</p>
 <p>根据软件系统在运行期的表现风格和部署结构，我们可以粗略地将其划分为两大类：</p>
 <ol>
@@ -187,9 +187,9 @@
 <center>
     <image src="image/architecture.png">
     <center>
-        <font color=darkgray size=2>微服务架构发展阶段</font>
+        <font color="darkgray" size="2">微服务架构发展阶段</font>
     </center>
-</center>
+</image></center>
 </html>
 
 <h2 id="1-单体架构：简单单体模式"><a href="#1-单体架构：简单单体模式" class="headerlink" title="1.单体架构：简单单体模式"></a>1.单体架构：简单单体模式</h2><p>简单单体模式是最简单的架构风格，所有的代码全都在一个项目中。这样研发团队的任何一个人都可以随时修改任意的一段代码，或者增加一些新的代码。开发人员也可以只在自己的电脑上就可以随时开发、调试、测试整个系统的功能。也不需要额外的一些依赖条件和准备步骤，我们就可以直接编译打包整个系统代码，创建一个可以发布的二进制版本。这种方式对于一个新团队的创立初期，需要迅速开始从0到1，抓住时机实现产品最短时间推向市场，可以省去各种额外的设计，直接上手干活，争取了时间，因而是非常有意义的。</p>
@@ -231,9 +231,9 @@
 <ol>
 <li><code>RPC（Remote Procedure Call，远程过程调用）</code><br>两个不同系统间的数据通信，往往可以通过<code>socket</code>+自定义数据报文来实现。但是这种方式比较繁琐，需要针对每个通信场景定义自己的数据格式和报文标准，甚至交互的行为、异常和错误的处理等等。有没有一种通用的技术手段呢？答案就是<code>RPC</code>技术。<br>RPC是一种通用性的系统通信手段，使得我们可以像调用本地方法一样调用远程系统提供的方法。<br>一个场景的<code>RPC</code>机制如图：<html>
 <center>
- ![img](https://github.com/CityFire/Images-hexo/blob/main/RPC.png)
+ ![Image](https://github.com/CityFire/Images-hexo/blob/main/RPC.png)
  <center>
-     <font color=darkgray size=2>RPC机制</font>
+     <font color="darkgray" size="2">RPC机制</font>
  </center>
 </center>
 </html></li>
@@ -250,9 +250,9 @@
 <center>
  <image src="image/system_rely_relationship.png">
  <center>
-     <font color=darkgray size=2>系统依赖关系</font>
+     <font color="darkgray" size="2">系统依赖关系</font>
  </center>
-</center>
+</image></center>
 </html></li>
 </ol>
 <p>基于这些问题，我们发展出来了消息队列（<code>MQ</code>）技术，所有的处理请求先作为一个消息发送到<code>MQ</code>（一般我们叫做<code>broker</code>），接着处理消息的系统从<code>MQ</code>拿到消息并进行处理。这样就实现了各个系统间的解耦，同时可以把失败策略、重试等作为一个机制，对各个应用透明，直接在MQ与各调用方的应用接口层面实现即可，如图所示：</p>
@@ -260,9 +260,9 @@
 <center>
     <image src="image/base_MQ_system_rely_relationship.png">
     <center>
-        <font color=darkgray size=2>基于MQ的系统依赖关系</font>
+        <font color="darkgray" size="2">基于MQ的系统依赖关系</font>
     </center>
-</center>
+</image></center>
 </html>
 
 <p>一般来说，我们把发送消息的系统称为消息生产者（<code>message producer</code>），接受处理消息的系统称为消息消费者（<code>message consumer</code>）。<br>根据消息处理的特点，我们又可以总结两种消息模式：</p>
@@ -285,9 +285,9 @@
 <center>
     <image src="image/microservice.png">
     <center>
-        <font color=darkgray size=2>微服务架构</font>
+        <font color="darkgray" size="2">微服务架构</font>
     </center>
-</center>
+</image></center>
 </html>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">松耦合</span><br><span class="line">修改一个服务不需要同时修改另一个，每个微服务都可以单独修改和布署</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">高内聚</span><br><span class="line">把相关的事务放在一起，把不相关的排除出去，聚集在一起的事务只能干同一件事</span><br></pre></td></tr></table></figure>
@@ -302,9 +302,9 @@
 <center>
     <image src="image/microservice2.png">
     <center>
-        <font color=darkgray size=2>微服务架构</font>
+        <font color="darkgray" size="2">微服务架构</font>
     </center>
-</center>
+</image></center>
 </html>
 ###
 
