@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>类型推导 条款4:知道如何查看类型推导 | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Item 4:Know how to view deduced types条款四:学会查看类型推导结果 选择使用工具查看类型推导取决于软件开发过程中你想在哪个阶段显示类型推导信息，我们探究三种方案：在你编辑代码的时候获得类型推导的结果，在编译期间获得结果，在运行时获得结果 IDE编辑器在IDE中的代码编辑器通常可以显示程序代码中变量，函数，参数的类型，你只需要简单的把鼠标移到它们的上面，举个例子，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="类型推导 条款4:知道如何查看类型推导">
+<meta property="og:url" content="https://cityfire.github.io/2023/06/29/item4/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="Item 4:Know how to view deduced types条款四:学会查看类型推导结果 选择使用工具查看类型推导取决于软件开发过程中你想在哪个阶段显示类型推导信息，我们探究三种方案：在你编辑代码的时候获得类型推导的结果，在编译期间获得结果，在运行时获得结果 IDE编辑器在IDE中的代码编辑器通常可以显示程序代码中变量，函数，参数的类型，你只需要简单的把鼠标移到它们的上面，举个例子，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-06-29T08:36:50.000Z">
+<meta property="article:modified_time" content="2023-06-29T08:36:50.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/06/29/item4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '类型推导 条款4:知道如何查看类型推导',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-29 16:36:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">类型推导 条款4:知道如何查看类型推导</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-29T08:36:50.000Z" title="发表于 2023-06-29 16:36:50">2023-06-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-29T08:36:50.000Z" title="更新于 2023-06-29 16:36:50">2023-06-29</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="类型推导 条款4:知道如何查看类型推导"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Item-4-Know-how-to-view-deduced-types"><a href="#Item-4-Know-how-to-view-deduced-types" class="headerlink" title="Item 4:Know how to view deduced types"></a>Item 4:Know how to view deduced types</h2><p>条款四:学会查看类型推导结果</p>
+<p>选择使用工具查看类型推导取决于软件开发过程中你想在哪个阶段显示类型推导信息，我们探究三种方案：在你编辑代码的时候获得类型推导的结果，在编译期间获得结果，在运行时获得结果</p>
+<h2 id="IDE编辑器"><a href="#IDE编辑器" class="headerlink" title="IDE编辑器"></a>IDE编辑器</h2><p>在IDE中的代码编辑器通常可以显示程序代码中变量，函数，参数的类型，你只需要简单的把鼠标移到它们的上面，举个例子，有这样的代码中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> theAnswer = <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> x = theAnswer;</span><br><span class="line"><span class="keyword">auto</span> y = &amp;theAnswer;</span><br></pre></td></tr></table></figure>
+<p>一个IDE编辑器可以直接显示x推导的结果为<strong>int</strong>，y推导的结果为<strong>const int*</strong></p>
+<p>为此，你的代码必须或多或少的处于可编译状态，因为IDE之所以能提供这些信息是因为一个C++编译器（或者至少是前端中的一个部分）运行于IDE中。如果这个编译器对你的代码不能做出有意义的分析或者推导，它就不会显示推导的结果。</p>
+<p>对于像int这样简单的推导，IDE产生的信息通常令人很满意。正如我们将看到的，如果更复杂的类型出现时，IDE提供的信息就几乎没有什么用了。</p>
+<h2 id="编译器诊断"><a href="#编译器诊断" class="headerlink" title="编译器诊断"></a>编译器诊断</h2><p>另一个获得推导结果的方法是使用编译器出错时提供的错误消息。这些错误消息无形的提到了造成我们编译错误的类型是什么。<br>举个例子，假如我们想看到之前那段代码中x和y的类型，我们可以首先声明一个类模板但不定义。就像这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;	<span class="comment">//只对TD进行声明</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TD</span>;			<span class="comment">//TD == &quot;Type Displayer&quot;</span></span><br></pre></td></tr></table></figure>
+<p>如果尝试实例化这个类模板就会引出一个错误消息，因为这里没有用来实例化的类模板定义。为了查看x和y的类型，只需要使用它们的类型去实例化TD：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TD&lt;<span class="keyword">decltype</span>(x)&gt; xType;	<span class="comment">//引出错误消息</span></span><br><span class="line">TD&lt;<span class="keyword">decltype</span>(y)&gt; yType;	<span class="comment">//x和y的类型</span></span><br></pre></td></tr></table></figure>
+<p>我使用<strong>variableNameType</strong>的结构来命名变量，因为这样它们产生的错误消息可以有助于我们查找。对于上面的代码，我的编译器产生了这样的错误信息，我取一部分贴到下面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">error: aggregate <span class="string">&#x27;TD&lt;int&gt; xType&#x27;</span> has incomplete type <span class="keyword">and</span> </span><br><span class="line">	cannot be defined</span><br><span class="line">error: aggregate <span class="string">&#x27;TD&lt;const int *&gt; yType&#x27;</span> has incomplete type <span class="keyword">and</span></span><br><span class="line">	cannot be defined</span><br></pre></td></tr></table></figure>
+<p>另一个编译器也产生了一样的错误，只是格式稍微改变了一下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">error: <span class="string">&#x27;xType&#x27;</span> uses undefined <span class="keyword">class</span> <span class="string">&#x27;TD&lt;int&gt;&#x27;</span></span><br><span class="line">error: <span class="string">&#x27;yType&#x27;</span> uses undefined <span class="keyword">class</span> <span class="string">&#x27;TD&lt;const int *&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>除了格式不同外，几乎所有我测试过的编译器都产生了这样有用的错误消息。</p>
+<h2 id="运行时输出"><a href="#运行时输出" class="headerlink" title="运行时输出"></a>运行时输出</h2><p>使用<strong>printf</strong>的方法使类型信息只有在运行时才会显示出来（尽管我不是非常建议你使用printf），但是它提供了一种格式化输出的方法。现在唯一的问题是只需对于你关心的变量使用一种优雅的文本表示。“这有什么难的“，你这样想”这正是typeid和std::type_info::name的价值所在”。为了实现我们我们想要查看x和y的类型的需求，你可能会这样写：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::cout&lt;&lt;<span class="built_in">typeid</span>(x).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;	<span class="comment">//显示x和y的类型</span></span><br><span class="line">std::cout&lt;&lt;<span class="built_in">typeid</span>(y).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>这种方法对一个对象如x或y调用<strong>typeid</strong>产生一个<strong>std::type_info</strong>的对象，然后<strong>std::type_info</strong>里面的成员函数**name()**来产生一个C风格的字符串表示变量的名字。</p>
+<p>调用<strong>std::type_info::name</strong>不保证返回任何有意义的东西，但是库的实现者尝试尽量使它们返回的结果有用。实现者们对于“有用”有不同的理解。举个例子，GNU和Clang环境下x会显示为<strong>i</strong>，y会显示为<strong>PKi</strong>，这样的输出你必须要问问编译器实现者们才能知道他们的意义：i表示int，PK表示<strong>const to konst（const）</strong>。Microsoft的编译器输出得更直白一些：对于x输出“int“对于y输出”int const*“</p>
+<p>因为对于x和y来说这样的结果是正确的，你可能认为问题已经接近了，别急，考虑一个更复杂的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(<span class="type">const</span> T&amp; param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">std::vector&lt;Widget&gt; <span class="title">createVec</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span> vw = <span class="built_in">createVec</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!vw.<span class="built_in">empty</span>())&#123;</span><br><span class="line">	<span class="built_in">f</span>(&amp;vw[<span class="number">0</span>]);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这段代码中包含了一个用户定义的类型Widget，一个STL容器和一个auto变量vw，这个更现实的情况是你可能在会遇到的并且想获得他们类型推导的结果，比如模板类型参数T，比如函数参数param。</p>
+<p>从这里中我们不难看出typeid的问题所在。我们添加一些代码来显示类型：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(<span class="type">const</span> T&amp; param)</span></span>&#123;</span><br><span class="line">	<span class="keyword">using</span> std::cout;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;T=		&quot;</span>&lt;&lt;<span class="built_in">typeid</span>(T).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;param =	&quot;</span>&lt;&lt;<span class="built_in">typeid</span>(param).<span class="built_in">name</span>()&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>GNU和Clang执行这段代码将会输出这样的结果</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		PK6Widget</span><br><span class="line">param=	PK6Widget</span><br></pre></td></tr></table></figure>
+<p>我们早就知道在这些编译器中PK表示“指向常量”，所以只有数字6对我们来说是神奇的。其实数字6是类名称的字符串长度，所以这些编译器高数我们T和param都是**const Widget***。</p>
+<p>Microsoft的编译器也同意上述言论：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		<span class="keyword">class</span> Widget <span class="type">const</span> *</span><br><span class="line">param=	<span class="keyword">class</span> Widget <span class="type">const</span> *</span><br></pre></td></tr></table></figure>
+<p>这三个独立的编译器产生了相同的信息而且非常准确，当然看起来不是那么准确。在模板f中，param的类型是**const T&amp;<strong>。难道你们不觉得T和param相同类型很奇怪吗？比如T是int，param的类型应该是</strong>const int&amp;**而不是相同类型才对吧。</p>
+<p>遗憾的是，事实就是这样，<strong>std::type_info::name</strong>的结果并不总是可信的，就像上面一样三个编译器都犯了相同的错误。因为<strong>std::type_info::name</strong>被批准犯这样的错。正如Item1提到的如果传递的是一个引用，那么引用部分将被忽略，如果忽略后还具有常量性或者易变性，那么常量性或者易变性也会被忽略。那就是为什么**const Widget *const &amp;<strong>类型会输出</strong>const Widget ***，首先引用被忽略，然后这个指针自身的常量性被忽略，剩下的就是指针指向一个常量对象。</p>
+<p>同样遗憾的是，IDE编辑器显示的类型信息也不总是可靠的，或者说不总是有用的。还是一样的例子，一个IDE编辑器可能会把T的类型显示为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::_Simple_types&lt;std::_Wrap_alloc&lt;std::_Vec_base_types&lt;Widget,</span><br><span class="line">std::allocator&lt;Widget&gt;&gt;::_Alloc&gt;::value_type&gt;::value_type *</span><br></pre></td></tr></table></figure>
+<p>同样把param的类型显示为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> std::_Simple_types&lt;...&gt;::value_type *<span class="type">const</span>&amp;</span><br></pre></td></tr></table></figure>
+<p>这个比起T来说要简单一些，但是如果你不知道&lt;…&gt;表示编译器忽略T的类型那么可能你还是会产生困惑。如果你运气好点你的IDE可能表现得比这个要好一些。</p>
+<p>比起运气如果你更倾向于依赖库，那么你乐意被告知<strong>std::type_info::name</strong>不怎么好，Boost TypeIndex Library（通常写作Boost.TypeIndex）是更好的选择。这个库不是标准C++的一部分，也不时IDE或者TD这样的模板。Boost TypeIndex是跨平台，开源，有良好的开源协议的库，这意味着使用Boost和STL一样具有高度可移植性。</p>
+<p>这里是如何使用Boost.TypeIndex得到f的类型的代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;boost/type_index.hpp&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">(<span class="type">const</span> T&amp; param)</span></span>&#123;</span><br><span class="line">	<span class="keyword">using</span> std::cout;</span><br><span class="line">	<span class="keyword">using</span> boost::type_index::type_id_with_cvr;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//显示T</span></span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;T=	&quot;</span></span><br><span class="line">	        &lt;&lt;<span class="built_in">type_id_with_cvr</span>&lt;T&gt;().<span class="built_in">pretty_name</span>()</span><br><span class="line">	        &lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	<span class="comment">//显示param类型</span></span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;param=	&quot;</span></span><br><span class="line">	        &lt;&lt;<span class="built_in">type_id_with_cvr</span>&lt;<span class="keyword">decltype</span>(param)&gt;().<span class="built_in">pretty_name</span>()</span><br><span class="line">	        &lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>boost::type_index::type_id_with_cvr</strong>获取一个类型实参，它不消除实参的常量性，易变性和引用修饰符，然后<strong>pretty_name</strong>成员函数输出一个我们能看懂的友好内容。<br>基于这个f的实现版本，再次考虑那个产生错误类型信息的调用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vetor&lt;Widget&gt; <span class="title">createVec</span><span class="params">()</span></span>;</span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span> vw = <span class="built_in">createVec</span>();</span><br><span class="line"><span class="keyword">if</span>(!vw.<span class="built_in">empty</span>())&#123;</span><br><span class="line">	<span class="built_in">f</span>(&amp;vw[<span class="number">0</span>]);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在GNU和Clang的编译器环境下，使用Boost.TypeIndex版本的f最后会产生下面的输出：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		Widget <span class="type">const</span> *</span><br><span class="line">param=	Widget <span class="type">const</span> * <span class="type">const</span>&amp;</span><br></pre></td></tr></table></figure>
+<p>在Microsoft的编译器环境下，结果也是极其相似：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T=		<span class="keyword">class</span> Widget <span class="type">const</span> *</span><br><span class="line">param=	<span class="keyword">class</span> Widget <span class="type">const</span> * <span class="type">const</span>&amp;</span><br></pre></td></tr></table></figure>
+<p>这样近乎一致的结果是很不错的，但是请记住IDE，编译器错误诊断或者Boost.TypeIndex只是用来帮助你理解编译器推导的类型是什么。它们是有用的，但是作为本章结束语我想说它们根本不能让你不用理解Item1-3提到的。</p>
+<p><strong>记住</strong></p>
+<ul>
+<li>类型推断可以从IDE看出，从编译器报错看出，从一些库的使用看出</li>
+<li>这些工具可能既不准确也无帮助，所以理解C++类型推导规则才是最重要的</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/06/29/item4/">https://cityfire.github.io/2023/06/29/item4/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/06/29/item5/" title="auto关键字 条款5:优先考虑auto而非显式类型声明"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">auto关键字 条款5:优先考虑auto而非显式类型声明</div></div></a></div><div class="next-post pull-right"><a href="/2023/06/29/item3/" title="类型推导 条款3:理解decltype"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">类型推导 条款3:理解decltype</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Item-4-Know-how-to-view-deduced-types"><span class="toc-number">1.</span> <span class="toc-text">Item 4:Know how to view deduced types</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDE%E7%BC%96%E8%BE%91%E5%99%A8"><span class="toc-number">2.</span> <span class="toc-text">IDE编辑器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8%E8%AF%8A%E6%96%AD"><span class="toc-number">3.</span> <span class="toc-text">编译器诊断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E8%BE%93%E5%87%BA"><span class="toc-number">4.</span> <span class="toc-text">运行时输出</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

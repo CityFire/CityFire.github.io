@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>使用现代C++ 条款9:优先考虑别名声明而非typedefs | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Item 9:Prefer alias declarations to typedefs条款九:优先考虑别名声明而非typedefs 我相信每个人都同意使用STL容器是个好主意，并且我希望Item18能说服你让你觉得使用std:unique_ptr也是个好主意，但我猜没有人喜欢写上几次 std::unique_ptr&lt;std::unordered_map&lt;std::string,std">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用现代C++ 条款9:优先考虑别名声明而非typedefs">
+<meta property="og:url" content="https://cityfire.github.io/2023/06/29/item9/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="Item 9:Prefer alias declarations to typedefs条款九:优先考虑别名声明而非typedefs 我相信每个人都同意使用STL容器是个好主意，并且我希望Item18能说服你让你觉得使用std:unique_ptr也是个好主意，但我猜没有人喜欢写上几次 std::unique_ptr&lt;std::unordered_map&lt;std::string,std">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-06-29T09:06:57.000Z">
+<meta property="article:modified_time" content="2023-06-29T09:06:57.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/06/29/item9/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用现代C++ 条款9:优先考虑别名声明而非typedefs',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-29 17:06:57'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用现代C++ 条款9:优先考虑别名声明而非typedefs</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-29T09:06:57.000Z" title="发表于 2023-06-29 17:06:57">2023-06-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-29T09:06:57.000Z" title="更新于 2023-06-29 17:06:57">2023-06-29</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用现代C++ 条款9:优先考虑别名声明而非typedefs"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Item-9-Prefer-alias-declarations-to-typedefs"><a href="#Item-9-Prefer-alias-declarations-to-typedefs" class="headerlink" title="Item 9:Prefer alias declarations to typedefs"></a>Item 9:Prefer alias declarations to typedefs</h2><p>条款九:优先考虑别名声明而非typedefs</p>
+<p>我相信每个人都同意使用STL容器是个好主意，并且我希望Item18能说服你让你觉得使用<strong>std:unique_ptr</strong>也是个好主意，但我猜没有人喜欢写上几次 <code>std::unique_ptr&lt;std::unordered_map&lt;std::string,std::string&gt;&gt;</code>这样的类型，它可能会让你患上腕管综合征的风险大大增加。</p>
+<p>避免上述医疗悲剧也很简单，引入<strong>typedef</strong>即可：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span>  std::unique_ptr&lt;std::unordered_map&lt;std::string, std::string&gt;&gt;  UPtrMapSS; </span><br></pre></td></tr></table></figure>
+<p>但<strong>typedef</strong>是C++98的东西。虽然它可以在C++11中工作，但是C++11也提供了一个别名声明（alias declaration）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UPtrMapSS =  std::unique_ptr&lt;std::unordered_map&lt;std::string, std::string&gt;&gt;;</span><br></pre></td></tr></table></figure>
+<p>由于这里给出的<strong>typedef</strong>和别名声明做的都是完全一样的事情，我们有理由想知道会不会出于一些技术上的原因两者有一个更好。</p>
+<p>这里，在说它们之前我想提醒一下很多人都发现当声明一个函数指针时别名声明更容易理解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FP是一个指向函数的指针的同义词，它指向的函数带有int和const std::string&amp;形参，不返回任何东西</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*FP)</span><span class="params">(<span class="type">int</span>, <span class="type">const</span> std::string&amp;)</span></span>;      <span class="comment">// typedef</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//同上</span></span><br><span class="line"><span class="keyword">using</span> FP = <span class="built_in">void</span> (*)(<span class="type">int</span>, <span class="type">const</span> std::string&amp;);     <span class="comment">// 别名声明</span></span><br></pre></td></tr></table></figure>
+
+<p>当然，两个结构都不是非常让人满意，没有人喜欢花大量的时间处理函数指针类型的别名 _[0]_，所以至少在这里，没有一个吸引人的理由让你觉得别名声明比<strong>typedef</strong>好。</p>
+<p>不过有一个地方使用别名声明吸引人的理由是存在的：模板。特别的，别名声明可以被模板化但是<strong>typedef</strong>不能。<br>这使得C++11程序员可以很直接的表达一些C++98程序员只能把<strong>typedef</strong>嵌套进模板化的<strong>struct</strong>才能表达的东西，<br>考虑一个链表的别名，链表使用自定义的内存分配器，<strong>MyAlloc</strong>。</p>
+<p>使用别名模板，这真是太容易了：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">using</span> MyAllocList = std::list&lt;T,MyAlloc&lt;T&gt;&gt;;</span><br><span class="line"></span><br><span class="line">MyAllocList&lt;Widget&gt; lw;</span><br></pre></td></tr></table></figure>
+<p>使用<strong>typedef</strong>，你就只能从头开始：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;                     </span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">MyAllocList</span> &#123;                    </span><br><span class="line">    <span class="keyword">typedef</span> std::list&lt;T, MyAlloc&lt;T&gt;&gt; type;  </span><br><span class="line">&#125;;                                      </span><br><span class="line">MyAllocList&lt;Widget&gt;::type lw;         </span><br></pre></td></tr></table></figure>
+<p>更糟糕的是，如果你想使用在一个模板内使用<strong>typedef</strong>声明一个持有链表的对象，而这个对象又使用了模板参数，你就不得不在在<strong>typedef</strong>前面加上<strong>typename</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123;                     </span><br><span class="line"><span class="keyword">private</span>:                               </span><br><span class="line">    <span class="keyword">typename</span> MyAllocList&lt;T&gt;::type list;    </span><br><span class="line">    … </span><br><span class="line">&#125;; </span><br></pre></td></tr></table></figure>
+<p>这里<strong>MyAllocList<T>::type</T></strong>使用了一个类型，这个类型依赖于模板参数<strong>T</strong>。<br>因此<strong>MyAllocList<T>::type</T></strong>是一个依赖类型，在C++很多讨人喜欢的规则中的一个提到必须要在依赖类型名前加上<strong>typename</strong>。<br>如果使用别名声明定义一个<strong>MyAllocList</strong>，就不需要使用<strong>typename</strong>（同时省略麻烦的<b>::type</b>后缀），</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">using</span> MyAllocList = std::list&lt;T, MyAlloc&lt;T&gt;&gt;;  <span class="comment">// as before</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123; </span><br><span class="line"><span class="keyword">private</span>:  </span><br><span class="line">    MyAllocList&lt;T&gt; list;                    </span><br><span class="line">     …                                            </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>对你来说，<strong>MyAllocList<T><strong>（使用了模板别名声明的版本）可能看起来和</strong>MyAllocList<T>::type</T></T></strong>（使用<strong>typedef</strong>的版本）一样都应该依赖模板参数<strong>T</strong>，但是你不是编译器。<br>当编译器处理<strong>Widget</strong>模板时遇到<strong>MyAllocList<T><strong>（使用模板别名声明的版本），它们知道</strong>MyAllocList<T><strong>是一个类型名，<br>因为</strong>MyAllocList</T></T></strong>是一个别名模板。它一定是一个类型名。因此<strong>MyAllocList<T><strong>就是一个非依赖类型，就不要求必须使用</strong>typename</T></strong>。</p>
+<p>当编译器在<strong>Widget</strong>的模板中看到<strong>MyAllocList<T>::type</T></strong>（使用<strong>typedef</strong>的版本），它不能确定那是一个类型的名称。<br>因为可能存在<strong>MyAllocList</strong>的一个特化版本没有<strong>MyAllocList<T>::type</T></strong>。<br>那听起来很不可思议，但不要责备编译器穷尽考虑所有可能。<br>举个例子，一个误入歧途的人可能写出这样的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Wine</span> &#123; … &#125;;</span><br><span class="line"><span class="keyword">template</span>&lt;&gt;                       <span class="comment">// 当T是Wine</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyAllocList</span>&lt;Wine&gt; &#123;        <span class="comment">// 特化MyAllocList</span></span><br><span class="line"><span class="keyword">private</span>:  </span><br><span class="line">    <span class="keyword">enum class</span> <span class="title class_">WineType</span>            <span class="comment">// 参见Item10了解  </span></span><br><span class="line">    &#123; White, Red, Rose &#125;;          <span class="comment">// &quot;enum class&quot;</span></span><br><span class="line">    WineType type;                 <span class="comment">// 在这个类中，type是</span></span><br><span class="line">    …                              <span class="comment">// 一个数据成员！</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>就像你看到的，<strong>MyAllocList<Wine>::type</Wine></strong>不是一个类型。<br>如果<strong>Widget</strong>使用<strong>Wine</strong>实例化，在<strong>Widget</strong>模板中的<strong>MyAllocList<Wine>::type</Wine></strong>将会是一个数据成员，不是一个类型。<br>在<strong>Widget</strong>模板内，如果<strong>MyAllocList<Wine>::type</Wine></strong>表示的类型依赖于<strong>T</strong>，编译器就会坚持要求你在前面加上<strong>typename</strong>。</p>
+<p>如果你尝试过模板元编程（TMP）， 你一定会碰到取模板类型参数然后基于它创建另一种类型的情况。<br>举个例子，给一个类型<strong>T</strong>，如果你想去掉<strong>T</strong>的常量修饰和引用修饰，比如你想把<strong>const std::string&amp;<strong>变成</strong>const std::string</strong>。<br>又或者你想给一个类型加上<strong>const</strong>或左值引用，比如把<strong>Widget</strong>变成<strong>const Widget</strong>或<strong>Widget&amp;<strong>。<br>（如果你没有用过玩过模板元编程，太遗憾了，因为如果你真的想成为一个高效C++程序员 _[1]_，至少你需要熟悉C++的基础。你可以看看我在Item23，27提到的类型转换）。<br>C++11在<em>type traits</em>中给了你一系列工具去实现类型转换，如果要使用这些模板请包含头文件<b><type_traits></type_traits></b>。<br>里面不全是类型转换的工具，也包含一些<code>predictable</code>接口的工具。给一个类型</strong>T</strong>，你想将它应用于转换中，结果类型就是<strong>std::transformation&lt;T&gt;::type</strong>，比如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::remove_const&lt;T&gt;::type           <span class="comment">// 从const T中产出T</span></span><br><span class="line">std::remove_reference&lt;T&gt;::type       <span class="comment">// 从T&amp;和T&amp;&amp;中产出T</span></span><br><span class="line">std::add_lvalue_reference&lt;T&gt;::type   <span class="comment">// 从T中产出T&amp;</span></span><br></pre></td></tr></table></figure>
+<p>注释仅仅简单的总结了类型转换做了什么，所以不要太随便的使用。<br>在你的项目使用它们之前，你最好看看它们的详细说明书。<br>尽管写了一些，但我这里不是想给你一个关于type traits使用的教程。注意类型转换尾部的<b>::type</b>。<br>如果你在一个模板内部使用类型参数，你也需要在它们前面加上<strong>typename</strong>。<br>至于为什么要这么做是因为这些type traits是通过在<strong>struct</strong>内嵌套<strong>typedef</strong>来实现的。<br>是的，它们使用类型别名 <em>[2]</em> 技术实现，而正如我之前所说这比别名声明要差。</p>
+<p>关于为什么这么实现是有历史原因的，但是我们跳过它（我认为太无聊了），因为标准委员会没有及时认识到别名声明是更好的选择，所以直到C++14它们才提供了使用别名声明的版本。<br>这些别名声明有一个通用形式：对于C++11的类型转换<strong>std::transformation<T>::type</T></strong>在C++14中变成了**std::transformation_t.**。<br>举个例子或许更容易理解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">std::remove_const&lt;T&gt;::type           <span class="comment">// C++11: const T → T </span></span><br><span class="line">std::<span class="type">remove_const_t</span>&lt;T&gt;               <span class="comment">// C++14 等价形式</span></span><br><span class="line"></span><br><span class="line">std::remove_reference&lt;T&gt;::type       <span class="comment">// C++11: T&amp;/T&amp;&amp; → T </span></span><br><span class="line">std::<span class="type">remove_reference_t</span>&lt;T&gt;           <span class="comment">// C++14 等价形式</span></span><br><span class="line"></span><br><span class="line">std::add_lvalue_reference&lt;T&gt;::type   <span class="comment">// C++11: T → T&amp; </span></span><br><span class="line">std::<span class="type">add_lvalue_reference_t</span>&lt;T&gt;       <span class="comment">// C++14 等价形式</span></span><br></pre></td></tr></table></figure>
+<p>C++11的的形式在C++14中也有效，但是我不能理解为什么你要去用它们。<br>就算你没有使用C++14，使用别名模板也是小儿科<br>只需要C++11，甚至每个小孩都能仿写。<br>对吧？如果你有一份C++14标准，就更简单了，只需要复制粘贴：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt; </span><br><span class="line"><span class="keyword">using</span> <span class="type">remove_const_t</span> = <span class="keyword">typename</span> remove_const&lt;T&gt;::type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt; </span><br><span class="line"><span class="keyword">using</span> <span class="type">remove_reference_t</span> = <span class="keyword">typename</span> remove_reference&lt;T&gt;::type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt; </span><br><span class="line"><span class="keyword">using</span> <span class="type">add_lvalue_reference_t</span> =  <span class="keyword">typename</span> add_lvalue_reference&lt;T&gt;::type; </span><br></pre></td></tr></table></figure>
+<p>看见了吧？不能再简单了。</p>
+<p><strong>记住</strong></p>
+<ul>
+<li>typedef不支持模板化，但是别名声明支持。</li>
+<li>别名模板避免了使用”<b>::type</b>“后缀，而且在模板中使用<strong>typedef</strong>还需要在前面加上<strong>typename</strong></li>
+<li>C++14提供了C++11所有类型转换的别名声明版本</li>
+</ul>
+<h2 id="译注"><a href="#译注" class="headerlink" title="译注"></a>译注</h2><p>[0] 即FP</p>
+<p>[1] 哈，这大概是作为《Modern C++ Design -Generic Programming and Design Pattern Applied》的作者的Scott Meyes才能说出的话。</p>
+<p>[2] 作者所言的类型别名是泛指typedef和using语法进行的别名操作，根据上下文这里的类型别名指的是使用typedef</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/06/29/item9/">https://cityfire.github.io/2023/06/29/item9/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/06/29/item10/" title="使用现代C++ 条款10:优先考虑限域枚举而非未限域枚举"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">使用现代C++ 条款10:优先考虑限域枚举而非未限域枚举</div></div></a></div><div class="next-post pull-right"><a href="/2023/06/29/item7/" title="使用现代C++ 条款7:区别使用()和{}创建对象"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用现代C++ 条款7:区别使用()和{}创建对象</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Item-9-Prefer-alias-declarations-to-typedefs"><span class="toc-number">1.</span> <span class="toc-text">Item 9:Prefer alias declarations to typedefs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%91%E6%B3%A8"><span class="toc-number">2.</span> <span class="toc-text">译注</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

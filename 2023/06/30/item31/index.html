@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Lambda表达式 条款31:避免默认的参数捕捉 | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Lambda表达式是C++编程中的游戏规则改变者。这有点令人惊讶，因为它没有给语言带来新的表达能力。Lambda可以做的所有事情都可以通过其他方式完成。但是lambda是创建函数对象相当便捷的一种方法，对于日常的C++开发影响是巨大的。没有lambda时，标准库中的_if算法（比如，std::find_if, std::remove_if, std::count_if等）通常需要繁琐的谓词，但是当">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lambda表达式 条款31:避免默认的参数捕捉">
+<meta property="og:url" content="https://cityfire.github.io/2023/06/30/item31/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="Lambda表达式是C++编程中的游戏规则改变者。这有点令人惊讶，因为它没有给语言带来新的表达能力。Lambda可以做的所有事情都可以通过其他方式完成。但是lambda是创建函数对象相当便捷的一种方法，对于日常的C++开发影响是巨大的。没有lambda时，标准库中的_if算法（比如，std::find_if, std::remove_if, std::count_if等）通常需要繁琐的谓词，但是当">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-06-30T09:03:34.000Z">
+<meta property="article:modified_time" content="2023-06-30T09:03:34.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/06/30/item31/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Lambda表达式 条款31:避免默认的参数捕捉',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-30 17:03:34'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Lambda表达式 条款31:避免默认的参数捕捉</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-30T09:03:34.000Z" title="发表于 2023-06-30 17:03:34">2023-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-30T09:03:34.000Z" title="更新于 2023-06-30 17:03:34">2023-06-30</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Lambda表达式 条款31:避免默认的参数捕捉"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>Lambda表达式是C++编程中的游戏规则改变者。这有点令人惊讶，因为它没有给语言带来新的表达能力。Lambda可以做的所有事情都可以通过其他方式完成。但是lambda是创建函数对象相当便捷的一种方法，对于日常的C++开发影响是巨大的。没有lambda时，标准库中的<code>_if</code>算法（比如，<code>std::find_if, std::remove_if, std::count_if</code>等）通常需要繁琐的谓词，但是当有lambda可用时，这些算法使用起来就变得相当方便。比较函数（比如，<code>std::sort, std::nth_element, std::lower_bound</code>等）与算法函数也是相同的。在标准库外，lambda可以快速创建<code>std::unique_ptr</code>和<code>std::shared_ptr</code>的自定义<code>deleter</code>，并且使线程API中条件变量的条件设置变得同样简单（参见Item 39）。除了标准库，lambda有利于即时的回调函数，接口适配函数和特定上下文中的一次性函数。Lambda确实使C++成为更令人愉快的编程语言。</p>
+<p>与Lambda相关的词汇可能会令人疑惑，这里做一下简单的回顾：</p>
+<ul>
+<li><p><em>lambda表达式就是一个表达式</em>。在代码的高亮部分就是lambda</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::<span class="built_in">find_if</span>(container.<span class="built_in">begin</span>(), container.<span class="built_in">end</span>(),</span><br><span class="line">            [](<span class="type">int</span> val)&#123; <span class="keyword">return</span> <span class="number">0</span> &lt; val &amp;&amp; val &lt; <span class="number">10</span>; &#125;); <span class="comment">// 本行高亮</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><em>闭包</em>是lambda创建的运行时对象。依赖捕获模式，闭包持有捕获数据的副本或者引用。在上面的<code>std::find_if</code>调用中，闭包是运行时传递给&#96;&#96;std::find_if&#96;第三个参数。</p>
+</li>
+<li><p><em>闭包类（closure class）</em>是从中实例化闭包的类。每个lambda都会使编译器生成唯一的闭包类。Lambda中的语句成为其闭包类的成员函数中的可执行指令。</p>
+</li>
+</ul>
+<p>Lambda通常被用来创建闭包，该闭包仅用作函数的参数。上面对<code>std::find_if</code>的调用就是这种情况。然而，闭包通常可以拷贝，所以可能有多个闭包对应于一个lambda。比如下面的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> x; <span class="comment">// x is local variable</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">auto</span> c1 = [x](<span class="type">int</span> y) &#123; <span class="keyword">return</span> x * y &gt; <span class="number">55</span>; &#125;; <span class="comment">// c1 is copy of the closure produced by the lambda</span></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">auto</span> c2 = c1; <span class="comment">// c2 is copy of c1</span></span><br><span class="line">  <span class="keyword">auto</span> c3 = c2; <span class="comment">// c3 is copy of c2</span></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>c1， c2，c3都是lambda产生的闭包的副本。</p>
+<p>非正式的讲，模糊lambda，闭包和闭包类之间的界限是可以接受的。但是，在随后的Item中，区分编译期（lambdas 和 closure classes）还是运行时（closures）以及它们之间的相互关系是重要的。</p>
+<h1 id="避免使用默认捕获模式"><a href="#避免使用默认捕获模式" class="headerlink" title="避免使用默认捕获模式"></a>避免使用默认捕获模式</h1><p>C++11中有两种默认的捕获模式：按引用捕获和按值捕获。但按引用捕获可能会带来悬空引用的问题，而按值引用可能会诱骗你让你以为能解决悬空引用的问题（实际上并没有），还会让你以为你的闭包是独立的（事实上也不是独立的）。</p>
+<p>这就是本条目的一个总结。如果你是一个工程师，渴望了解更多内容，就让我们从按引用捕获的危害谈起把。</p>
+<p>按引用捕获会导致闭包中包含了对局部变量或者某个形参（位于定义lambda的作用域）的引用，如果该lambda创建的闭包生命周期超过了局部变量或者参数的生命周期，那么闭包中的引用将会变成悬空引用。举个例子，假如我们有一个元素是过滤函数的容器，该函数接受一个int作为参数，并返回一个布尔值，该布尔值的结果表示传入的值是否满足过滤条件。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> FilterContainer =                  <span class="comment">// see Item 9 for</span></span><br><span class="line">	std::vector&lt;std::function&lt;<span class="built_in">bool</span>(<span class="type">int</span>)&gt;&gt;; <span class="comment">// &quot;using&quot;, Item 2</span></span><br><span class="line">                                         <span class="comment">// for std::function</span></span><br><span class="line">FilterContainer filters;                 <span class="comment">// filtering funcs</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以添加一个过滤器，用来过滤掉5的倍数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">filters.<span class="built_in">emplace_back</span>(                      <span class="comment">// see Item 42 for</span></span><br><span class="line">	[](<span class="type">int</span> value) &#123; <span class="keyword">return</span> value % <span class="number">5</span> == <span class="number">0</span>; &#125; <span class="comment">// info on</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>然而我们可能需要的是能够在运行期获得被除数，而不是将5硬编码到lambda中。因此添加的过滤器逻辑将会是如下这样：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">addDivisorFilter</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> calc1 = <span class="built_in">computeSomeValue1</span>();</span><br><span class="line">    <span class="keyword">auto</span> calc2 = <span class="built_in">computeSomeValue2</span>();</span><br><span class="line">    <span class="keyword">auto</span> divisor = <span class="built_in">computeDivisor</span>(calc1, calc2);</span><br><span class="line">    filters.<span class="built_in">emplace_back</span>( 							                <span class="comment">// danger!</span></span><br><span class="line">    	[&amp;](<span class="type">int</span> value) &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125;   <span class="comment">// ref to</span></span><br><span class="line">    ); 												                          <span class="comment">// divisor</span></span><br><span class="line">&#125; 													                            <span class="comment">// will</span></span><br><span class="line"> 													                              <span class="comment">// dangle!</span></span><br></pre></td></tr></table></figure>
+
+<p>这个代码实现是一个定时炸弹。lambda对局部变量divisor进行了引用，但该变量的生命周期会在addDivisorFilter返回时结束，刚好就是在语句filters.emplace_back返回之后，因此该函数的本质就是容器添加完，该函数就死亡了。使用这个filter会导致未定义行为，这是由它被创建那一刻起就决定了的。</p>
+<p>现在，同样的问题也会出现在divisor的显式按引用捕获。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">    [&amp;divisor](<span class="type">int</span> value) 			<span class="comment">// danger! ref to</span></span><br><span class="line">    &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125; <span class="comment">// divisor will</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>但通过显式的捕获，能更容易看到lambda的可行性依赖于变量divisor的生命周期。另外，写成这种形式能够提醒我们要注意确保divisor的生命周期至少跟lambda闭包一样长。比起”[&amp;]”传达的意思，显式捕获能让人更容易想起“确保没有悬空变量”。</p>
+<p>如果你知道一个闭包将会被马上使用（例如被传入到一个stl算法中）并且不会被拷贝，那么在lambda环境中使用引用捕获将不会有风险。在这种情况下，你可能会争论说，没有悬空引用的危险，就不需要避免使用默认的引用捕获模式。例如，我们的过滤lambda只会用做C++11中std::all_of的一个参数，返回满足条件的所有元素：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> C&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">workWithContainer</span><span class="params">(<span class="type">const</span> C&amp; container)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> calc1 = <span class="built_in">computeSomeValue1</span>(); 			<span class="comment">// as above</span></span><br><span class="line">    <span class="keyword">auto</span> calc2 = <span class="built_in">computeSomeValue2</span>(); 			<span class="comment">// as above</span></span><br><span class="line">    <span class="keyword">auto</span> divisor = <span class="built_in">computeDivisor</span>(calc1, calc2); <span class="comment">// as above</span></span><br><span class="line">    <span class="keyword">using</span> ContElemT = <span class="keyword">typename</span> C::value_type; 	 <span class="comment">// type of</span></span><br><span class="line">                                                 <span class="comment">// elements in</span></span><br><span class="line">                                                 <span class="comment">// container</span></span><br><span class="line">    <span class="keyword">using</span> std::begin;       				   <span class="comment">// for</span></span><br><span class="line">    <span class="keyword">using</span> std::end; 						  <span class="comment">// genericity;</span></span><br><span class="line">    										<span class="comment">// see Item 13</span></span><br><span class="line">    <span class="keyword">if</span> (std::<span class="built_in">all_of</span>( 						  <span class="comment">// if all values</span></span><br><span class="line">        <span class="built_in">begin</span>(container), <span class="built_in">end</span>(container), 		<span class="comment">// in container</span></span><br><span class="line">        [&amp;](<span class="type">const</span> ContElemT&amp; value) 			<span class="comment">// are multiples</span></span><br><span class="line">        &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125;) 	     <span class="comment">// of divisor...</span></span><br><span class="line">    ) &#123;</span><br><span class="line">    	… 									  <span class="comment">// they are...</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	… 									  <span class="comment">// at least one</span></span><br><span class="line">    &#125; 										  <span class="comment">// isn&#x27;t...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>的确如此，这是安全的做法，但这种安全是不确定的。如果发现lambda在其它上下文中很有用（例如作为一个函数被添加在filters容器中），然后拷贝粘贴到一个divisor变量已经死亡的，但闭包生命周期还没结束的上下文中，你又回到了悬空的使用上了。同时，在该捕获语句中，也没有特别提醒了你注意分析divisor的生命周期。</p>
+<p>从长期来看，使用显式的局部变量和参数引用捕获方式，是更加符合软件工程规范的做法。</p>
+<p>额外提一下，C++14支持了在lambda中使用auto来声明变量，上面的代码在C++14中可以进一步简化，ContElemT的别名可以去掉，if条件可以修改为：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (std::<span class="built_in">all_of</span>(<span class="built_in">begin</span>(container), <span class="built_in">end</span>(container),</span><br><span class="line">			   [&amp;](<span class="type">const</span> <span class="keyword">auto</span>&amp; value) <span class="comment">// C++14</span></span><br><span class="line">			   &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125;))			</span><br></pre></td></tr></table></figure>
+
+<p>一个解决问题的方法是，divisor按值捕获进去，也就是说可以按照以下方式来添加lambda：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filters.<span class="built_in">emplace_back</span>( 							  <span class="comment">// now</span></span><br><span class="line">	[=](<span class="type">int</span> value) &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125; <span class="comment">// divisor</span></span><br><span class="line">); 												<span class="comment">// can&#x27;t</span></span><br><span class="line">												<span class="comment">// dangle</span></span><br></pre></td></tr></table></figure>
+
+<p>这足以满足本实例的要求，但在通常情况下，按值捕获并不能完全解决悬空引用的问题。这里的问题是如果你按值捕获的是一个指针，你将该指针拷贝到lambda对应的闭包里，但这样并不能避免lambda外删除指针的行为，从而导致你的指针变成悬空指针。</p>
+<p>也许你要抗议说：“这不可能发生。看过了第四章，我对智能指针的使用非常热衷。只有那些失败的C++98的程序员才会用裸指针和delete语句。”这也许是正确的，但却是不相关的，因为事实上你的确会使用裸指针，也的确存在被你删除的可能性。只不过在现代的C++编程风格中，不容易在源代码中显露出来而已。</p>
+<p>假设在一个Widget类，可以实现向过滤容器添加条目：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	…					  <span class="comment">// ctors, etc.</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">addFilter</span><span class="params">()</span> <span class="type">const</span></span>; <span class="comment">// add an entry to filters</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="type">int</span> divisor;    	    <span class="comment">// used in Widget&#x27;s filter</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这是Widget::addFilter的定义：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">		[=](<span class="type">int</span> value) &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125;</span><br><span class="line">	);</span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+
+<p>这个做法看起来是安全的代码，lambda依赖于变量divisor，但默认的按值捕获被拷贝进了lambda对应的所有比保重，这真的正确吗？</p>
+<p>错误，完全错误。</p>
+<p>闭包只会对lambda被创建时所在作用域里的非静态局部变量生效。在Widget::addFilter()的视线里，divisor并不是一个局部变量，而是Widget类的一个成员变量。它不能被捕获。如果默认捕获模式被删除，代码就不能编译了：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	filters.<span class="built_in">emplace_back</span>( 							  <span class="comment">// error!</span></span><br><span class="line">		[](<span class="type">int</span> value) &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125;  <span class="comment">// divisor</span></span><br><span class="line">	); 												<span class="comment">// not</span></span><br><span class="line">&#125; 													<span class="comment">// available	</span></span><br></pre></td></tr></table></figure>
+
+<p>另外，如果尝试去显式地按引用或者按值捕获divisor变量，也一样会编译失败，因为divisor不是这里的一个局部变量或者参数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">      [divisor](<span class="type">int</span> value)   		  <span class="comment">// error! no local</span></span><br><span class="line">      &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125; <span class="comment">// divisor to capture</span></span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此这里的默认按值捕获并不是不会变量divisor，但它的确能够编译通过，这是怎么一回事呢？</p>
+<p>解释就是这里隐式捕获了this指针。每一个非静态成员函数都有一个this指针，每次你使用一个类内的成员时都会使用到这个指针。例如，编译器会在内部将divisor替换成this-&gt;divisor。这里Widget::addFilter()的版本就是按值捕获了this。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">      [=](<span class="type">int</span> value) &#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125;</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>真正被捕获的是Widget的this指针。编译器会将上面的代码看成以下的写法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> currentObjectPtr = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">      [currentObjectPtr](<span class="type">int</span> value)</span><br><span class="line">      &#123; <span class="keyword">return</span> value % currentObject-&gt;divisor == <span class="number">0</span>; &#125;</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>明白了这个就相当于明白了lambda闭包的生命周期与Widget对象的关系，闭包内含有Widget的this指针的拷贝。特别是考虑以下的代码，再参考一下第四章的内容，只使用智能指针：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> FilterContainer = 					<span class="comment">// as before</span></span><br><span class="line">	std::vector&lt;std::function&lt;<span class="built_in">bool</span>(<span class="type">int</span>)&gt;&gt;;</span><br><span class="line">FilterContainer filters; 					<span class="comment">// as before</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomeWork</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">auto</span> pw = 						   <span class="comment">// create Widget; see</span></span><br><span class="line">		std::<span class="built_in">make_unique</span>&lt;Widget&gt;(); 	<span class="comment">// Item 21 for</span></span><br><span class="line">									  <span class="comment">// std::make_unique</span></span><br><span class="line">	pw-&gt;<span class="built_in">addFilter</span>(); 				   <span class="comment">// add filter that uses</span></span><br><span class="line">									  <span class="comment">// Widget::divisor</span></span><br><span class="line">	…</span><br><span class="line">&#125; 									  <span class="comment">// destroy Widget; filters</span></span><br><span class="line"> 									  <span class="comment">// now holds dangling pointer!</span></span><br></pre></td></tr></table></figure>
+
+<p>当调用doSomeWork时，就会创建一个过滤器，其生命周期依赖于由std::make_unique管理的Widget对象。即一个含有Widget this指针的过滤器。这个过滤器被添加到filters中，但当doSomeWork结束时，Widget会由std::unique_ptr去结束其生命。从这时起，filter会含有一个悬空指针。</p>
+<p>这个特定的问题可以通过做一个局部拷贝去解决：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">auto</span> divisorCopy = divisor; 			<span class="comment">// copy data member</span></span><br><span class="line">	filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">		[divisorCopy](<span class="type">int</span> value) 			<span class="comment">// capture the copy</span></span><br><span class="line">		&#123; <span class="keyword">return</span> value % divisorCopy == <span class="number">0</span>; &#125; <span class="comment">// use the copy</span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>事实上如果采用这种方法，默认的按值捕获也是可行的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">auto</span> divisorCopy = divisor; 			<span class="comment">// copy data member</span></span><br><span class="line">	filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">		[=](<span class="type">int</span> value) 					   <span class="comment">// capture the copy</span></span><br><span class="line">		&#123; <span class="keyword">return</span> value % divisorCopy == <span class="number">0</span>; &#125; <span class="comment">// use the copy</span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但为什么要冒险呢？当你一开始捕获divisor的时候，默认的捕获模式就会自动将this指针捕获进来了。</p>
+<p>在C++14中，一个更好的捕获成员变量的方式时使用通用的lambda捕获：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Widget::addFilter</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	filters.<span class="built_in">emplace_back</span>( 				<span class="comment">// C++14:</span></span><br><span class="line">		[divisor = divisor](<span class="type">int</span> value)   <span class="comment">// copy divisor to closure</span></span><br><span class="line">		&#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125; <span class="comment">// use the copy</span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种通用的lambda捕获并没有默认的捕获模式，因此在C++14中，避免使用默认捕获模式的建议仍然时成立的。</p>
+<p>使用默认的按值捕获还有另外的一个缺点，它们预示了相关的闭包是独立的并且不受外部数据变化的影响。一般来说，这是不对的。lambda并不会独立于局部变量和参数，但也没有不受静态存储生命周期的影响。一个定义在全局空间或者指定命名空间的全局变量，或者是一个声明为static的类内或文件内的成员。这些对象也能在lambda里使用，但它们不能被捕获。但按值引用可能会因此误导你，让你以为捕获了这些变量。参考下面版本的addDivisorFilter()函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">addDivisorFilter</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">static</span> <span class="keyword">auto</span> calc1 = <span class="built_in">computeSomeValue1</span>(); <span class="comment">// now static</span></span><br><span class="line">	<span class="type">static</span> <span class="keyword">auto</span> calc2 = <span class="built_in">computeSomeValue2</span>(); <span class="comment">// now static</span></span><br><span class="line">	<span class="type">static</span> <span class="keyword">auto</span> divisor = 					<span class="comment">// now static</span></span><br><span class="line">	<span class="built_in">computeDivisor</span>(calc1, calc2);</span><br><span class="line">	filters.<span class="built_in">emplace_back</span>(</span><br><span class="line">		[=](<span class="type">int</span> value) 						<span class="comment">// captures nothing!</span></span><br><span class="line">		&#123; <span class="keyword">return</span> value % divisor == <span class="number">0</span>; &#125; 	  <span class="comment">// refers to above static</span></span><br><span class="line">	);</span><br><span class="line">	++divisor;  							<span class="comment">// modify divisor</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随意地看了这份代码的读者可能看到”[&#x3D;]”，就会认为“好的，lambda拷贝了所有使用的对象，因此这是独立的”。但上面的例子就表现了不独立闭包的一种情况。它没有使用任何的非static局部变量和形参，所以它没有捕获任何东西。然而lambda的代码引用了静态变量divisor，任何lambda被添加到filters之后，divisor都会递增。通过这个函数，会把许多lambda都添加到filiters里，但每一个lambda的行为都是新的（分别对应新的divisor值）。这个lambda是通过引用捕获divisor，这和默认的按值捕获表示的含义有着直接的矛盾。如果你一开始就避免使用默认的按值捕获模式，你就能解除代码的风险。</p>
+<h2 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h2><ul>
+<li>默认的按引用捕获可能会导致悬空引用；</li>
+<li>默认的按值引用对于悬空指针很敏感（尤其是this指针），并且它会误导人产生lambda是独立的想法；</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/06/30/item31/">https://cityfire.github.io/2023/06/30/item31/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/06/30/item30/" title="右值引用、移动语义和完美转发 条款30:熟悉完美转发的失败case"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">右值引用、移动语义和完美转发 条款30:熟悉完美转发的失败case</div></div></a></div><div class="next-post pull-right"><a href="/2023/06/30/item32/" title="Lambda表达式 条款32:使用初始化捕获来移动对象到闭包中"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Lambda表达式 条款32:使用初始化捕获来移动对象到闭包中</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4%E6%8D%95%E8%8E%B7%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">避免使用默认捕获模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.1.</span> <span class="toc-text">建议</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

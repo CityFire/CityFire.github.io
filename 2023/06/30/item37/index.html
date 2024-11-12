@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>并发API 条款37:使得std::thread在所有的路径下无法join | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Item 37：Make std::threads unjoinable on all paths每个std::thread对象处于两个状态之一：joinable or unjoinable。joinable状态的std::thread对应于正在运行或者可能正在运行的异步执行线程。比如，一个blocked或者等待调度的std::thread是joinable，已运行结束的std::thread也可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发API 条款37:使得std::thread在所有的路径下无法join">
+<meta property="og:url" content="https://cityfire.github.io/2023/06/30/item37/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="Item 37：Make std::threads unjoinable on all paths每个std::thread对象处于两个状态之一：joinable or unjoinable。joinable状态的std::thread对应于正在运行或者可能正在运行的异步执行线程。比如，一个blocked或者等待调度的std::thread是joinable，已运行结束的std::thread也可">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-06-30T08:49:41.000Z">
+<meta property="article:modified_time" content="2023-06-30T08:49:41.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/06/30/item37/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '并发API 条款37:使得std::thread在所有的路径下无法join',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-30 16:49:41'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">并发API 条款37:使得std::thread在所有的路径下无法join</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-30T08:49:41.000Z" title="发表于 2023-06-30 16:49:41">2023-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-30T08:49:41.000Z" title="更新于 2023-06-30 16:49:41">2023-06-30</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="并发API 条款37:使得std::thread在所有的路径下无法join"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Item-37：Make-std-threads-unjoinable-on-all-paths"><a href="#Item-37：Make-std-threads-unjoinable-on-all-paths" class="headerlink" title="Item 37：Make std::threads unjoinable on all paths"></a>Item 37：Make <code>std::threads</code> unjoinable on all paths</h2><p>每个<code>std::thread</code>对象处于两个状态之一：<em>joinable or unjoinable</em>。<em>joinable</em>状态的<code>std::thread</code>对应于正在运行或者可能正在运行的异步执行线程。比如，一个blocked或者等待调度的<code>std::thread</code>是<em>joinable</em>，已运行结束的<code>std::thread</code>也可以认为是<em>joinable</em></p>
+<p><em>unjoinable</em>的<code>std::thread</code>对象比如：</p>
+<ul>
+<li><strong>Default-constructed std::threads</strong>。这种<code>std::thread</code>没有函数执行，因此无法绑定到具体的线程上</li>
+<li><strong>已经被moved的<code>std::thread</code>对象</strong>。move的结果就是将<code>std::thread</code>对应的线程所有权转移给另一个<code>std::thread</code></li>
+<li>**已经joined的<code>std::thread</code>**。在join之后，<code>std::thread</code>执行结束，不再对应于具体的线程</li>
+<li>**已经detached的<code>std::thread</code>**。detach断开了<code>std::thread</code>与线程之间的连接</li>
+</ul>
+<p>（译者注：<code>std::thread</code>可以视作状态保存的对象，保存的状态可能也包括可调用对象，有没有具体的线程承载就是有没有连接）</p>
+<p><code>std::thread</code>的可连接性如此重要的原因之一就是当连接状态的析构函数被调用，执行逻辑被终止。比如，假定有一个函数<code>doWork</code>，执行过滤函数<code>filter</code>，接收一个参数<code>maxVal</code>。<code>doWork</code>检查是否满足计算所需的条件，然后通过使用0到maxVal之间的所有值过滤计算。如果进行过滤非常耗时，并且确定doWork条件是否满足也很耗时，则将两件事并发计算是很合理的。</p>
+<p>我们希望为此采用基于任务的设计（参与Item 35），但是假设我们希望设置做过滤线程的优先级。Item 35阐释了需要线程的基本句柄，只能通过<code>std::thread</code>的API来完成；基于任务的API（比如futures）做不到。所以最终采用基于<code>std::thread</code>而不是基于任务</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> tenMillion = <span class="number">10000000</span>; <span class="comment">// see Item 15 for constexpr</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">doWork</span><span class="params">(std::function&lt;<span class="type">bool</span>(<span class="type">int</span>)&gt; filter, <span class="type">int</span> maxVal = tenMillion)</span> <span class="comment">// return whether computation was performed; see Item2 for std::function</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  std::vector&lt;<span class="type">int</span>&gt; goodVals;</span><br><span class="line">  <span class="function">std::thread <span class="title">t</span><span class="params">([&amp;filter, maxVal, &amp;goodVals]</span></span></span><br><span class="line"><span class="params"><span class="function">                &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="keyword">for</span> (<span class="keyword">auto</span> i = <span class="number">0</span>; i &lt;= maxVal; ++i) </span></span></span><br><span class="line"><span class="params"><span class="function">                  &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">                    <span class="keyword">if</span> (filter(i)) goodVals.push_back(i);</span></span></span><br><span class="line"><span class="params"><span class="function">                  &#125;</span></span></span><br><span class="line"><span class="params"><span class="function">                &#125;)</span></span>;</span><br><span class="line">  <span class="keyword">auto</span> nh = t.<span class="built_in">native_handle</span>(); <span class="comment">// use t&#x27;s native handle to set t&#x27;s priority</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">conditionsAreStatisfied</span>()) &#123;</span><br><span class="line">    t.<span class="built_in">join</span>(); <span class="comment">// let t finish </span></span><br><span class="line">    <span class="built_in">performComputation</span>(goodVals); <span class="comment">// computation was performed</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">// computation was not performed</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在解释这份代码为什么有问题之前，看一下tenMillion的初始化可以在C++14中更加易读，通过单引号分隔数字：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> tenMillion = <span class="number">10&#x27;000&#x27;000</span>; <span class="comment">// C++14</span></span><br></pre></td></tr></table></figure>
+
+<p>还要指出，在开始运行之后设置t的优先级就像把马放出去之后再关上马厩门一样（译者注：太晚了）。更好的设计是在t为挂起状态时设置优先级（这样可以在执行任何计算前调整优先级），但是我不想你为这份代码考虑这个而分心。如果你感兴趣代码中忽略的部分，可以转到Item 39，那个Item告诉你如何以挂起状态开始线程。</p>
+<p>返回<code>doWork</code>。如果<code>conditionsAreSatisfied()</code>返回真，没什么问题，但是如果返回假或者抛出异常，<code>std::thread</code>类型的<code>t</code>在<code>doWork</code>结束时会调用<code>t</code>的析构器。这造成程序执行中止。</p>
+<p>你可能会想，为什么<code>std::thread</code>析构的行为是这样的，那是因为另外两种显而易见的方式更糟：</p>
+<ul>
+<li><p><strong>隐式join</strong>。这种情况下，<code>std::thread</code>的析构函数将等待其底层的异步执行线程完成。这听起来是合理的，但是可能会导致性能异常，而且难以追踪。比如，如果<code>conditonAreStatisfied()</code>已经返回了假，<code>doWork</code>继续等待过滤器应用于所有值就很违反直觉。</p>
+</li>
+<li><p><strong>隐式detach</strong>。这种情况下，<code>std::thread</code>析构函数会分离其底层的线程。线程继续运行。听起来比join的方式好，但是可能导致更严重的调试问题。比如，在<code>doWork</code>中，<code>goodVals</code>是通过引用捕获的局部变量。可能会被lambda修改。假定，lambda的执行时异步的，<code>conditionsAreStatisfied()</code>返回假。这时，<code>doWork</code>返回，同时局部变量<code>goodVals</code>被销毁。堆栈被弹出，并在<code>doWork</code>的调用点继续执行线程</p>
+<p>某个调用点之后的语句有时会进行其他函数调用，并且至少一个这样的调用可能会占用曾经被<code>doWork</code>使用的堆栈位置。我们称为<code>f</code>，当<code>f</code>运行时，<code>doWork</code>启动的lambda仍在继续运行。该lambda可以在堆栈内存中调用<code>push_back</code>，该内存曾是<code>goodVals</code>，位于<code>doWork</code>曾经的堆栈位置。这意味着对<code>f</code>来说，内存被修改了，想象一下调试的时候痛苦</p>
+</li>
+</ul>
+<p>标准委员会认为，销毁连接中的线程如此可怕以至于实际上禁止了它（通过指定销毁连接中的线程导致程序终止）</p>
+<p>这使你有责任确保使用<code>std::thread</code>对象时，在所有的路径上最终都是unjoinable的。但是覆盖每条路径可能很复杂，可能包括<code>return, continue, break, goto or exception</code>，有太多可能的路径。</p>
+<p>每当你想每条路径的块之外执行某种操作，最通用的方式就是将该操作放入本地对象的析构函数中。这些对象称为RAII对象，通过RAII类来实例化。（RAII全称为 Resource Acquisition Is Initialization）。RAII类在标准库中很常见。比如STL容器，智能指针，<code>std::fstream</code>类等。但是标准库没有RAII的<code>std::thread</code>类，可能是因为标准委员会拒绝将<code>join和detach</code>作为默认选项，不知道应该怎么样完成RAII。</p>
+<p>幸运的是，完成自行实现的类并不难。比如，下面的类实现允许调用者指定析构函数<code>join或者detach</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ThreadRAII</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">enum class</span> <span class="title class_">DtorAction</span>&#123; join, detach &#125;; <span class="comment">// see Item 10 for enum class info</span></span><br><span class="line">  <span class="built_in">ThreadRAII</span>(std::thread&amp;&amp; t, DtorAction a): <span class="built_in">action</span>(a), <span class="built_in">t</span>(std::<span class="built_in">move</span>(t)) &#123;&#125; <span class="comment">// in dtor, take action a on t</span></span><br><span class="line">  ~<span class="built_in">ThreadRAII</span>() </span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> (t.<span class="built_in">joinable</span>()) &#123;</span><br><span class="line">      <span class="keyword">if</span> (action == DtorAction::join) &#123;</span><br><span class="line">        t.<span class="built_in">join</span>();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        t.<span class="built_in">detach</span>();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function">std::thread&amp; <span class="title">get</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> t; &#125; <span class="comment">// see below</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  DtorAction action;</span><br><span class="line">  std::thread t;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我希望这段代码是不言自明的，但是下面几点说明可能会有所帮助：</p>
+<ul>
+<li><p>构造器只接受<code>std::thread</code>右值，因为我们想要move <code>std::thread</code>对象给<code>ThreadRAII</code>（再次强调，<code>std::thread</code>不可以复制）</p>
+</li>
+<li><p>构造器的参数顺序设计的符合调用者直觉（首先传递<code>std::thread</code>，然后选择析构执行的动作），但是成员初始化列表设计的匹配成员声明的顺序。将<code>std::thread</code>成员放在声明最后。在这个类中，这个顺序没什么特别之处，调整为其他顺序也没有问题，但是通常，可能一个成员的初始化依赖于另一个，因为<code>std::thread</code>对象可能会在初始化结束后就立即执行了，所以在最后声明是一个好习惯。这样就能保证一旦构造结束，所有数据成员都初始化完毕可以安全的异步绑定线程执行</p>
+</li>
+<li><p><code>ThreadRAII</code>提供了<code>get</code>函数访问内部的<code>std::thread</code>对象。这类似于标准智能指针提供的<code>get</code>函数，可以提供访问原始指针的入口。提供<code>get</code>函数避免了<code>ThreadRAII</code>复制完整<code>std::thread</code>接口的需要，因为着<code>ThreadRAII</code>可以在需要<code>std::thread</code>上下文的环境中使用</p>
+</li>
+<li><p>在<code>ThreadRAII</code>析构函数调用<code>std::thread</code>对象t的成员函数之前，检查t是否joinable。这是必须的，因为在unjoinbale的<code>std::thread</code>上调用<code>join or detach</code>会导致未定义行为。客户端可能会构造一个<code>std::thread</code> t，然后通过t构造一个<code>ThreadRAII</code>，使用<code>get</code>获取t，然后移动t，或者调用<code>join or detach</code>，每一个操作都使得t变为unjoinable</p>
+<p>如果你担心下面这段代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (t.<span class="built_in">joinable</span>()) &#123;</span><br><span class="line">  <span class="keyword">if</span> (action == DtorAction::join) &#123;</span><br><span class="line">    t.<span class="built_in">join</span>();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    t.<span class="built_in">detach</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>存在竞争，因为在<code>t.joinable()</code>和<code>t.join or t.detach</code>执行中间，可能有其他线程改变了t为unjoinable，你的态度很好，但是这个担心不必要。<code>std::thread</code>只有自己可以改变<code>joinable or unjoinable</code>的状态。在<code>ThreadRAII</code>的析构函数中被调用时，其他线程不可能做成员函数的调用。如果同时进行调用，那肯定是有竞争的，但是不在析构函数中，是在客户端代码中试图同时在一个对象上调用两个成员函数（析构函数和其他函数）。通常，仅当所有都为const成员函数时，在一个对象同时调用两个成员函数才是安全的。</p>
+</li>
+</ul>
+<p>在<code>doWork</code>的例子上使用<code>ThreadRAII</code>的代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">doWork</span><span class="params">(std::function&lt;<span class="type">bool</span>(<span class="type">int</span>)&gt; filter, <span class="type">int</span> maxVal = tenMillion)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  std::vector&lt;<span class="type">int</span>&gt; goodVals;</span><br><span class="line">  <span class="function">ThreadRAII <span class="title">t</span><span class="params">(std::thread([&amp;filter, maxVal, &amp;goodVals] &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">      <span class="keyword">for</span> (<span class="keyword">auto</span> i = <span class="number">0</span>; i &lt;= maxVal; ++i) &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="keyword">if</span> (filter(i)) goodVals.push_back(i);</span></span></span><br><span class="line"><span class="params"><span class="function">      &#125;</span></span></span><br><span class="line"><span class="params"><span class="function">    &#125;),</span></span></span><br><span class="line"><span class="params"><span class="function">    ThreadRAII::DtorAction::join</span></span></span><br><span class="line"><span class="params"><span class="function">  )</span></span>;</span><br><span class="line">  <span class="keyword">auto</span> nh = t.<span class="built_in">get</span>().<span class="built_in">native_handle</span>();</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">conditonsAreStatisfied</span>()) &#123;</span><br><span class="line">    t.<span class="built_in">get</span>().<span class="built_in">join</span>();</span><br><span class="line">    <span class="built_in">performComputation</span>(goodVals);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这份代码中，我们选择在<code>ThreadRAII</code>的析构函数中异步执行<code>join</code>的动作，因为我们先前分析中，<code>detach</code>可能导致非常难缠的bug。我们之前也分析了<code>join</code>可能会导致性能异常（坦率说，也可能调试困难），但是在未定义行为（<code>detach</code>导致），程序终止（<code>std::thread</code>默认导致），或者性能异常之间选择一个后果，可能性能异常是最好的那个。</p>
+<p>哎，Item 39表明了使用<code>ThreadRAII</code>来保证在<code>std::thread</code>的析构时执行<code>join</code>有时可能不仅导致程序性能异常，还可能导致程序挂起。“适当”的解决方案是此类程序应该和异步执行的lambda通信，告诉它不需要执行了，可以直接返回，但是C++11中不支持可中断线程。可以自行实现，但是这不是本书讨论的主题。（译者注：关于这一点，C++ Concurrency in Action 的section 9.2 中有详细讨论，也有中文版出版）</p>
+<p>Item 17说明因为<code>ThreadRAII</code>声明了一个析构函数，因此不会有编译器生成移动操作，但是没有理由<code>ThreadRAII</code>对象不能移动。所以需要我们显式声明来告诉编译器自动生成：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ThreadRAII</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">enum class</span> <span class="title class_">DtorAction</span>&#123; join, detach &#125;; <span class="comment">// see Item 10 for enum class info</span></span><br><span class="line">  <span class="built_in">ThreadRAII</span>(std::thread&amp;&amp; t, DtorAction a): <span class="built_in">action</span>(a), <span class="built_in">t</span>(std::<span class="built_in">move</span>(t)) &#123;&#125; <span class="comment">// in dtor, take action a on t</span></span><br><span class="line">  ~<span class="built_in">ThreadRAII</span>() </span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> (t.<span class="built_in">joinable</span>()) &#123;</span><br><span class="line">      <span class="keyword">if</span> (action == DtorAction::join) &#123;</span><br><span class="line">        t.<span class="built_in">join</span>();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        t.<span class="built_in">detach</span>();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">ThreadRAII</span>(ThreadRAII&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">  ThreadRAII&amp; <span class="keyword">operator</span>=(ThreadRAII&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">  <span class="function">std::thread&amp; <span class="title">get</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> t; &#125; <span class="comment">// see below</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  DtorAction action;</span><br><span class="line">  std::thread t;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="需要记住的事"><a href="#需要记住的事" class="headerlink" title="需要记住的事"></a>需要记住的事</h3><ul>
+<li>在所有路径上保证<code>thread</code>最终是unjoinable</li>
+<li>析构时<code>join</code>会导致难以调试的性能异常问题</li>
+<li>析构时<code>detach</code>会导致难以调试的未定义行为</li>
+<li>声明类数据成员时，最后声明<code>std::thread</code>类型成员</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/06/30/item37/">https://cityfire.github.io/2023/06/30/item37/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/06/30/item38/" title="并发API 条款38:关注不同线程句柄的析构行为"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">并发API 条款38:关注不同线程句柄的析构行为</div></div></a></div><div class="next-post pull-right"><a href="/2023/06/30/item35/" title="并发API 条款35:优先使用task-based而不是thread-based"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">并发API 条款35:优先使用task-based而不是thread-based</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Item-37%EF%BC%9AMake-std-threads-unjoinable-on-all-paths"><span class="toc-number">1.</span> <span class="toc-text">Item 37：Make std::threads unjoinable on all paths</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9C%80%E8%A6%81%E8%AE%B0%E4%BD%8F%E7%9A%84%E4%BA%8B"><span class="toc-number">1.1.</span> <span class="toc-text">需要记住的事</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

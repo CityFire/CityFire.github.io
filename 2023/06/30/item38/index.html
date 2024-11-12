@@ -1,0 +1,214 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>并发API 条款38:关注不同线程句柄的析构行为 | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Item 38：Be aware of varying thread handle destructor behavior.Item 38：关注不同线程句柄的析构行为Item 37中说明了joinable的std::thread对应于可执行的系统线程。non-defered任务的future（参见Item 36）与系统线程有相似的关系。因此，可以将std::thread对象和future对象都视作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发API 条款38:关注不同线程句柄的析构行为">
+<meta property="og:url" content="https://cityfire.github.io/2023/06/30/item38/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="Item 38：Be aware of varying thread handle destructor behavior.Item 38：关注不同线程句柄的析构行为Item 37中说明了joinable的std::thread对应于可执行的系统线程。non-defered任务的future（参见Item 36）与系统线程有相似的关系。因此，可以将std::thread对象和future对象都视作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-06-30T08:50:42.000Z">
+<meta property="article:modified_time" content="2023-06-30T08:50:42.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/06/30/item38/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '并发API 条款38:关注不同线程句柄的析构行为',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-30 16:50:42'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">并发API 条款38:关注不同线程句柄的析构行为</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-30T08:50:42.000Z" title="发表于 2023-06-30 16:50:42">2023-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-30T08:50:42.000Z" title="更新于 2023-06-30 16:50:42">2023-06-30</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="并发API 条款38:关注不同线程句柄的析构行为"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Item-38：Be-aware-of-varying-thread-handle-destructor-behavior"><a href="#Item-38：Be-aware-of-varying-thread-handle-destructor-behavior" class="headerlink" title="Item 38：Be aware of varying thread handle destructor behavior."></a>Item 38：Be aware of varying thread handle destructor behavior.</h2><h2 id="Item-38：关注不同线程句柄的析构行为"><a href="#Item-38：关注不同线程句柄的析构行为" class="headerlink" title="Item 38：关注不同线程句柄的析构行为"></a>Item 38：关注不同线程句柄的析构行为</h2><p>Item 37中说明了joinable的<code>std::thread</code>对应于可执行的系统线程。non-defered任务的<code>future</code>（参见Item 36）与系统线程有相似的关系。因此，可以将<code>std::thread</code>对象和<code>future</code>对象都视作系统线程的句柄。</p>
+<p>从这个角度来说，有趣的是<code>std::thread</code>和<code>futures</code>在析构时有相当不同的行为。在Item 37中说明，joinable的<code>std::thread</code>析构会终止你的程序，因为两个其他的替代选择–隐式<code>join</code>或者隐式<code>detach</code>都是更加糟糕的。但是，<code>futures</code>的析构表现有时就像执行了隐式<code>join，</code>有时又是隐式执行了<code>detach</code>，有时又没有执行这两个选择。永远不会造成程序终止。这个线程句柄多种表现值得研究一下。</p>
+<p>我们可以观察到实际上<code>future</code>是通信信道的一端（被调用者通过该信道将结果发送给调用者）。被调用者（通常是异步执行）将计算结果写入通信信道中（通过<code>std::promise</code>对象），调用者使用<code>future</code>读取结果。你可以想象成下面的图示，虚线表示信息的流动方向：</p>
+<p><img src="/2023/06/30/item38/image-20201022194524454.png" alt="image-20201022194524454"></p>
+<p>但是被调用者的结果存储在哪里？被调用者会在调用者<code>get</code>相关的<code>future</code>之前执行完成，所以结果不能存储在被调用者的<code>std::promise</code>。这个对象是局部的，当被调用者执行结束后，会被销毁。</p>
+<p>结果同样不能存储在调用者的<code>future</code>，因为<code>std::future</code>可能会被用来创建<code>std::shared_future</code>(这会将被调用者的结果所有权从<code>std::future</code>转移给<code>std::shared_future</code>)，而<code>std::shared_future</code>在<code>std::future</code>被销毁之后被复制很多次。鉴于不是所有的结果都可以被拷贝（有些只能移动）和结果的声明周期与最后一个引用它的<code>future</code>一样长，哪个才是被调用者用来存储结果的？这两个问题。</p>
+<p>因为与被调用者关联的对象和调用者关联的对象都不适合存储这个结果，必须存储在两者之外的位置。此位置称为共享状态（<em>shared state</em>）。共享状态通常是基于堆的对象，但是标准并未指定其类型、接口和实现。标准库的作者可以通过任何他们喜欢的方式来实现共享状态。</p>
+<p>我们可以想象调用者，被调用者，共享状态之间关系如下图，虚线还是表示信息的流控方向：</p>
+<p><img src="/2023/06/30/item38/image-20201022201806802.png" alt="image-20201022201806802"></p>
+<p>共享状态的存在非常重要，因为<code>future</code>的析构行为–这个Item的话题—取决于关联<code>future</code>的共享状态。</p>
+<ul>
+<li>Non-defered任务（启动参数为<code>std::launch::async</code>）的最后一个关联共享状态的<code>future</code>析构函数会在任务完成之前block住。本质上，这种<code>future</code>的析构对执行异步任务的线程做了隐式的<code>join</code>。</li>
+<li><code>future</code>其他对象的析构简单的销毁。对于异步执行的任务，就像对底层的线程执行<code>detach</code>。对于defered任务的最后一种<code>future</code>，意味着这个defered任务永远不会执行了。</li>
+</ul>
+<p>这些规则听起来好复杂。我们真正要处理的是一个简单的“正常”行为以及一个单独的例外。正常行为是<code>future</code>析构函数销毁<code>future</code>。那意味着不<code>join</code>也不<code>detach</code>，只销毁<code>future</code>的数据成员（当然，还做了另一件事，就是对于多引用的共享状态引用计数减一。）</p>
+<p>正常行为的例外情况仅在同时满足下列所有情况下才会执行：</p>
+<ul>
+<li>关联<code>future</code>的共享状态是被调用了<code>std::async</code>创建的</li>
+<li>任务的启动策略是<code>std::launch::async</code>（参见Item 36），原因是运行时系统选择了该策略，或者在对<code>std::async</code>的调用中指定了该策略。</li>
+<li><code>future</code>是关联共享状态的最后一个引用。对于<code>std::future</code>，情况总是如此，对于<code>std::shared_future</code>，如果还有其他的<code>std::shared_future</code>引用相同的共享状态没有销毁，就不是。</li>
+</ul>
+<p>只有当上面的三个条件都满足时，<code>future</code>的析构函数才会表现“异常”行为，就是在异步任务执行完之前block住。实际上，这相当于运行<code>std::async</code>创建的任务的线程隐式<code>join</code>。</p>
+<p>通常会听到将这种异常的析构函数行为称为”Futures from std::async block in their destructors”。作为近似描述没有问题，但是忽略了原因和细节，现在你已经知道了其中三味。</p>
+<p>你可能想要了解更加深入。比如“为什么会有这样的规则”（译者注：这里的问题是意译，原文重复了问题本身），这很合理。据我所知，标准委员会希望避免这个问题与隐式<code>detach</code>（参见Item 37）相关联，但是不想采取强制程序终止这种激进的方案（因此搞了<code>join</code>，同样参见Item 37），所以妥协使用隐式<code>join</code>。这个决定并非没有争议，并且认真讨论过在C++14中放弃这种行为。最后，决定先不改变，所以C++11和C++14中这里的行为是一致的。</p>
+<p>没有API来提供<code>future</code>是否指向<code>std::async</code>调用产生的共享状态，因此给定一个<code>std::future</code>对象，无法判断是不是会在析构函数block等待异步任务的完成。这就产生了有意思的事情：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// this container might block in its dtor, because one or more contained futures could refer to a shared state for a non-deferred task launched via std::async</span></span><br><span class="line">std::vector&lt;std::future&lt;<span class="type">void</span>&gt;&gt; futs; <span class="comment">// see Item 39 for info on std::future&lt;void&gt;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> <span class="comment">// Widget objects might block in their dtors</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  std::shared_future&lt;<span class="type">double</span>&gt; fut;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>当然，如果你有办法知道给定的<code>future</code>不满足上面条件的任意一条，你就可以确定析构函数不会执行“异常”行为。比如，只有通过<code>std::async</code>创建的共享状态才有资格执行“异常”行为，但是有其他创建共享状态的方式。一种是使用<code>std::packaged_task</code>，一个<code>std::packaged_task</code>对象准备一个函数（或者其他可调用对象）来异步执行，然后将其结果放入共享状态中。然后通过<code>std::packaged_task</code>的<code>get_future</code>函数获取有关该共享状态的信息：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">calcValue</span><span class="params">()</span></span>; <span class="comment">// func to run </span></span><br><span class="line"><span class="function">std::packaged_task&lt;<span class="title">int</span><span class="params">()</span>&gt; <span class="title">pt</span><span class="params">(calcValue)</span></span>; <span class="comment">// wrap calcValue so it can run asynchrously</span></span><br><span class="line"><span class="keyword">auto</span> fut = pt.<span class="built_in">get_future</span>(); <span class="comment">// get future for pt</span></span><br></pre></td></tr></table></figure>
+
+<p>此时，我们知道<code>future</code>没有关联<code>std::async</code>创建的共享状态，所以析构函数肯定正常方式执行。</p>
+<p>一旦被创建，<code>std::packaged_task</code>类型的pt可能会在线程上执行。（译者注：后面有些啰嗦的话这里不完整翻译。。大意就是可以再次使用<code>std::async</code>来执行，但是那就不用<code>std::packaged_task</code>了）</p>
+<p><code>std::packaged_task</code>不能拷贝，所以当<code>pt</code>被传递给<code>std::thread</code>时是右值传递（通过move，参见Item 23）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::thread <span class="title">t</span><span class="params">(std::move(pt))</span></span>; <span class="comment">// run pt on t</span></span><br></pre></td></tr></table></figure>
+
+<p>这个例子是你对于<code>future</code>的析构函数的正常行为有一些了解，但是将这些语句放在一个作用域的语句块里更容易：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="comment">// begin block</span></span><br><span class="line">  <span class="function">std::packaged_task&lt;<span class="title">int</span><span class="params">()</span>&gt; <span class="title">pt</span><span class="params">(calcValue)</span></span>; </span><br><span class="line">	<span class="keyword">auto</span> fut = pt.<span class="built_in">get_future</span>(); </span><br><span class="line">  <span class="function">std::thread <span class="title">t</span><span class="params">(std::move(pt))</span></span>; </span><br><span class="line">  ...</span><br><span class="line">&#125; <span class="comment">// end block</span></span><br></pre></td></tr></table></figure>
+
+<p>此处最有趣的代码是在创建<code>std::thread</code>对象t之后的”…”。”…”有三种可能性：</p>
+<ul>
+<li>对t不做什么。这种情况，t会在语句块结束joinable，这会使得程序终止（参见Item 37）</li>
+<li>对t调用<code>join</code>。这种情况，不需要fut的析构函数block，因为<code>join</code>被显式调用了</li>
+<li>对t调用<code>detach</code>。这种情况，不需要在fut的析构函数执行<code>detach</code>，因为显式调用了</li>
+</ul>
+<p>换句话说，当你有一个关联了<code>std::packaged_task</code>创建的共享状态的<code>future</code>时，不需要采取特殊的销毁策略，通常你会代码中做这些。</p>
+<h3 id="需要记住的事"><a href="#需要记住的事" class="headerlink" title="需要记住的事"></a>需要记住的事</h3><ul>
+<li><code>future</code>的正常析构行为就是销毁<code>future</code>本身的成员数据</li>
+<li>最后一个引用<code>std::async</code>创建共享状态的<code>future</code>析构函数会在任务结束前block</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/06/30/item38/">https://cityfire.github.io/2023/06/30/item38/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/06/30/item39/" title="并发API 条款39:对于一次性事件通信考虑使用无返回futures"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">并发API 条款39:对于一次性事件通信考虑使用无返回futures</div></div></a></div><div class="next-post pull-right"><a href="/2023/06/30/item37/" title="并发API 条款37:使得std::thread在所有的路径下无法join"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">并发API 条款37:使得std::thread在所有的路径下无法join</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Item-38%EF%BC%9ABe-aware-of-varying-thread-handle-destructor-behavior"><span class="toc-number">1.</span> <span class="toc-text">Item 38：Be aware of varying thread handle destructor behavior.</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Item-38%EF%BC%9A%E5%85%B3%E6%B3%A8%E4%B8%8D%E5%90%8C%E7%BA%BF%E7%A8%8B%E5%8F%A5%E6%9F%84%E7%9A%84%E6%9E%90%E6%9E%84%E8%A1%8C%E4%B8%BA"><span class="toc-number">2.</span> <span class="toc-text">Item 38：关注不同线程句柄的析构行为</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9C%80%E8%A6%81%E8%AE%B0%E4%BD%8F%E7%9A%84%E4%BA%8B"><span class="toc-number">2.1.</span> <span class="toc-text">需要记住的事</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

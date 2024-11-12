@@ -1,0 +1,295 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Tweaks条款42:考虑使用emplacement代替insertion | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Item42: 考虑使用emplacement代替insertion如果你拥有一个容器，例如std::string，那么当你通过插入函数（例如insert, push_front, push_back，或者对于std::forward_list， insert_after）添加新元素时，你传入的元素类型应该是std::string。毕竟，这就是容器里的内容。 逻辑上看来如此，但是并非总是如此。考虑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tweaks条款42:考虑使用emplacement代替insertion">
+<meta property="og:url" content="https://cityfire.github.io/2023/06/30/item42/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="Item42: 考虑使用emplacement代替insertion如果你拥有一个容器，例如std::string，那么当你通过插入函数（例如insert, push_front, push_back，或者对于std::forward_list， insert_after）添加新元素时，你传入的元素类型应该是std::string。毕竟，这就是容器里的内容。 逻辑上看来如此，但是并非总是如此。考虑">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-06-30T08:58:54.000Z">
+<meta property="article:modified_time" content="2023-06-30T08:58:54.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/06/30/item42/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Tweaks条款42:考虑使用emplacement代替insertion',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-30 16:58:54'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Tweaks条款42:考虑使用emplacement代替insertion</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-30T08:58:54.000Z" title="发表于 2023-06-30 16:58:54">2023-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-30T08:58:54.000Z" title="更新于 2023-06-30 16:58:54">2023-06-30</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Tweaks条款42:考虑使用emplacement代替insertion"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Item42-考虑使用emplacement代替insertion"><a href="#Item42-考虑使用emplacement代替insertion" class="headerlink" title="Item42: 考虑使用emplacement代替insertion"></a>Item42: 考虑使用emplacement代替insertion</h2><p>如果你拥有一个容器，例如<code>std::string</code>，那么当你通过插入函数（例如<code>insert, push_front, push_back</code>，或者对于<code>std::forward_list</code>， <code>insert_after</code>）添加新元素时，你传入的元素类型应该是<code>std::string</code>。毕竟，这就是容器里的内容。</p>
+<p>逻辑上看来如此，但是并非总是如此。考虑如下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;std::string&gt; vs; <span class="comment">// container of std::string</span></span><br><span class="line">vs.<span class="built_in">push_back</span>(<span class="string">&quot;xyzzy&quot;</span>); <span class="comment">// add string literal</span></span><br></pre></td></tr></table></figure>
+
+<p>这里，容量里内容是<code>std::string</code>，但是你试图通过<code>push_back</code>加入字符串字面量，即引号内的字符序列。字符转字面量并不是<code>std::string</code>，这意味着你传递给<code>push_back</code>的参数并不是容器里的内容类型。</p>
+<p><code>std::vector</code>的<code>push_back</code>被按左值和右值分别重载：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">class</span> <span class="title class_">Allocator</span> = allocator&lt;T&gt;&gt;</span><br><span class="line"><span class="keyword">class</span> vector &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line">  <span class="type">void</span> <span class="built_in">push_back</span>(<span class="type">const</span> &amp;T x); <span class="comment">// insert lvalue</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">push_back</span><span class="params">(T&amp;&amp; x)</span></span>; <span class="comment">// insert rvalue</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>vs.push_back(&quot;xyzzy&quot;)</code>这个调用中，编译器看到参数类型（const char[6]）和<code>push_back</code>采用的参数类型（<code>std::string</code>的引用）之间不匹配。它们通过从字符串字面量创建一个<code>std::string</code>类型的临时变量来消除不匹配，然后传递临时变量给<code>push_back</code>。换句话说，编译器处理的这个调用应该像这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vs.<span class="built_in">push_back</span>(std::<span class="built_in">string</span>(<span class="string">&quot;xyzzy&quot;</span>)); <span class="comment">// create temp std::string and pass it to push_back</span></span><br></pre></td></tr></table></figure>
+
+<p>代码编译并运行，皆大欢喜。除了对于性能执着的人意识到了这份代码不如预期的执行效率高。</p>
+<p>为了创建<code>std::string</code>类型的临时变量，调用了<code>std::string</code>的构造器，但是这份代码并不仅调用了一次构造器，调用了两次，而且还调用了析构器。这发生在<code>push_back</code>运行时：</p>
+<ol>
+<li>一个<code>std::string</code>的临时对象从字面量”xyzzy”被创建。这个对象没有名字，我们可以称为<em>temp</em>，<em>temp</em>通过<code>std::string</code>构造器生成，因为是临时变量，所以<em>temp</em>是右值。</li>
+<li><em>temp</em>被传递给<code>push_back</code>的右值x重载函数。在<code>std::vector</code>的内存中一个x的副本被创建。这次构造器是第二次调用，在<code>std::vector</code>内部重新创建一个对象。（将x副本复制到<code>std::vector</code>内部的构造器是移动构造器，因为x传入的是右值，有关将右值引用强制转换为右值的信息，请参见Item25）。</li>
+<li>在<code>push_back</code>返回之后，<em>temp</em>被销毁，调用了一次<code>std::string</code>的析构器。</li>
+</ol>
+<p>性能执着者（译者注：直译性能怪人）不禁注意到是否存在一种方法可以获取字符串字面量并将其直接传入到步骤2中的<code>std::string</code>内部构造，可以避免临时对象<em>temp</em>的创建与销毁。这样的效率最好，性能执着者也不会有什么意见了。</p>
+<p>因为你是一个C++开发者，所以你会有高于平均水平的要求。如果你不是C++开发者，你可能也会同意这个观点（如果你根本不考虑性能，为什么你没在用python？）。所以让我来告诉你如何使得<code>push_back</code>达到最高的效率。就是不使用<code>push_back</code>，你需要的是<code>emplace_back</code>。</p>
+<p><code>emplace_back</code>就是像我们想要的那样做的：直接把传递的参数（无论是不是<code>std::string</code>）直接传递到<code>std::vector</code>内部的构造器。没有临时变量会生成：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vs.<span class="built_in">emplace_back</span>(<span class="string">&quot;xyzzy&quot;</span>); <span class="comment">// construct std::string inside vs directly from &quot;xyzzy&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>emplace_back</code>使用完美转发，因此只要你没有遇到完美转发的限制（参见Item30），就可以传递任何参数以及组合到<code>emplace_back</code>。比如，如果你在vs传递一个字符和一个数量给<code>std::string</code>构造器创建<code>std::string</code>，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vs.<span class="built_in">emplace_back</span>(<span class="number">50</span>, <span class="string">&#x27;x&#x27;</span>); <span class="comment">// insert std::string consisting of 50 &#x27;x&#x27; characters</span></span><br></pre></td></tr></table></figure>
+
+<p><code>emplace_back</code>可以用于每个支持<code>push_back</code>的容器。类似的，每个支持<code>push_front</code>的标准容器支持<code>emplace_front</code>。每个支持<code>insert</code>（除了<code>std::forward_list</code>和<code>std::array</code>）的标准容器支持<code>emplace。</code>关联容器提供<code>emplace_hint</code>来补充带有“hint”迭代器的插入函数，<code>std::forward_list</code>有<code>emplace_after</code>来匹配<code>insert_after</code>。</p>
+<p>使得emplacement函数功能优于insertion函数的原因是它们灵活的接口。insertion函数接受对象来插入，而emplacement函数接受构造器接受的参数插入。这种差异允许emplacement函数避免临时对象的创建和销毁。</p>
+<p>因为可以传递容器内类型给emplacement函数（该参数使函数执行复制或者移动构造器），所以即使insertion函数不会构造临时对象，也可以使用emplacement函数。在这种情况下，insertion和emplacement函数做的是同一件事，比如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::string <span class="title">queenOfDisco</span><span class="params">(<span class="string">&quot;Donna Summer&quot;</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>下面的调用都是可行的，效率也一样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vs.<span class="built_in">push_back</span>(queenOfDisco); <span class="comment">// copy-construct queenOfDisco</span></span><br><span class="line">vs.<span class="built_in">emplace_back</span>(queenOfDisco); <span class="comment">// ditto</span></span><br></pre></td></tr></table></figure>
+
+<p>因此，emplacement函数可以完成insertion函数的所有功能。并且有时效率更高，至少在理论上，不会更低效。那为什么不在所有场合使用它们？</p>
+<p>因为，就像说的那样，理论上，在理论和实际上没有什么区别，但是实际，区别还是有的。在当前标准库的实现下，有些场景，就像预期的那样，emplacement执行性能优于insertion，但是，有些场景反而insertion更快。这种场景不容易描述，因为依赖于传递的参数类型、容器类型、emplacement或insertion的容器位置、容器类型构造器的异常安全性和对于禁止重复值的容器（即<code>std::set,std::map,std::unorder_set,set::unorder_map</code>）要添加的值是否已经在容器中。因此，大致的调用建议是：通过benchmakr测试来确定emplacment和insertion哪种更快。</p>
+<p>当然这个结论不是很令人满意，所以还有一种启发式的方法来帮助你确定是否应该使用emplacement。如果下列条件都能满足，emplacement会优于insertion：</p>
+<ul>
+<li><p><strong>值是通过构造器添加到容器，而不是直接赋值。</strong> 例子就像本Item刚开始的那样（添加”xyzzy”到<code>std::string的std::vector</code>中）。新值必须通过<code>std::string</code>的构造器添加到<code>std::vector</code>。如果我们回看这个例子，新值放到已经存在对象的位置，那情况就完全不一样了。考虑下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;std::string&gt; vs; <span class="comment">// as before</span></span><br><span class="line">... <span class="comment">// add elements to vs</span></span><br><span class="line">vs.<span class="built_in">emplace</span>(vs.<span class="built_in">begin</span>(), <span class="string">&quot;xyzzy&quot;</span>); <span class="comment">// add &quot;xyzzy&quot; to beginning of vs</span></span><br></pre></td></tr></table></figure>
+
+<p>对于这份代码，没有实现会在已经存在对象的位置<code>vs[0]</code>构造添加的<code>std::string</code>。而是，通过移动赋值的方式添加到需要的位置。但是移动赋值需要一个源对象，所以这意味着一个临时对象要被创建，而emplacement优于insertion的原因就是没有临时对象的创建和销毁，所以当通过赋值操作添加元素时，emplacement的优势消失殆尽。</p>
+<p>而且，向容器添加元素是通过构造还是赋值通常取决于实现者。但是，启发式仍然是有帮助的。基于节点的容器实际上总是使用构造器添加新元素，大多数标准库容器都是基于节点的。例外的容器只有<code>std::vector, std::deque, std::string</code>（<code>std::array</code>也不是基于节点的，但是它不支持emplacement和insertion）。在不是基于节点的容器中，你可以依靠<code>emplace_back</code>来使用构造向容器添加元素，对于<code>std::deque</code>，<code>emplace_front</code>也是一样的。</p>
+</li>
+<li><p><strong>传递的参数类型与容器的初始化类型不同。</strong> 再次强调，emplacement优于insertion通常基于以下事实：当传递的参数不是容器保存的类型时，接口不需要创建和销毁临时对象。当将类型为T的对象添加到container<T>时，没有理由期望emplacement比insertion运行的更快，因为不需要创建临时对象来满足insertion接口。</T></p>
+</li>
+<li><p><strong>容器不拒绝重复项作为新值。</strong> 这意味着容器要么允许添加重复值，要么你添加的元素都是不重复的。这样要求的原因是为了判断一个元素是否已经存在于容器中，emplacement实现通常会创建一个具有新值的节点，以便可以将该节点的值与现有容器中节点的值进行比较。如果要添加的值不在容器中，则链接该节点。然后，如果值已经存在，emplacement创建的节点就会被销毁，意味着构造和析构时浪费的开销。这样的创建就不会在insertion函数中出现。</p>
+</li>
+</ul>
+<p>本Item开始的例子中下面的调用满足上面的条件。所以调用比<code>push_back</code>运行更快。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vs.<span class="built_in">emplace_back</span>(<span class="string">&quot;xyzzy&quot;</span>); <span class="comment">// construct new value at end of container; don&#x27;t pass the type in container; don&#x27;t use container rejecting duplicates</span></span><br><span class="line">vs.<span class="built_in">emplace_back</span>(<span class="number">50</span>, <span class="string">&#x27;x&#x27;</span>); <span class="comment">// ditto</span></span><br></pre></td></tr></table></figure>
+
+<p>在决定是否使用emplacement函数时，需要注意另外两个问题。<strong>首先</strong>是资源管理。假定你有一个<code>std::shared_ptr&lt;Widget&gt;s</code>的容器，</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::list&lt;std::shared_ptr&lt;Widget&gt;&gt; ptrs;</span><br></pre></td></tr></table></figure>
+
+<p>然后你想添加一个通过自定义deleted释放的<code>std::shared_ptr</code>（参见Item 19）。Item 21说明你应该使用<code>std::make_shared</code>来创建<code>std::shared_ptr</code>，但是它也承认有时你无法做到这一点。比如当你要指定一个自定义deleter时。这时，你必须直接创建一个原始指针，然后通过<code>std::shared_ptr</code>来管理。</p>
+<p>如果自定义deleter是这个函数，</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">killWidget</span><span class="params">(Widget* pWidget)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>使用insertion函数的代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptrs.<span class="built_in">push_back</span>(std::<span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget, killWidget));</span><br></pre></td></tr></table></figure>
+
+<p>也可以像这样</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptrs.<span class="built_in">push_back</span>(&#123;<span class="keyword">new</span> Widget, killWidget&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>不管哪种写法，在调用<code>push_back</code>中会生成一个临时<code>std::shared_ptr</code>对象。<code>push_back</code>的参数是<code>std::shared_ptr</code>的引用，因此必须有一个<code>std::shared_ptr</code>。</p>
+<p><code>std::shared_ptr</code>的临时对象创建应该可以避免，但是在这个场景下，临时对象值得被创建。考虑如下可能的时间序列：</p>
+<ol>
+<li>在上述的调用中，一个<code>std::shared_ptr&lt;Widget&gt;</code>的临时对象被创建来持有<code>new Widget</code>对象。称这个对象为<em>temp</em>。</li>
+<li><code>push_back</code>接受<em>temp</em>的引用。在节点的分配一个副本来复制<em>temp</em>的过程中，OOM异常被抛出</li>
+<li>随着异常从<code>push_back</code>的传播，<em>temp</em>被销毁。作为唯一管理Widget的弱指针<code>std::shared_ptr</code>对象，会自动销毁<code>Widget</code>，在这里就是调用<code>killWidget</code>。</li>
+</ol>
+<p>这样的话，即使发生了异常，没有资源泄露：在调用<code>push_back</code>中通过<code>new Widget</code>创建的<code>Widget</code>在<code>std::shared_ptr</code>管理下自动销毁。生命周期良好。</p>
+<p>考虑使用<code>emplace_back</code>代替<code>push_back</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptrs.<span class="built_in">emplace_back</span>(<span class="keyword">new</span> Widget, killWidget);</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>通过<code>new Widget</code>的原始指针完美转发给<code>emplace_back</code>的内部构造器。如果分配失败，还是抛出OOM异常</li>
+<li>当异常从<code>emplace_back</code>传播，原始指针是仅有的访问途径，但是因为异常丢失了，这就发生了资源泄露</li>
+</ol>
+<p>在这个场景中，生命周期不良好，这个失误不能赖<code>std::shared_ptr</code>。<code>std::unique_ptr</code>使用自定义deleter也会有同样的问题。根本上讲，像<code>std::shared_ptr和std::unique_ptr</code>这样的资源管理类的有效性取决于资源被<strong>立即</strong>传递给资源管理对象的构造函数。实际上，这就是<code>std::make_shared和std::make_unique</code>这样的函数如此重要的原因。</p>
+<p>在对存储资源管理类的容器调用insertion函数时（比如<code>std::list&lt;std::shared_ptr&lt;Widget&gt;&gt;</code>），函数的参数类型通常确保在资源的获取和管理资源对象的创建之间没有其他操作。在emplacement函数中，完美转发推迟了资源管理对象的创建，直到可以在容器的内存中构造它们为止，这给异常导致资源泄露提供了可能。所有的标准库容器都容易受到这个问题的影响。在使用资源管理对象的容器时，比如注意确保使用emplacement函数不会为提高效率带来降低异常安全性的后果。</p>
+<p>坦白说，无论如何，你不应该将<code>new Widget</code>传递给<code>emplace_back或者push_back</code>或者大多数这种函数，因为，就像Item 21中解释的那样，这可能导致我们刚刚讨论的异常安全性问题。使用独立语句将从<code>new Widget</code>获取指针然后传递给资源管理类，然后传递这个对象的右值引用给你想传递<code>new Widget</code>的函数（Item 21 有这个观点的详细讨论）。代码应该如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::shared_ptr&lt;Widget&gt; <span class="title">spw</span><span class="params">(<span class="keyword">new</span> Widget, killWidget)</span></span>; <span class="comment">// create Widget and have spw manage it</span></span><br><span class="line">ptrs.<span class="built_in">push_back</span>(std::<span class="built_in">move</span>(spw)); <span class="comment">// add spw as rvalue</span></span><br></pre></td></tr></table></figure>
+
+<p>emplace_back的版本如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::shared_ptr&lt;Widget&gt; <span class="title">spw</span><span class="params">(<span class="keyword">new</span> Widget, killWidget)</span></span>; <span class="comment">// create Widget and have spw manage it</span></span><br><span class="line">ptrs.<span class="built_in">emplace_back</span>(std::<span class="built_in">move</span>(spw));</span><br></pre></td></tr></table></figure>
+
+<p>无论哪种方式，都会产生spw的创建和销毁成本。给出选择emplacement函数优于insertion函数的动机是避免临时对象的开销，但是对于swp的概念来讲，当根据正确的方式确保获取资源和连接到资源管理对象上之间无其他操作，添加资源管理类型对象到容器中，emplacement函数不太可能胜过insertion函数。</p>
+<p>emplacement函数的<strong>第二个</strong>值得注意的方面是它们与显式构造函数的交互。对于C++11正则表达式的支持，假设你创建了一个正则表达式的容器：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;std::regex&gt; regexes;</span><br></pre></td></tr></table></figure>
+
+<p>由于你同事的打扰，你写出了如下看似毫无意义的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">regexes.<span class="built_in">emplace_back</span>(<span class="literal">nullptr</span>); <span class="comment">// add nullptr to container of regexes?</span></span><br></pre></td></tr></table></figure>
+
+<p>你没有注意到错误，编译器也没有提示你，所以你浪费了大量时间来调试。突然，你发现你插入了空指针到正则表达式的容器中。但是这怎么可能？指针不是正则表达式，如果你试图下面这样写</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::regex r = <span class="literal">nullptr</span>; <span class="comment">// error! won&#x27;t compile</span></span><br></pre></td></tr></table></figure>
+
+<p>编译器就会报错。有趣的是，如果你调用<code>push_back</code>而不是<code>emplace_back</code>，编译器就会报错</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">regexes.<span class="built_in">push_back</span>(<span class="literal">nullptr</span>); <span class="comment">// error! won&#x27;t compile</span></span><br></pre></td></tr></table></figure>
+
+<p>当前你遇到的奇怪行为由于可能用字符串构造<code>std::regex</code>的对象，这就意味着下面代码合法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::regex <span class="title">upperCaseWorld</span><span class="params">(<span class="string">&quot;[A-Z]+&quot;</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过字符串创建<code>std::regex</code>要求相对较长的运行时开销，所以为了最小程度减少无意中产生此类开销的可能性，采用<code>const char*</code>指针的<code>std::regex</code>构造函数是显式的。这就是为什么下面代码无法编译的原因：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::regex r = <span class="literal">nullptr</span>; <span class="comment">// error! won&#x27;t compile</span></span><br><span class="line">regexes.<span class="built_in">push_back</span>(<span class="literal">nullptr</span>); <span class="comment">// error</span></span><br></pre></td></tr></table></figure>
+
+<p>在上面的代码中，我们要求从指针到<code>std::regex</code>的隐式转换，但是显式构造的要求拒绝了此类转换。</p>
+<p>但是在<code>emplace_back</code>的调用中，我们没有声明传递一个<code>std::regex</code>对象。代替的是，我们传递了一个<code>std::regex</code>构造器参数。那不是隐式转换，而是显式的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::regex <span class="title">r</span><span class="params">(<span class="literal">nullptr</span>)</span></span>; <span class="comment">// compiles</span></span><br></pre></td></tr></table></figure>
+
+<p>如果简洁的注释“compiles”表明缺乏直观理解，好的，因为这个代码可以编译，但是行为不确定。使用<code>const char*</code>指针的<code>std::regex</code>构造器要求字符串是一个有效的正则表达式，nullptr不是有效的。如果你写出并编译了这样的代码，最好的希望就是运行时crash掉。如果你不幸运，就会花费大量的时间调试。</p>
+<p>先把<code>push_back, emplace_back</code>放在一边，注意到相似的初始化语句导致了多么不一样的结果：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::regex r1 = <span class="literal">nullptr</span>; <span class="comment">// error ! won&#x27;t compile</span></span><br><span class="line"><span class="function">std::regex <span class="title">r2</span><span class="params">(<span class="literal">nullptr</span>)</span></span>; <span class="comment">// compiles</span></span><br></pre></td></tr></table></figure>
+
+<p>在标准的官方术语中，用于初始化r1的语法是所谓的复制初始化。相反，用于初始化r2的语法是（也被称为braces）被称为直接初始化。复制初始化不是显式调用构造器的，直接初始化是。这就是r2可以编译的原因。</p>
+<p>然后回到<code>push_back和emplace_back</code>，更一般来说，insertion函数对比emplacment函数。emplacement函数使用直接初始化，这意味着使用显式构造器。insertion函数使用复制初始化。因此：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">regexes.<span class="built_in">emplace_back</span>(<span class="literal">nullptr</span>); <span class="comment">// compiles. Direct init permits use of explicit std::regex ctor taking a pointer</span></span><br><span class="line">regexes.<span class="built_in">push_back</span>(<span class="literal">nullptr</span>); <span class="comment">// error! copy init forbids use of that ctor</span></span><br></pre></td></tr></table></figure>
+
+<p>要汲取的是，当你使用emplacement函数时，请特别小心确保传递了正确的参数，因为即使是显式构造函数，编译器可以尝试解释你的代码称为有效的（译者注：这里意思是即使你写的代码逻辑上不对，显式构造器时编译器可能能解释通过即编译成功）</p>
+<h3 id="需要记住的事"><a href="#需要记住的事" class="headerlink" title="需要记住的事"></a>需要记住的事</h3><ul>
+<li>原则上，emplacement函数有时会比insertion函数高效，并且不会更差</li>
+<li>实际上，当执行如下操作时，emplacement函数更快<ol>
+<li>值被构造到容器中，而不是直接赋值</li>
+<li>传入的类型与容器类型不一致</li>
+<li>容器不拒绝已经存在的重复值</li>
+</ol>
+</li>
+<li>emplacement函数可能执行insertion函数拒绝的显示构造</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/06/30/item42/">https://cityfire.github.io/2023/06/30/item42/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/06/30/item41/" title="Tweaks 条款41:如果参数可拷贝并且移动操作开销很低，总是考虑直接按值传递"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Tweaks 条款41:如果参数可拷贝并且移动操作开销很低，总是考虑直接按值传递</div></div></a></div><div class="next-post pull-right"><a href="/2023/06/30/item40/" title="并发API 条款40:当需要并发时使用`std::atomic`，特定内存才使用`volatile`"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">并发API 条款40:当需要并发时使用`std::atomic`，特定内存才使用`volatile`</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Item42-%E8%80%83%E8%99%91%E4%BD%BF%E7%94%A8emplacement%E4%BB%A3%E6%9B%BFinsertion"><span class="toc-number">1.</span> <span class="toc-text">Item42: 考虑使用emplacement代替insertion</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9C%80%E8%A6%81%E8%AE%B0%E4%BD%8F%E7%9A%84%E4%BA%8B"><span class="toc-number">1.1.</span> <span class="toc-text">需要记住的事</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HarmonyOS NEXT应用开发基础架构 | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="随着应用规模的扩大和业务需求的复杂化，代码的复杂度相应提升。因此，良好的应用架构设计变得尤为重要，架构设计的目的是让应用更易于维护、扩展和测试。 开发者在应用开发过程中，经常面临以下挑战：  代码组织混乱，模块间的耦合度高，导致一个模块的变动可能对其他模块产生影响，从而使代码难以维护。 应用的扩展性差，新功能的添加往往需要对现有代码进行大量的修改。  为了解决这些问题，开发者需要关注以下几个方面的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HarmonyOS NEXT应用开发基础架构">
+<meta property="og:url" content="https://cityfire.github.io/2024/09/30/HarmonyOSNEXT_Architecture/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="随着应用规模的扩大和业务需求的复杂化，代码的复杂度相应提升。因此，良好的应用架构设计变得尤为重要，架构设计的目的是让应用更易于维护、扩展和测试。 开发者在应用开发过程中，经常面临以下挑战：  代码组织混乱，模块间的耦合度高，导致一个模块的变动可能对其他模块产生影响，从而使代码难以维护。 应用的扩展性差，新功能的添加往往需要对现有代码进行大量的修改。  为了解决这些问题，开发者需要关注以下几个方面的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2024-09-29T16:27:38.000Z">
+<meta property="article:modified_time" content="2024-09-29T16:27:38.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2024/09/30/HarmonyOSNEXT_Architecture/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HarmonyOS NEXT应用开发基础架构',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-30 00:27:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">HarmonyOS NEXT应用开发基础架构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-09-29T16:27:38.000Z" title="更新于 2024-09-30 00:27:38">2024-09-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/HarmonyOS-NEXT/">HarmonyOS NEXT</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="HarmonyOS NEXT应用开发基础架构"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>随着应用规模的扩大和业务需求的复杂化，代码的复杂度相应提升。因此，良好的应用架构设计变得尤为重要，架构设计的目的是让应用更易于维护、扩展和测试。</p>
+<p>开发者在应用开发过程中，经常面临以下挑战：</p>
+<ul>
+<li>代码组织混乱，模块间的耦合度高，导致一个模块的变动可能对其他模块产生影响，从而使代码难以维护。</li>
+<li>应用的扩展性差，新功能的添加往往需要对现有代码进行大量的修改。</li>
+</ul>
+<p>为了解决这些问题，开发者需要关注以下几个方面的架构设计：</p>
+<ul>
+<li><strong>分层架构设计</strong>：将应用划分为产品定制层、基础特性层和公共能力层，可以降低层间的依赖性，从而提升代码的可维护性。通过分层架构设计进一步明确了每层的职责和层间的交互机制，为开发者呈现了一个清晰且结构化的开发框架。</li>
+<li><strong>模块化设计</strong>：将应用分解为多个功能模块，其中每个模块负责执行特定的功能。通过模块化设计提高了代码的可理解性和可复用性，使应用的扩展和维护变得更为简便，同时降低了系统各部分之间的耦合度。</li>
+</ul>
+<p>架构设计是确保项目成功的关键步骤之一，它关乎到App的生命周期内能否高效、稳定、安全地运行，并且能够随着业务的发展和技术的进步持续迭代和优化。</p>
+<p>   优秀的架构设计可以：</p>
+<ol>
+<li><p><strong>提高可维护性</strong>：良好的架构设计能让代码结构清晰，模块化高，便于团队协作和后期维护。当需要添加新功能或修复错误时，可以更快地定位到相关模块，减少修改对整个系统的影响，降低维护成本。</p>
+</li>
+<li><p><strong>提升扩展性</strong>：随着用户需求的增长或业务的变化，App可能需要添加更多功能或支持更高并发量。一个设计良好的架构能更容易地扩展功能模块或提升性能，而不需要对现有系统做大的改动，保证了App的灵活性和可持续发展。</p>
+</li>
+<li><p><strong>优化性能</strong>：架构设计考虑到了数据处理、网络通信、资源管理和内存使用等方面的效率，通过合理的架构可以有效减少延迟，提升响应速度，为用户提供更流畅的体验。</p>
+</li>
+</ol>
+<p>鸿蒙Next的基础架构搭建，根据官方的推荐分为：</p>
+<ol>
+<li><p><strong>分层架构设计</strong>：将应用划分为产品定制层、基础特性层和公共能力层，可以降低层间的依赖性，从而提升代码的可维护性。通过分层架构设计进一步明确了每层的职责和层间的交互机制，为开发者呈现了一个清晰且结构化的开发框架。</p>
+</li>
+<li><p><strong>模块化设计</strong>：将应用分解为多个功能模块，其中每个模块负责执行特定的功能。通过模块化设计提高了代码的可理解性和可复用性，使应用的扩展和维护变得更为简便，同时降低了系统各部分之间的耦合度。</p>
+</li>
+<li><p><strong>应用导航设计</strong>：将应用划分为多功能模块后，通过Navigation导航设计，完成业务模块之间的解耦，实现不同业务模块之间的页面跳转交互。</p>
+</li>
+<li><p><strong>应用并发设计</strong></p>
+</li>
+<li><p><strong>应用切面编程设计</strong></p>
+</li>
+</ol>
+<h1 id="分层架构设计"><a href="#分层架构设计" class="headerlink" title="分层架构设计"></a>分层架构设计</h1><p>HarmonyOS应用的分层架构设计以一套代码工程为基础，旨在为华为的手机、2in1等1+8全场景设备提供支持，实现了“一次开发，多端部署”的开发理念。</p>
+<p>HarmonyOS应用的分层架构主要包括三个层次：产品定制层、基础特性层和公共能力层，为开发者构建了一个清晰、高效、可扩展的设计架构。</p>
+<p>本文将从<code>逻辑模型</code>、<code>开发模型</code>和<code>部署模型</code>分别介绍应用分层架构设计规则。</p>
+<h2 id="逻辑模型"><a href="#逻辑模型" class="headerlink" title="逻辑模型"></a>逻辑模型</h2><p><strong>图1</strong> 分层架构逻辑模型</p>
+<p><img src="/images/hierarchicalArchitecture.png" alt="图1"></p>
+<ul>
+<li><strong>产品定制层</strong><br>产品定制层专注于满足不同设备或使用场景（如应用）的个性化需求，包括UI设计、资源和配置，以及针对特定场景的交互逻辑和功能特性。</li>
+</ul>
+<p>产品定制层的功能模块独立运作，同时依赖基础特性层和公共能力层来实现具体功能。</p>
+<p>作为应用的入口，产品定制层是用户直接互动的界面。为满足特定产品需求，产品定制层可灵活地调整和扩展，从而满足各种使用场景。</p>
+<ul>
+<li><strong>基础特性层</strong><br>基础特性层位于公共能力层之上，用于存放基础特性集合，例如相对独立的功能UI和业务逻辑实现。该层的每个功能模块都具有高内聚、低耦合、可定制的特点，以支持产品的灵活部署。</li>
+</ul>
+<p>基础特性层为上层的产品定制层提供稳健且丰富的基础功能支持，包括UI组件、基础服务等。同时依赖于下层的公共能力层为其提供通用功能和服务。</p>
+<p>为了增强系统的可扩展性和维护性，基础特性层将功能进行模块化处理。例如，一个应用的底部导航栏中的每个选项都可能是一个独立的业务模块。</p>
+<ul>
+<li><strong>公共能力层</strong><br>公共功能层用于存放公共基础能力，集中了例如公共UI组件、数据管理、外部交互以及工具库等的共享功能。应用可以共享和调用这些公共能力。</li>
+</ul>
+<p>公共能力层为上层的基础特性层和产品定制层提供稳定可靠的功能支持，确保整个应用的稳定性和可维护性。</p>
+<p>公共能力层包括但不限于以下组成：</p>
+<ul>
+<li>公共UI组件：这些组件被设计成通用且高度可复用的，确保在不同的应用程序模块间保持一致的用户体验。公共UI组件提供了标准化且友好的界面，帮助开发者快速实现常见的用户交互需求，例如提示、警告、加载状态显示等，从而提高开发效率和用户满意度。</li>
+<li>数据管理：负责应用程序中数据的存储和访问，包括应用数据、系统数据等，提供了统一的数据管理接口，简化数据的读写操作。通过集中式的数据管理方式不仅使得数据的维护更为简单，而且能够保证数据的一致性和安全性。</li>
+<li>外部交互：负责应用程序与外部系统的交互，包括网络请求、文件I&#x2F;O、设备I&#x2F;O等，提供统一的外部交互接口，简化应用程序与外部系统的交互。开发者可以更为方便地实现应用程序的网络通信、数据存储和硬件接入等功能，从而加速开发流程并保证程序的稳定性和性能。</li>
+<li>工具库：提供一系列常用工具函数和类，例如字符串处理、日期时间处理、加密解密、数据压缩解压等，帮助开发者提高效率和代码质量。</li>
+</ul>
+<h2 id="开发模型"><a href="#开发模型" class="headerlink" title="开发模型"></a>开发模型</h2><p><strong>图2</strong> 分层架构开发模型<br><img src="/images/hierachArchitectureDev.png" alt="图2"></p>
+<ul>
+<li><strong>产品定制层</strong><br>产品定制层的各个子目录会被编译成一个<code>Entry类型的HAP</code>，作为应用的主入口。该层主要针对跨多种设备，为各种设备形态集成相应的功能和特性。产品定制层被划分为多个功能模块，每个功能模块都针对特定的设备或使用场景设计，并根据具体的产品需求进行功能及交互的定制开发。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">说明</span><br><span class="line">在产品定制层，开发者可以从不同设备对应的应用UX设计和功能两个维度，结合具体的业务场景，选择一次编译生成相同或者不同的HAP（或其组合）。</span><br><span class="line">通过使用`定制多目标构建产物`的定制功能，可以将应用所对应的HAP编译成各自的.app文件，用于上架到应用市场。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>基础特性层<br>在基础特性层中，功能模块根据部署需求被分为两类。对于需要通过Ability承载的功能，可以设计为Feature类型的HAP，而对于不需要通过Ability承载的功能，根据是否需要实现按需加载，可以选择设计为HAR模块或者HSP模块，编译后对应HAR包或者HSP包。</p>
+</li>
+<li><p>公共能力层<br>公共能力层的各子目录将被编译成HAR包，而他们只能被产品定制层和基础特性层所依赖，不允许存在反向依赖。该层旨在提取模块化公共基础能力，为上层提供标准接口和协议，从而提高整体的复用率和开发效率。</p>
+</li>
+</ul>
+<h2 id="部署模型"><a href="#部署模型" class="headerlink" title="部署模型"></a>部署模型</h2><p><strong>图3</strong> 分层架构部署模型（不同设备的定制）<br><img src="/images/hierachArchitectureDeploy.png" alt="图3"></p>
+<p>应用程序（.app文件）在流水线或应用市场上被解包为n * Entry类型的HAP + n * Feature类型的HAP，根据设备类型和使用场景将应用部署到不同类型的设备上，实现多端的统一用户体验。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">说明</span><br><span class="line">当Entry类型的HAP和Feature类型的HAP被分发并部署到相应的设备时，他们所依赖的HSP也会一同被分发并部署到相应的设备上。</span><br></pre></td></tr></table></figure>
+
+<p>在部署模型中，每个Entry类型的HAP代表了应用的入口点，而Feature类型的HAP则包含了应用的特定功能模块。允许应用能够以模块化的方式适配和部署，从而满足不同设备和场景的需求。</p>
+<p>该部署模型不仅优化了应用的组织结构，也为保持应用在各种设备和场景中的一致性提供了支持。通过按照设备类型和使用场景来区分和部署不同的HAP，能确保无论在何种设备或场景中，用户都能获得统一且高质量的体验。</p>
+<h1 id="模块化设计"><a href="#模块化设计" class="headerlink" title="模块化设计"></a>模块化设计</h1><h2 id="模块化设计理念"><a href="#模块化设计理念" class="headerlink" title="模块化设计理念"></a>模块化设计理念</h2><p>在大型软件工程中，一般会伴随着多团队开发，而各个团队之间，都是弱耦合交互，团队交付的业务之间以一种契约化形式的接口，定义了业务之间的接口，以此来满足各个团队的业务独立发展，互不影响，实现快速迭代演进，这就需要业务模块化。模块化是现代软件工程的核心原则之一，它通过将大型的复杂系统拆解为更小、更容易管理和理解的部分——功能模块，来提高系统的可维护性和可拓展性。每个功能模块都是一个独立的单元，具有清晰定义的接口和职责，能够与其他模块交互以完成复杂的任务。</p>
+<p>在HarmonyOS应用开发中，模块化不仅是一个设计原则，更是一种开发实践。它旨在将应用程序拆分为多个功能模块，每个功能模块负责特定的功能或特性。功能模块可以独立开发、编译和部署，也可以在不同的设备上灵活组合和调用。</p>
+<h2 id="应用程序包结构概念"><a href="#应用程序包结构概念" class="headerlink" title="应用程序包结构概念"></a>应用程序包结构概念</h2><p>在进行模块化设计时，需要考虑HarmonyOS的应用包结构选型，HarmonyOS的应用包结构是为了定义应用的组织方式，通过开发态、编译态、发布态阶段应用程序包的形态，了解到不同包类型对应的使用场景以及使用规则。详细请参见<code>Stage模型应用程序包结构</code>。</p>
+<h2 id="Ability应用组件设计"><a href="#Ability应用组件设计" class="headerlink" title="Ability应用组件设计"></a>Ability应用组件设计</h2><p>HarmonyOS应用的业务逻辑需要通过<code>Ability组件</code>承载，根据业务设备以及业务诉求不同，需要考虑Ability组件的选择以及设计。在多设备的背景下，应用的形态不一定是传统移动设备上的单任务单窗口形式，在一些场景下，多任务多窗口的形态可以让用户获得更好的用户体验，提升使用效率。</p>
+<p>例如在手机设备上：</p>
+<ul>
+<li>笔记应用，可让用户将信息从笔记的一页复制到另一页。</li>
+<li>文档编辑应用，可让用户同时打开编辑多个文档，可让用户将内容从一个文档复制或移动到另一个文档。</li>
+<li>导航&#x2F;打车应用，可以让导航后台运行，回到主页查找新的位置信息或其它信息。</li>
+<li>购物类临时客服界面，可让用户通过任务管理快速从商品浏览页切换回到客服会话界面，避免用户一层层打开查找。</li>
+<li>应用支付&#x2F;登录页面，可以切换至应用内其它页面查找并复制相关信息。</li>
+</ul>
+<p>在大屏设备上，应用内的多个任务可以以多窗口的形式存在，用户可以并行操作应用的不同功能。</p>
+<ul>
+<li>视频播放器应用，可让用户在观看播放内容的同时浏览其他可能感兴趣的视频列表。</li>
+<li>电子邮件应用，可让用户在撰写电子邮件的同时查看收到的邮件列表。</li>
+<li>地址簿应用，可让用户并排比较多个人员的联系信息。</li>
+<li>阅读应用，可让用户在查阅所有标题概要后，打开多篇文章供稍后阅读。</li>
+</ul>
+<p>对于这种类似独立应用一样的任务，每个任务对应一个UIAbility组件实例，并且每个任务可以单独显示一个窗口，对用户而言，可以在同个应用不同任务间切换，就像是单独的应用一样，并且在大屏设备上可以独立地移动、调整大小、显示和隐藏应用窗口。所以在进行功能设计时，需要对应用本身是否支持多任务多窗口，结合起来考虑Ability组件的设计，这影响整体工程模块化的结构。</p>
+<ul>
+<li>对于单Ability的情况下，可以对应单窗口类型应用，或者通过多实例&#x2F;指定实例实现的多任务类应用，例如普通的游戏应用这类情况下，建议采用单HAP来承载UIAbility。</li>
+<li>对于多Ability有两种情况：<ul>
+<li>对于多窗口类型的应用，这类应用每个窗口对应不同的功能，通过不同的UIAbility承载，如上述例子中导航&#x2F;打车应用，导航功能界面和主页属于不同的功能，并且要能够作为两个任务呈现给用户，可以将该模块作为Feature类型的HAP承载相应的UIAbility组件。</li>
+<li>对于应用的一些拓展功能如卡片、分享业务，其不会作为单独的任务和窗口形态运行，但是由于其功能相对来说独立，并且是由系统提供的独立<code>ExtensionAbility</code>来承载，从更好拆分业务来考虑，也建议通过Feature类型的HAP承载单独的ExtensionAbility组件。</li>
+</ul>
+</li>
+</ul>
+<h2 id="应用模块化选型"><a href="#应用模块化选型" class="headerlink" title="应用模块化选型"></a>应用模块化选型</h2><p>应用架构是给应用业务服务的，是从技术的角度思考业务如何实现的；而工程模块化模型，是基于技术架构对代码工程所做的模块化技术选型，需要考虑技术到代码工程上如何落地，只有代码工程模型的技术选型合理了，才能在包体积、性能、产品部署等取得一个最优的综合表现。</p>
+<p>一般业务是分模块的，比如某购物软件，上面的业务就有主页导航、商品详情、购物车、支付、订单、个人信息等相关的模块；所以技术架构上，就会出现很多业务模块，模块之间是高内聚低耦合的，在代码工程上也就表现为模块（Module）。而在做代码工程模块化的技术选型上，因为Entry类型的HAP是工程默认存在的，且不能存在多个，所以主要考虑的就是几种模块类型：Feature类型的HAP模块，HAR模块和HSP模块。</p>
+<p>在技术架构上的某个模块，做代码工程的选择时，是选择哪种模块类型，需要结合业务本身性质&#x2F;模块的功能等因素综合考虑的。以基于应用常见的模块化模型，在实际的业务考虑中以下几种情况：</p>
+<p>1.<strong>共享模块</strong>：某个功能模块（业务模块或者能力模块）需要在多个应用之间共享其代码逻辑和资源。<br>2.<strong>按需加载模块</strong>：某个功能模块，使用时由用户决定安装时机，动态从应用市场下载安装使用。<br>3.<strong>多HAP&#x2F;HSP引用相同HAR包的影响</strong>：从性能角度出发，需要减少多HAP&#x2F;HSP对相同HAR包的引用。</p>
+<h1 id="应用导航设计"><a href="#应用导航设计" class="headerlink" title="应用导航设计"></a>应用导航设计</h1><h1 id="应用并发设计"><a href="#应用并发设计" class="headerlink" title="应用并发设计"></a>应用并发设计</h1><h1 id="应用切面编程设计"><a href="#应用切面编程设计" class="headerlink" title="应用切面编程设计"></a>应用切面编程设计</h1></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2024/09/30/HarmonyOSNEXT_Architecture/">https://cityfire.github.io/2024/09/30/HarmonyOSNEXT_Architecture/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">数据结构和算法</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/08/macroForCangjie/" title="仓颉-宏"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">仓颉-宏</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B1%82%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">分层架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">逻辑模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.</span> <span class="toc-text">开发模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">部署模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.</span> <span class="toc-text">模块化设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E8%AE%BE%E8%AE%A1%E7%90%86%E5%BF%B5"><span class="toc-number">2.1.</span> <span class="toc-text">模块化设计理念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%8C%85%E7%BB%93%E6%9E%84%E6%A6%82%E5%BF%B5"><span class="toc-number">2.2.</span> <span class="toc-text">应用程序包结构概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ability%E5%BA%94%E7%94%A8%E7%BB%84%E4%BB%B6%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.3.</span> <span class="toc-text">Ability应用组件设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E6%A8%A1%E5%9D%97%E5%8C%96%E9%80%89%E5%9E%8B"><span class="toc-number">2.4.</span> <span class="toc-text">应用模块化选型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%AF%BC%E8%88%AA%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">应用导航设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B9%B6%E5%8F%91%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">应用并发设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1"><span class="toc-number">5.</span> <span class="toc-text">应用切面编程设计</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

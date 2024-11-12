@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NSCFConstantString &amp; __NSCFString &amp; NSTaggedPointerString | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="__NSCFConstantString字符串常量，是一种编译时常量，它的 retainCount 值很大，是 4294967295，在控制台打印出的数值则是 18446744073709551615&#x3D;&#x3D;2^64-1，测试证明，即便对其进行 release 操作，retainCount 也不会产生任何变化。是创建之后便是放不掉的对象。相同内容的 __NSCFConstantSt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSCFConstantString &amp; __NSCFString &amp; NSTaggedPointerString">
+<meta property="og:url" content="https://cityfire.github.io/2023/11/02/nscfConstantString/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="__NSCFConstantString字符串常量，是一种编译时常量，它的 retainCount 值很大，是 4294967295，在控制台打印出的数值则是 18446744073709551615&#x3D;&#x3D;2^64-1，测试证明，即便对其进行 release 操作，retainCount 也不会产生任何变化。是创建之后便是放不掉的对象。相同内容的 __NSCFConstantSt">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-11-02T07:40:59.000Z">
+<meta property="article:modified_time" content="2023-11-02T07:40:59.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/11/02/nscfConstantString/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NSCFConstantString & __NSCFString & NSTaggedPointerString',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-02 15:40:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NSCFConstantString &amp; __NSCFString &amp; NSTaggedPointerString</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-02T07:40:59.000Z" title="发表于 2023-11-02 15:40:59">2023-11-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-02T07:40:59.000Z" title="更新于 2023-11-02 15:40:59">2023-11-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NSCFConstantString &amp; __NSCFString &amp; NSTaggedPointerString"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="NSCFConstantString"><a href="#NSCFConstantString" class="headerlink" title="__NSCFConstantString"></a>__NSCFConstantString</h2><p>字符串常量，是一种编译时常量，它的 retainCount 值很大，是 4294967295，在控制台打印出的数值则是 18446744073709551615&#x3D;&#x3D;2^64-1，测试证明，即便对其进行 release 操作，retainCount 也不会产生任何变化。是创建之后便是放不掉的对象。相同内容的 __NSCFConstantString 对象的地址相同，也就是说常量字符串对象是一种单例。</p>
+<p>这种对象一般通过字面值 @”…”、CFSTR(“…”) 或者 stringWithString: 方法（需要说明的是，这个方法在 iOS6 SDK 中已经被称为redundant，使用这个方法会产生一条编译器警告。这个方法等同于字面值创建的方法）产生。</p>
+<p>这种对象存储在字符串常量区。</p>
+<h2 id="NSCFString"><a href="#NSCFString" class="headerlink" title="__NSCFString"></a>__NSCFString</h2><p>和 __NSCFConstantString 不同， __NSCFString 对象是在运行时创建的一种 NSString 子类，他并不是一种字符串常量。所以和其他的对象一样在被创建时获得了 1 的引用计数。<br>通过 NSString 的 stringWithFormat 等方法创建的 NSString 对象一般都是这种类型。<br>这种对象被存储在堆上。</p>
+<h2 id="NSTaggedPointerString"><a href="#NSTaggedPointerString" class="headerlink" title="NSTaggedPointerString"></a>NSTaggedPointerString</h2><p>理解这个类型，需要明白什么是标签指针，这是苹果在 64 位环境下对 NSString,NSNumber 等对象做的一些优化。简单来讲可以理解为把指针指向的内容直接放在了指针变量的内存地址中，因为在 64 位环境下指针变量的大小达到了 8 位足以容纳一些长度较小的内容。于是使用了标签指针这种方式来优化数据的存储方式。从他的引用计数可以看出，这货也是一个释放不掉的单例常量对象。在运行时根据实际情况创建。</p>
+<p>对于 NSString 对象来讲，当非字面值常量的数字，英文字母字符串的长度小于等于 9 的时候会自动成为 NSTaggedPointerString 类型，如果有中文或其他特殊符号（可能是非 ASCII 字符）存在的话则会直接成为 ）__NSCFString 类型。</p>
+<p>这种对象被直接存储在指针的内容中，可以当作一种伪对象。</p>
+<p>0x01 引用计数为什么会是18446744073709551615？</p>
+<p>这个值意味着无限的retainCount，这个对象是不能被释放的。所有的 NSCFConstantString对象的retainCount都是这个值，这就意味着 NSCFConstantString不会被释放，使用第一种方法创建的NSString，如果值一样，无论写多少遍，都是同一个对象。而且这种对象可以直接用 &#x3D;&#x3D; 来比较。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">* copy： 对NSArray是浅拷贝，NSMutableArray是深拷贝</span><br><span class="line"></span><br><span class="line">* mutableCopy： 始终是深拷贝</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* 无论深浅拷贝，集合对象内元素都是浅拷贝</span><br></pre></td></tr></table></figure>
+
+<p>我们发现系统系统了方法<code>- (instancetype)initWithArray:(NSArray&lt;ObjectType&gt; *)array copyItems:(BOOL)flag</code><br>其中<code>copyItems:(BOOL)flag</code>表示是否拷贝元素，我们先代码测试一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">NSString *str1 = @&quot;hello world&quot;;</span><br><span class="line">    NSMutableString *str2 = [NSMutableString stringWithString:@&quot;hello world&quot;];</span><br><span class="line">    NSArray *array1 = [NSArray arrayWithObjects: str1, str2, nil];</span><br><span class="line">    NSMutableArray *array2 = [[NSMutableArray alloc] initWithArray:array1 copyItems:true];</span><br><span class="line">    NSLog(@&quot;\n array1 = %p class = %@ \n&quot;, array1, [array1 class]);</span><br><span class="line">    NSLog(@&quot;\n array2 = %p class = %@ \n&quot;, array2, [array2 class]);</span><br><span class="line">    NSLog(@&quot;\n\n======== 元素是String ======== &quot;);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array1[0], [array1[0] class]);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array2[0], [array2[0] class]);</span><br><span class="line">    NSLog(@&quot;\n\n======== 元素是mutableString ========&quot;);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array1[1], [array1[1] class]);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array2[1], [array2[1] class]);</span><br></pre></td></tr></table></figure>
+<p>查看输出(为了下文对比，我对输出做了line标记)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">2021-05-09 10:59:16.343163+0800 AlgorithmDemo[9904:51756] </span><br><span class="line"> array1 = 0x100607650 class = __NSArrayI  (line1)</span><br><span class="line"> array2 = 0x1006074a0 class = __NSArrayM (line2)</span><br><span class="line">======== 元素是String ======== </span><br><span class="line"> obj0 = 0x100008220 class = __NSCFConstantString (line3)  </span><br><span class="line"> obj0 = 0x100008220 class = __NSCFConstantString (line4)</span><br><span class="line">======== 元素是mutableString ========</span><br><span class="line"> obj0 = 0x100606330 class = __NSCFString (line5)</span><br><span class="line"> obj0 = 0x100605430 class = __NSCFString (line6)</span><br></pre></td></tr></table></figure>
+
+<p>根据输出我们对得出系统<code>initWithArray : copyItems :</code>方法如下结论</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">* 该方法对NSArray对象是深拷贝 (严格意义来说此处不能称为拷贝，是生成新对象) （line1 line2）</span><br><span class="line"></span><br><span class="line">* 当数组内元素为不可变对象时，该方法对元素执行浅拷贝(line3 line4)</span><br><span class="line">应该是NSCFConstantString的问题导致地址相同</span><br><span class="line">* 当数组内元素为可变对象时，该方法对元素执行深拷贝(line4 line5)</span><br><span class="line"></span><br><span class="line">？？？ 由此我们知道，当我们想深拷贝NSArray及其内部的元素时，用系统方法- (instancetype)initWithArray:(NSArray&lt;ObjectType&gt; *)array copyItems:(BOOL)flag是不行的</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="2-归档"><a href="#2-归档" class="headerlink" title="2. 归档"></a>2. 归档</h3><p>如果我们对Array执行归档再解档，结果会是什么样的呢，我们代码测试一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">NSString *str1 = @&quot;hello world&quot;;</span><br><span class="line">    NSMutableString *str2 = [NSMutableString stringWithString:@&quot;hello world&quot;];</span><br><span class="line">    NSArray *array1 = [NSArray arrayWithObjects: str1, str2, nil];</span><br><span class="line">    NSMutableArray *array2 = [[NSMutableArray alloc] initWithArray:array1 copyItems:true];</span><br><span class="line">    </span><br><span class="line">    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:array1];</span><br><span class="line">    NSMutableArray *array3 = [NSKeyedUnarchiver unarchiveObjectWithData:data];</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;\n array1 = %p class = %@ \n&quot;, array1, [array1 class]);</span><br><span class="line">    NSLog(@&quot;\n array2 = %p class = %@ \n&quot;, array2, [array2 class]);</span><br><span class="line">    NSLog(@&quot;\n array3 = %p class = %@ \n&quot;, array3, [array3 class]);</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;\n\n======== 元素是String ======== &quot;);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array1[0], [array1[0] class]);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array2[0], [array2[0] class]);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array3[0], [array3[0] class]);</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;\n\n======== 元素是mutableString ========&quot;);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array1[1], [array1[1] class]);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array2[1], [array2[1] class]);</span><br><span class="line">    NSLog(@&quot;\n obj0 = %p class = %@ \n&quot;, array3[1], [array3[1] class]);</span><br></pre></td></tr></table></figure>
+<p>查看输出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">2021-05-09 11:14:50.710409+0800 AlgorithmDemo[12261:67019] </span><br><span class="line"> array1 = 0x1006b9e40 class = __NSArrayI  (line1)</span><br><span class="line"> array2 = 0x1006ba180 class = __NSArrayM  (line1)</span><br><span class="line"> array3 = 0x1006b7410 class = __NSArrayI  (line1)</span><br><span class="line">======== 元素是String ======== </span><br><span class="line"> obj0 = 0x100008220 class = __NSCFConstantString  (line1)</span><br><span class="line"> obj0 = 0x100008220 class = __NSCFConstantString  (line1)</span><br><span class="line"> obj0 = 0x1006b6d20 class = __NSCFString  (line1)</span><br><span class="line">======== 元素是mutableString ========</span><br><span class="line"> obj0 = 0x1006b9cb0 class = __NSCFString  (line1)</span><br><span class="line"> obj0 = 0x1006ba0e0 class = __NSCFString  (line1)</span><br><span class="line"> obj0 = 0x1006b70e0 class = __NSCFString  (line1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>根据输出，我们很明显得出如下结论</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* 对Array归档并解档后，会生成新的Array对象</span><br><span class="line"></span><br><span class="line">* Array对象内的不可变元素进行了深拷贝</span><br><span class="line"></span><br><span class="line">* Array对象内的可变元素进行了深拷贝</span><br></pre></td></tr></table></figure>
+<p>由此，我们得出对如下总结</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">* 只深拷贝NSArray对象，我们用mutableCopy就可以</span><br><span class="line"></span><br><span class="line">* 只深拷贝NSMutableArray对象，我们用Copy或mutableCopy都可以</span><br><span class="line"></span><br><span class="line">* 深拷贝Array对象及内部元素，我们可以通过归档的方法解决</span><br><span class="line"></span><br><span class="line">3. 重写copyWithZone mutableCopyWithZone的方式深拷贝自定义对象</span><br></pre></td></tr></table></figure>
+<p>我们写一个person类测试一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">//  Person.h</span><br><span class="line">//  AlgorithmDemo</span><br><span class="line">//</span><br><span class="line">//</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">@interface Person : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *nickname;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>测试代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Person *person = [[Person alloc] init];</span><br><span class="line">    person.nickname = @&quot;码代码的小马&quot;;</span><br><span class="line">    </span><br><span class="line">    NSMutableArray *array1 = [NSMutableArray arrayWithObjects:person, nil];</span><br><span class="line">    </span><br><span class="line">    NSArray *array2 = [array1 copy];</span><br><span class="line">    NSMutableArray *array3 = [array1 mutableCopy];</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;\n array1 = %p class = %@&quot;, array1, [array1 class]);</span><br><span class="line">    NSLog(@&quot;\n array2 = %p class = %@&quot;, array2, [array2 class]);</span><br><span class="line">    NSLog(@&quot;\n array3 = %p class = %@&quot;, array3, [array3 class]);</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;\n\n======== 数组内元素 ======== &quot;);</span><br><span class="line">    NSLog(@&quot;\n array1[0] = %p class = %@&quot;, array1[0], [array1[0] class]);</span><br><span class="line">    NSLog(@&quot;\n array2[0] = %p class = %@&quot;, array2[0], [array2[0] class]);</span><br><span class="line">    NSLog(@&quot;\n array3[0] = %p class = %@&quot;, array3[0], [array3[0] class]);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">浅拷贝：</span><br><span class="line"></span><br><span class="line">1, 直接调用copy/mutableCopy方法</span><br><span class="line"></span><br><span class="line">2, [[NSMutableArray alloc] initWithArray:studentsArray copyItems:NO]</span><br><span class="line"></span><br><span class="line">3, [[NSMutableArray alloc] initWithArray:studentsArray]</span><br><span class="line"></span><br><span class="line">深拷贝：</span><br><span class="line">1, [[NSMutableArray alloc] initWithArray:studentsArray copyItems:YES],前提要自己实现每一层级的NSCopying协议</span><br><span class="line"></span><br><span class="line">2,  [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:oldArray]]</span><br></pre></td></tr></table></figure>
+
+<h2 id="iOS内存机制"><a href="#iOS内存机制" class="headerlink" title="iOS内存机制"></a>iOS内存机制</h2><p>内存空间<br>同其他系统一样，iOS 也使用了虚拟内存机制，前面介绍过，内存是采用分段和分页管理的，在 iOS 系统下，内存从高地址到低地址 分为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">* 栈区（stack）：用于存储程序临时创建的局部变量和函数参数等，在作用域执行完毕后会被系统回收，其中分配的地址由高到低分布。</span><br><span class="line">* 堆区（heap）：用于存储程序运行中动态分配的内存段（通过调用 alloc 等函数），例如创建的新对象，默认由 ARC 进行管理，MRC 模式下需要手动进行内存释放，其中分配的地址由低到高分布。</span><br><span class="line">* 全局静态区：由编译器分配，主要是存放全局变量 和 静态变量，程序结束后由系统释放；主要分为：</span><br><span class="line">    * BBS区：存放未初始化的全局变量 和 静态变量。</span><br><span class="line">    * 数据区：存放已初始化的全局变量 和 静态变量。</span><br><span class="line">* 常量区：存放的是常量，如常量字符串，程序结束后由系统释放。</span><br><span class="line">* 代码区：由于存放程序代码。</span><br></pre></td></tr></table></figure>
+<p><img src="/images/highAddress.png" alt="Alt text"></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6864492188404088846">https://juejin.cn/post/6864492188404088846</a></p>
+<h3 id="内存分区：可以分为5个区"><a href="#内存分区：可以分为5个区" class="headerlink" title="内存分区：可以分为5个区"></a>内存分区：可以分为5个区</h3><p>说到内存分区，内存即指的是RAM</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* 栈区（stack）： 这个一般由编译器操作，或者说是系统管理，会存一些局部变量，函数跳转跳转时现场保护(寄存器值保存于恢复)，这些系统都会帮我们自动实现，无需我们干预。 所以大量的局部变量，深递归，函数循环调用都可能耗尽栈内存而造成程序崩溃</span><br><span class="line">* 堆区（heap）： 一般由程序员管理，比如alloc申请内存，free释放内存。我们创建的对象也都放在这里</span><br><span class="line">* 全局区（静态区 static）：全局变量和静态变量的存储是放在一块的，初始化的全局变量和静态变量在一块区域， 未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。 - 程序结束后有系统释放。注意：在嵌入式系统中全局区又可分为未初始化全局区：.bss段和初始化全局区：data段。举例：int a;未初始化的。int a = 10;已初始化的。</span><br><span class="line">* 常量区：常量字符串就是放在这里的，还有const常量</span><br><span class="line">* 代码区：存放代码，app程序会拷贝到这里，程序不是在ROM里面存储吗？</span><br></pre></td></tr></table></figure>
+<p>￼</p>
+<h2 id="内存管理方案"><a href="#内存管理方案" class="headerlink" title="内存管理方案"></a>内存管理方案</h2><h3 id="TaggedPointer"><a href="#TaggedPointer" class="headerlink" title="TaggedPointer"></a>TaggedPointer</h3><p>通常我们创建对象，对象存储在堆中，对象的指针存储在栈中，如果我们要找到这个对象，就需要先在栈中，找到指针地址，然后根据指针地址找到在堆中的对象。 这个过程比较繁琐，当存储的对象只是一个很小的东西，比如一个字符串，一个数字。去走这么一个繁琐的过程，无非是耗费性能的，所以苹果就搞出了TaggedPointer这么一个东西。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. TaggedPointer是苹果为了解决32位CPU到64位CPU的转变带来的内存占用和效率问题，针对NSNumber、NSDate以及部分NSString的内存优化方案。</span><br><span class="line">2. Tagged Pointer指针的值不再是地址了，而是真正的值。所以，实际上它不再是一个对象了，它只是一个披着对象皮的普通变量而已。所以，它的内存并不存储在堆中，也不需要malloc和free。</span><br><span class="line">3. Tagged Pointer指针中包含了当前对象的地址、类型、具体数值。因此Tagged Pointer指针在内存读取上有着3倍的效率，创建时比普通需要malloc跟free的类型快106倍。</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="NSCFConstantString-1"><a href="#NSCFConstantString-1" class="headerlink" title="__NSCFConstantString"></a>__NSCFConstantString</h3><p>字符串常量，是一种编译时常量，它的 retainCount 值很大，是 4294967295，在控制台打印出的数值则是 18446744073709551615&#x3D;&#x3D;2^64-1，测试证明，即便对其进行 release 操作，retainCount 也不会产生任何变化。是创建之后便是放不掉的对象。相同内容的 __NSCFConstantString 对象的地址相同，也就是说常量字符串对象是一种单例。</p>
+<p>这种对象一般通过字面值 @”…”、CFSTR(“…”) 或者 stringWithString: 方法（需要说明的是，这个方法在 iOS6 SDK 中已经被称为redundant，使用这个方法会产生一条编译器警告。这个方法等同于字面值创建的方法）产生。<br>这种对象存储在字符串常量区。</p>
+<h3 id="NSCFString-1"><a href="#NSCFString-1" class="headerlink" title="__NSCFString"></a>__NSCFString</h3><p>和 __NSCFConstantString 不同， __NSCFString 对象是在运行时创建的一种 NSString 子类，他并不是一种字符串常量。所以和其他的对象一样在被创建时获得了 1 的引用计数。<br>通过 NSString 的 stringWithFormat 等方法创建的 NSString 对象一般都是这种类型。<br>这种对象被存储在堆上。</p>
+<h3 id="NSTaggedPointerString-1"><a href="#NSTaggedPointerString-1" class="headerlink" title="NSTaggedPointerString"></a>NSTaggedPointerString</h3><p>理解这个类型，需要明白什么是标签指针，这是苹果在 64 位环境下对 NSString,NSNumber 等对象做的一些优化。简单来讲可以理解为把指针指向的内容直接放在了指针变量的内存地址中，因为在 64 位环境下指针变量的大小达到了 8 位足以容纳一些长度较小的内容。于是使用了标签指针这种方式来优化数据的存储方式。从他的引用计数可以看出，这货也是一个释放不掉的单例常量对象。在运行时根据实际情况创建。</p>
+<p>对于 NSString 对象来讲，当非字面值常量的数字，英文字母字符串的长度小于等于 9 的时候会自动成为 NSTaggedPointerString 类型，如果有中文或其他特殊符号（可能是非 ASCII 字符）存在的话则会直接成为 ）__NSCFString 类型。<br>这种对象被直接存储在指针的内容中，可以当作一种伪对象。</p>
+<p>0x01 引用计数为什么会是18446744073709551615？</p>
+<p>这个值意味着无限的retainCount，这个对象是不能被释放的。所有的 NSCFConstantString对象的retainCount都是这个值，这就意味着 NSCFConstantString不会被释放，使用第一种方法创建的NSString，如果值一样，无论写多少遍，都是同一个对象。而且这种对象可以直接用 &#x3D;&#x3D; 来比较。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/11/02/nscfConstantString/">https://cityfire.github.io/2023/11/02/nscfConstantString/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/11/02/lock_introduce/" title="聊聊 13 种锁的实现方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">聊聊 13 种锁的实现方式</div></div></a></div><div class="next-post pull-right"><a href="/2023/11/02/nsoperation/" title="知其然亦知其所以然--NSOperation并发编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">知其然亦知其所以然--NSOperation并发编程</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#NSCFConstantString"><span class="toc-number">1.</span> <span class="toc-text">__NSCFConstantString</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NSCFString"><span class="toc-number">2.</span> <span class="toc-text">__NSCFString</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NSTaggedPointerString"><span class="toc-number">3.</span> <span class="toc-text">NSTaggedPointerString</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BD%92%E6%A1%A3"><span class="toc-number">3.1.</span> <span class="toc-text">2. 归档</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6"><span class="toc-number">4.</span> <span class="toc-text">iOS内存机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA%EF%BC%9A%E5%8F%AF%E4%BB%A5%E5%88%86%E4%B8%BA5%E4%B8%AA%E5%8C%BA"><span class="toc-number">4.1.</span> <span class="toc-text">内存分区：可以分为5个区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%96%B9%E6%A1%88"><span class="toc-number">5.</span> <span class="toc-text">内存管理方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TaggedPointer"><span class="toc-number">5.1.</span> <span class="toc-text">TaggedPointer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NSCFConstantString-1"><span class="toc-number">5.2.</span> <span class="toc-text">__NSCFConstantString</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NSCFString-1"><span class="toc-number">5.3.</span> <span class="toc-text">__NSCFString</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NSTaggedPointerString-1"><span class="toc-number">5.4.</span> <span class="toc-text">NSTaggedPointerString</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

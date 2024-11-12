@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>悲观锁&amp;乐观锁 | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、什么是悲观锁？基本上我们理解的操作前对资源加锁，操作完后释放锁。说的都是悲观锁。悲观锁认为所有的资源都是不安全的，随时会被其他线程操作、更改。所以操作资源前一定要加一把锁、防止其他线程访问。 Java中的悲观锁有哪些 123synchronized关键字基于Java同步器AQS的各种实现类synchronized  Java中的关键字、底层由Jvm虚拟机实现的同步机制，通过两条监听器指令：MO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="悲观锁&amp;乐观锁">
+<meta property="og:url" content="https://cityfire.github.io/2023/08/01/anyLock/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="一、什么是悲观锁？基本上我们理解的操作前对资源加锁，操作完后释放锁。说的都是悲观锁。悲观锁认为所有的资源都是不安全的，随时会被其他线程操作、更改。所以操作资源前一定要加一把锁、防止其他线程访问。 Java中的悲观锁有哪些 123synchronized关键字基于Java同步器AQS的各种实现类synchronized  Java中的关键字、底层由Jvm虚拟机实现的同步机制，通过两条监听器指令：MO">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-08-01T15:25:28.000Z">
+<meta property="article:modified_time" content="2023-08-01T15:25:28.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C | Swift | C&#x2F;C++ | Java | Cangjie | ArkTS | Go | Python | Dart | Lua | Js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/08/01/anyLock/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '悲观锁&乐观锁',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-08-01 23:25:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">悲观锁&amp;乐观锁</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-01T15:25:28.000Z" title="发表于 2023-08-01 23:25:28">2023-08-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-01T15:25:28.000Z" title="更新于 2023-08-01 23:25:28">2023-08-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="悲观锁&amp;乐观锁"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="一、什么是悲观锁？"><a href="#一、什么是悲观锁？" class="headerlink" title="一、什么是悲观锁？"></a>一、什么是悲观锁？</h2><p>基本上我们理解的操作前对资源加锁，操作完后释放锁。说的都是悲观锁。悲观锁认为所有的资源都是不安全的，随时会被其他线程操作、更改。所以操作资源前一定要加一把锁、防止其他线程访问。</p>
+<p>Java中的悲观锁有哪些</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">synchronized关键字</span><br><span class="line">基于Java同步器AQS的各种实现类</span><br><span class="line">synchronized</span><br></pre></td></tr></table></figure>
+
+<p>Java中的关键字、底层由Jvm虚拟机实现的同步机制，通过两条监听器指令：MONITORENTER（进入）、MONITOREXIT（退出）来实现同步效果（代码编译成字节码文件后可看到指令）</p>
+<p>synchronized有三种使用方式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">修饰静态方法：锁住的是类，该类下创建的所有对象都被锁住</span><br><span class="line">修饰实例方法：锁住的是当前对象，当前对象所属类创建的其他对象不受影响</span><br><span class="line">修饰代码块（静态代码块、实例代码块）：根据代码块所出区域来区别，如代码块在静态方法中，那锁的是整个类、如代码块在实例方法中，那锁住的是当前实例对象。</span><br></pre></td></tr></table></figure>
+<p>基于AQS的实现类</p>
+<p>AQS全称（AbstractQueuedSynchronizer）。基于Java程序实现的一种抽象队列同步器框架。AQS定义了一个volatile修饰的int类型变量state来控制是否同步，提供一个unsafe实现的原子方法来更新state（也就是更新锁状态，是否上锁）。</p>
+<p>基于AQS，Java本身实现了一些同步类。它们都位于java.util.concurrent包下。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ReentrantLock（可重入锁，AQS体系下用户使用的最多的一个锁）</span><br><span class="line">ReentrantReadWriteLock（基于ReentrantLock的读写锁，读锁之间共享资源、读写、写写之间互斥资源，读写锁相较于普通的互斥锁并发能力要稍微好些，但使用起来需要考虑锁的切入点）</span><br><span class="line">StampedLock（基于读写锁优化，对读锁更加细化了一层，但同时使用也更加复杂，用的不多）</span><br><span class="line">Semaphore（信号量，可用于限流）</span><br><span class="line">CountDownLatch（可用于计数，一般用于在多线程环境下需要执行固定次数逻辑的地方）。</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、什么是乐观锁？"><a href="#二、什么是乐观锁？" class="headerlink" title="二、什么是乐观锁？"></a>二、什么是乐观锁？</h2><p>乐观锁是一种特殊的锁，它认为所有的资源都是安全的，每个线程对资源的操作都是符合预期的，所以它不需要对资源加锁。<br>那么问题来了，既然乐观锁不会对资源加锁，那它能不能保证线程安全呢？</p>
+<p>答案是：可以保证线程安全，且性能比悲观锁还要好。因为乐观锁在操作资源时，会采用一种确认机制来保证所操作资源未被其他线程更改过。这种机制叫做<code>CAS（Compare And Set）</code>机制。</p>
+<p>Java中的乐观锁有哪些</p>
+<p>Java没有提供可直接使用的乐观锁，不过内置了一些由底层由乐观锁实现的类。例如：<code>java.util.concurrent.atomic</code>下的几个原子类。<br>在这里插入图片描述<br>如果我们想自己实现乐观锁的话，可以参考上面那些原子类，使用<code>valotile+CAS</code> 的方式实现。</p>
+<p>那么<code>valotile</code>是什么呢？<code>CAS</code>又是什么呢？</p>
+<h3 id="Valotile"><a href="#Valotile" class="headerlink" title="Valotile"></a>Valotile</h3><p>valotile跟synchronized一样，是Java内置的关键字。不过valotile只能修饰变量。valotile主要的作用是保证变量在内存中的可见性、有序性</p>
+<p>可见性：valotile修饰的变量被修改后，对内存中是立即可见的。举个例子：有两个线程A、B。有一个valotile修饰的变量Y。当线程A对变量Y进行修改后，线程B能够立刻感知。感知到后会重新读取变量Y的最新值放到自己工作内存中进行操作。<br>有序性：我们都知道，Java代码是一行一行根据编写顺序去运行的。看着是顺序执行没错。但是实际底层JVM在执行字节码文件指令时，有些指令并不会依照代码顺序一样执行。因为Java编译器会在编译成字节码的时候为了提高性能会对你的代码进行指令优化，这个优化叫做指令重排。这个指令重排在单线程环境下不会有问题，因为不管你怎么重排指令，最后的结果都是期望的。但是如果在多线程环境下，就会有线程安全问题。所以valotile帮我们禁止了指令重排的优化，保证了编译器是严格按照代码编写顺序去编译指令。</p>
+<h3 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h3><p>了解CAS之前先来了解一下Java内存模型。Java中的内存模型定义，将内存划分为：主内存和工作内存。Java线程在操作资源时，会将其用到的资源复制一份到线程的私有工作内存中，线程在自己的工作内存中对资源完成操作后，再把资源同步回主内存当中。完成一次资源的操作</p>
+<h3 id="CAS（Compare-And-Set）"><a href="#CAS（Compare-And-Set）" class="headerlink" title="CAS（Compare And Set）"></a>CAS（Compare And Set）</h3><p>CAS可以理解为比较后赋值。举例：两个线程A、B。修改一个共享资源变量Y、根据java内存模型定义，两个线程分别会复制一份资源的副本到各自的工作内存中。AY1、BY1。两个线程修改完后会将AY1、BY1同步回主内存中。<br>然而，在CAS机制下，两个线程除了复制AY1、BY1到工作内存之外，还会另存一个资源副本AY2、BY2。当线程各自修改完AY1、BY1之后，同步主内存之前，会用AY2、BY2与主内存中的资源Y对比，如果对比一致，则立即更新主内存，如果不一致，则重复上面操作，重新从主内存获取资源、修改、同步。</p>
+<p>由于CAS在Java底层是一个原子操作，所以可以保证同步数据回主内存时是线程安全的。这点可以参考<code>sun.misc.Unsafe</code>类。这个类提供了原生的CAS能力，直接调<code>native</code>方法于系统底层交互<br>在这里插入图片描述</p>
+<h3 id="Valotile-CAS"><a href="#Valotile-CAS" class="headerlink" title="Valotile+CAS"></a>Valotile+CAS</h3><p>上面分别介绍了Valotile和CAS。了解到Valotile是为了保证资源的可见性，任何一个线程修改了资源后。其他线程都能立刻感知并重新获取资源。CAS是保证资源的安全性，由于是原子操作，任何一个线程在修改资源时，都是一体的。其他线程是不可操作的。所以Valotile的特性+CAS的机制就组成了一个完美的乐观锁，既保证了线程安全，对性能影响也不大。Valotile的特性+CAS的机制这种组合也可以叫做：Valotile+原子操作</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Java当中锁总共分为悲观锁、乐观锁两大分类，悲观锁使用简单、但对并发性能稍微有影响。乐观锁对并发性能影响不大，但是使用较为复杂。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/08/01/anyLock/">https://cityfire.github.io/2023/08/01/anyLock/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/08/02/scrachData/" title="为什么抓包工具能截取 HTTPS 数据？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">为什么抓包工具能截取 HTTPS 数据？</div></div></a></div><div class="next-post pull-right"><a href="/2023/08/01/volatile/" title="volatile关键字"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">volatile关键字</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E6%82%B2%E8%A7%82%E9%94%81%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">一、什么是悲观锁？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E4%B9%90%E8%A7%82%E9%94%81%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">二、什么是乐观锁？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Valotile"><span class="toc-number">2.1.</span> <span class="toc-text">Valotile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.</span> <span class="toc-text">Java内存模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CAS%EF%BC%88Compare-And-Set%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">CAS（Compare And Set）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Valotile-CAS"><span class="toc-number">2.4.</span> <span class="toc-text">Valotile+CAS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

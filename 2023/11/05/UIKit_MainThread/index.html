@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>iOS——为什么必须在主线程操作UI | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="在开发过程中，我们或多或少会不经意在后台线程中调用了UIKit框架的内容，可能是在网络回调时直接imageView.image &#x3D; anImage，也有可能是不小心在后台线程中调用了UIApplication.sharedApplication。而这个时候编译器会报出一个runtime错误，我们也会迅速的对其进行修正。 但仔细去思考，究竟为什么一定要在主线程操作UI呢？如果在后台线程对U">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS——为什么必须在主线程操作UI">
+<meta property="og:url" content="https://cityfire.github.io/2023/11/05/UIKit_MainThread/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="在开发过程中，我们或多或少会不经意在后台线程中调用了UIKit框架的内容，可能是在网络回调时直接imageView.image &#x3D; anImage，也有可能是不小心在后台线程中调用了UIApplication.sharedApplication。而这个时候编译器会报出一个runtime错误，我们也会迅速的对其进行修正。 但仔细去思考，究竟为什么一定要在主线程操作UI呢？如果在后台线程对U">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2023-11-04T16:20:04.000Z">
+<meta property="article:modified_time" content="2023-11-04T16:20:04.000Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="UIKit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2023/11/05/UIKit_MainThread/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'iOS——为什么必须在主线程操作UI',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-05 00:20:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">iOS——为什么必须在主线程操作UI</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-04T16:20:04.000Z" title="发表于 2023-11-05 00:20:04">2023-11-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-04T16:20:04.000Z" title="更新于 2023-11-05 00:20:04">2023-11-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/iOS/">iOS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="iOS——为什么必须在主线程操作UI"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>在开发过程中，我们或多或少会不经意在后台线程中调用了UIKit框架的内容，可能是在网络回调时直接imageView.image &#x3D; anImage，也有可能是不小心在后台线程中调用了UIApplication.sharedApplication。而这个时候编译器会报出一个runtime错误，我们也会迅速的对其进行修正。</p>
+<p>但仔细去思考，究竟为什么一定要在主线程操作UI呢？如果在后台线程对UI进行操作会发生什么？在后台线程对UI进行操作不是可以更好的避免卡顿吗？这篇文章就是基于这样一些疑问而产生的。</p>
+<p>太长不看版：</p>
+<p>UIKit并不是一个 线程安全 的类，UI操作涉及到渲染访问各种View对象的属性，如果异步操作下会存在读写问题，而为其加锁则会耗费大量资源并拖慢运行速度。另一方面因为整个程序的起点UIApplication是在主线程进行初始化，所有的用户事件都是在主线程上进行传递（如点击、拖动），所以view只能在主线程上才能对事件进行响应。而在渲染方面由于图像的渲染需要以60帧的刷新率在屏幕上 同时 更新，在非主线程异步化的情况下无法确定这个处理过程能够实现同步更新。</p>
+<p>￼<br>image</p>
+<h3 id="从UIKit线程不安全说起"><a href="#从UIKit线程不安全说起" class="headerlink" title="从UIKit线程不安全说起"></a>从UIKit线程不安全说起</h3><p>在UIKit中，很多类中大部分的属性都被修饰为nonatomic，这意味着它们不能在多线程的环境下工作，而对于UIKit这样一个庞大的框架，将其所有属性都设计为线程安全是不现实的，这可不仅仅是简单的将nonatomic改成atomic或者是加锁解锁的操作，还涉及到很多的方面：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">假设能够异步设置view的属性，那我们究竟是希望这些改动能够同时生效，还是按照各自runloop的进度去改变这个view的属性呢？</span><br><span class="line">假设UITableView在其他线程去移除了一个cell，而在另一个线程却对这个cell所在的index进行一些操作，这时候可能就会引发crash。</span><br><span class="line">如果在后台线程移除了一个view，这个时候runloop周期还没有完结，用户在主线程点击了这个“将要”消失的view，那么究竟该不该响应事件？在哪条线程进行响应？</span><br></pre></td></tr></table></figure>
+<p>仔细思考，似乎能够多线程处理UI并没有给我们开发带来更多的便利，假如你代入了这些情景进行思考，你很容易得出一个结论： “我在一个串行队列对这些事件进行处理就可以了。” 苹果也是这样想的，所以UIKit的所有操作都要放到主线程串行执行。<br>在<a target="_blank" rel="noopener" href="https://www.objc.io/issues/2-concurrency/thread-safe-class-design/">Thread-Safe Class Design</a>一文提到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">It’s a conscious design decision from Apple’s side to not have UIKit be thread-safe. Making it thread-safe wouldn’t buy you much in terms of performance; it would in fact make many things slower. And the fact that UIKit is tied to the main thread makes it very easy to write concurrent programs and use UIKit. All you have to do is make sure that calls into UIKit are always made on the main thread.</span><br></pre></td></tr></table></figure>
+<p><code>大意为把UIKit设计成线程安全并不会带来太多的便利，也不会提升太多的性能表现，甚至会因为加锁解锁而耗费大量的时间。事实上并发编程也没有因为UIKit是线程不安全而变得困难，我们所需要做的只是要确保UI操作在主线程进行就可以了。</code></p>
+<p>￼<br>image<br>好吧，那假设我们用黑魔法祝福了UIKit，这个UIKit能够完美的解决我们上面提到的问题，并能够按照开发者的想法随意展现不同的形态。那这个时候我们可以在后台线程操作UI了嘛？<br>很可惜，还是不行。</p>
+<h3 id="Runloop-与绘图循环"><a href="#Runloop-与绘图循环" class="headerlink" title="Runloop 与绘图循环"></a>Runloop 与绘图循环</h3><p>道理我们都懂，那这个究竟跟我们不能在后台线程操作UI有什么关系呢？</p>
+<p>UIApplication在主线程所初始化的Runloop我们称为Main Runloop，它负责处理app存活期间的大部分事件，如用户交互等，它一直处于不断处理事件和休眠的循环之中，以确保能尽快的将用户事件传递给GPU进行渲染，使用户行为能够得到响应，画面之所以能够得到不断刷新也是因为Main Runloop在驱动着。</p>
+<p>而每一个view的变化的修改并不是立刻变化，相反的会在当前run loop的结束的时候统一进行重绘，这样设计的目的是为了能够在一个runloop里面处理好所有需要变化的view，包括resize、hide、reposition等等，所有view的改变都能在同一时间生效，这样能够更高效的处理绘制，这个机制被称为绘图循环（View Drawing Cycle)。</p>
+<p>假设这个时候我们应用了我们的魔法UIKit，并愉快的在一条后台线程操作UI，但当我们需要对设备进行旋转并重新布局的时候，问题来了，因为各个线程之间不同步，这时候各个view修改的请求时机是零碎的，所以所有的旋转变化并不能在Main Runloop的一个runloop里面处理完，这就导致设备旋转之后还有一些view迟迟没有旋转。</p>
+<p>另一方面，因为我们的魔法UIKit并不是在主线程，所以Main Runloop中的事件需要跨线程进行传输，这样会导致显示与用户事件并不同步。试想一下我们用我们的魔法UIKit写了一个游戏，用户如果在图片还没有加载出来的时候按下了按钮，他们就能胜利，于是我们写出了这样的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">game.m</span><br><span class="line">- (void)didClickButton:(UIButton *)button</span><br><span class="line">&#123;</span><br><span class="line">    if (self.imageView.image != nil) &#123;</span><br><span class="line">        // User lose!</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // User Win!</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)loadImageInBackgroundThread</span><br><span class="line">&#123;</span><br><span class="line">    dispatch_async(dispatch_queue_create(&quot;BackgroundQueue&quot;, NULL), ^&#123;</span><br><span class="line">        self.imageView.image = [self downloadedImage];</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为我们完美的魔法UIKit，在后台执行imageView.image &#x3D; xxx并不会产生任何问题。游戏上线，在你还为后台处理UI而沾沾自喜的时候，用户投诉了他们明明没有看到图片显示，点击的时候还是告诉他们输了，于是你的产品就这样扑街了。</p>
+<p>这是因为点击等事件是由系统传递给UIApplication中，并在Main Runloop中进行处理与响应，但是由于UI在后台线程中进行处理，所以他跟事件响应并不同步。即使在UI所在的后台线程也自己维护了一个Runloop，在Runloop结束时候进行渲染，但可能用户已经进行了点击操作并开始辱骂你的游戏了。</p>
+<p>￼<br>image<br>好吧，那假设我天赋异禀，把整套UIApplication的机制全都重写了，也用黑魔法祝福了我的新UIApplication，这个时候它能完美的解决线程同步的问题，这个时候我可以在后台操作UI了吗？<br>……<br>……<br>很可惜，还是不能。<br>理解iOS的渲染流程<br>要回答这个问题，我们要先从最底层的渲染说起。<br>渲染系统框架<br><img src="/images/UlKit.jpg" alt="Alt text"><br>￼<br>image</p>
+<ul>
+<li>UIKit: 包含各种控件，负责对用户操作事件的响应，本身并不提供渲染的能力</li>
+<li>Core Animation: 负责所有视图的绘制、显示与动画效果</li>
+<li>OpenGL ES: 提供2D与3D渲染服务</li>
+<li>Core Graphics: 提供2D渲染服务</li>
+<li>Graphics Hardware: 指GPU</li>
+</ul>
+<p>所以在iOS中，所有视图的显示与动画本质上是由 Core Animation 负责，而不是UIKit。</p>
+<h3 id="Core-Animation-Pipeline-流水线"><a href="#Core-Animation-Pipeline-流水线" class="headerlink" title="Core Animation Pipeline 流水线"></a>Core Animation Pipeline 流水线</h3><p><img src="/images/Core%20Animation%20Pipeline.jpg" alt="Alt text"><br>￼<br>image<br>Core Animation的绘制是通过Core Animation Pipeline实现，它以流水线的形式进行渲染，具体分为四个步骤：</p>
+<ul>
+<li>Commit Transaction:可以细分为<ul>
+<li>Layout: 构建视图布局如addSubview等操作</li>
+<li>Display: 重载drawRect:进行时图绘制，该步骤使用CPU与内存</li>
+<li>Prepare: 主要处理图像的解码与格式转换等操作</li>
+<li>Commit: 将Layer递归打包并发送到Render Server</li>
+</ul>
+</li>
+<li>Render Server:负责渲染工作，会解析上一步Commit Transaction中提交的信息并反序列化成渲染树（render tree)，随后根据layer的各种属性生成绘制指令，并在下一次VSync信号到来时调用OpenGL进行渲染。</li>
+<li>GPU:GPU会等待显示器的VSync信号发出后才进行OpenGL渲染管线，将3D几何数据转化成2D的像素图像和光栅处理，随后进行新的一帧的渲染，并将其输出到缓冲区。</li>
+<li>Dispaly:从缓冲区中取出画面，并输出到屏幕上。</li>
+</ul>
+<p>知识补充：iOS的VSync与双缓冲机制</p>
+<h3 id="VSync"><a href="#VSync" class="headerlink" title="VSync:"></a>VSync:</h3><p>VSync（vertical sync）是指垂直同步，在玩游戏的时候在设置的时候应该会看见过这个选项，这个机制能够让显卡和显示器保持在一个相同的刷新率从而避免画面撕裂。在iOS中，屏幕具有60Hz的刷新率，这意味着它每秒需要显示60张不同的图片（帧），但GPU并没有一个确定的刷新率，在某些时候GPU可能被要求更强力的数据输出来确保渲染能力，这时候他们可能比屏幕刷新率（60Hz）更快，就会导致屏幕不能完整的渲染所有GPU给他的数据，因为它不够快，屏幕的上一帧还没渲染完，下一帧就已经到来了，这就导致画面的撕裂。</p>
+<p>这个时候我们就要引入VSync了，简单来说它就是让显卡保持他的输出速率不高于屏幕的刷新率，启用了VSync后，GPU不再会给你可怜的60Hz屏幕每秒发送100帧了，它会增加每一帧的发送间隔，确保显示器能够有充足的时间去处理每一帧。</p>
+<h3 id="双缓冲机制："><a href="#双缓冲机制：" class="headerlink" title="双缓冲机制："></a>双缓冲机制：</h3><p>双缓冲机制是用于避免或减少画面闪烁的问题，在单缓冲的情况下，GPU输出了一帧画面，缓冲区就需要马上获取这个画面，并交给显示屏去显示，而这段时间GPU输出的画面就全都丢失了，因为没有缓冲区去承载这些画面，就会造成画面的闪烁。</p>
+<p>而在双缓冲机制下有一个Back Frame Buffer和一个Front Frame Buffer，在GPU绘制完成后，它会将图像先保存到Back Frame Buffer中，操作完毕后，会调用一个交换函数，让绘制完成的Back Frame Buffer上的图像交换到Front Frame Buffer上。由于双缓冲利用了更多显存与CPU消耗时间，从而避免了画面的闪烁。</p>
+<h3 id="So？"><a href="#So？" class="headerlink" title="So？"></a>So？</h3><p>相信大家都会遇到过应用卡顿，卡顿的原因就是因为两帧的刷新时间间隔大于60帧每秒（约16.67ms），导致用户感觉点击或者滑动时，界面没有及时的响应。</p>
+<p>前面提到Core Animation Pipeline是以流水线的形式工作的，在理想的状况下我们希望它能够在1&#x2F;60s内完成图层树的准备工作并提交给渲染进程，而渲染进程在下一次VSync信号到来的时候提交给GPU进行渲染，并在1&#x2F;60s内完成渲染，这样就不会产生任何的卡顿。</p>
+<p>但是由于我们使用了我们的魔法UIKit，所以我们在许多后台线程进行了UI操作，在runloop的结尾准备进行渲染的时候，不同线程提交了不同的渲染信息，于是我们就拥有了更多的绘制事务，这个时候Core Animation Pipeline会不断将信息提交，让GPU进行渲染，由于绘制事件的不同步导致了GPU渲染的不同步，可能在上一帧是需要渲染一个label消失的画面，下一帧却又需要渲染这个label改变了文字，最终导致的是界面的不同步。</p>
+<p>另一方面，在VSync和双缓冲机制我们可以看出渲染其实是一个十分消耗系统资源的操作（占用显存与CPU），所以可能会因为大量的事务和线程之间频繁的上下文切换导致了GPU无法处理，反而影响了性能，从而导致在1&#x2F;60s中无法完成图层树的提交，导致了严重的卡顿。</p>
+<p>￼<br>image</p>
+<p>但我真的很想在后台线程操作UI，我能再用黑魔法吗？</p>
+<p>……</p>
+<p>……</p>
+<p>……</p>
+<p>……</p>
+<p>好吧，其实是有办法的。</p>
+<h3 id="Texture-or-ComponentKit"><a href="#Texture-or-ComponentKit" class="headerlink" title="Texture or ComponentKit"></a>Texture or ComponentKit</h3><p><a target="_blank" rel="noopener" href="https://github.com/facebookarchive/AsyncDisplayKit">AsyncDisplayKit（现命名为Texture）</a> 是Facebook开源的一个用于保持iOS界面流畅的框架。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/facebook/componentkit">ComponentKit</a>是Facebook开源的一个基于React思想的iOS原生UI开发框架。它通过函数式和声明的方式构建UI。</p>
+<p>让我们撤销掉我们对UIKit施展的各种魔法，回到这个UI只能在主线程进行操作的世界吧。这两个框架其实并不是真正的在后台线程操作UI，而是用了更巧妙的方法将一些耗时的操作异步执行，从而绕开了UIKit只能在主线程操作的限制。</p>
+<p>比如Texture创建了各类Node，在node中包含了UIView，而Node本身是线程安全的，所以允许在后台线程对Node进行修改，随后在第一次主线程访问View的时候它才会在内部生成对应的View，当node的属性发生改变的时候，他也不会马上进行修改，而是在适当的时机一次性的在主线程为内部的View进行设置。（有点类似于绘图循环）<br>而ComponentKit则是通过创建Component来描述UI，它也是一个线程安全的类。可以将Component认为是一个刻板，而UIView是刻板下的一张纸，渲染则是喷墨的过程。当我们生成了一个Component的时候，就等于生成了一个View的模版，在进行渲染的时候只要按照模版进行绘制就可以了。复杂的界面可以通过各种简单的Component来组成。（类似于Flutter的widget）</p>
+<p>￼</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>UIKit不能在主线程进行操作，这一个铁律只要是熟悉iOS开发的都会有所耳闻，但是往深一层其实这个涉及到很多的东西，包括软件、整体UIKit框架的实现、硬件等等，很多细节的东西往往是我们在平常有所忽略的。可能我们知道不能在主线程操作，却不知道其内在原因；可能我们知道怎么排查、处理卡顿，却不知道其真正的成因；可能我们知道drawRect:方法会导致CPU飙升，却不知道原因是上下文的切换导致……</p>
+<p>写代码从来都不是一件简单而显而易见的事情。</p>
+<p>参考资料</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@dmytro.anokhin/rendering-performance-of-ios-apps-4d09a9228930">Rendering performance of iOS apps</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.quora.com/Why-must-the-UI-always-be-updated-on-Main-Thread">Why must the UI Always be updated on Main Thread</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.objc.io/issues/2-concurrency/thread-safe-class-design/">Thread-Safe Class Design</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios/">iOS 保持界面流畅的技巧</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/GraphicsDrawingOverview/GraphicsDrawingOverview.html">iOS Drawing Concepts</a></li>
+<li><a target="_blank" rel="noopener" href="https://componentkit.org/">ComponentKit</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/facebookarchive/AsyncDisplayKit">Texture</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2023/11/05/UIKit_MainThread/">https://cityfire.github.io/2023/11/05/UIKit_MainThread/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/UIKit/">UIKit</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/11/05/harmonyos/" title="华为鸿蒙生态初识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">华为鸿蒙生态初识</div></div></a></div><div class="next-post pull-right"><a href="/2023/11/02/lock_introduce/" title="聊聊 13 种锁的实现方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">聊聊 13 种锁的实现方式</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">91</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8EUIKit%E7%BA%BF%E7%A8%8B%E4%B8%8D%E5%AE%89%E5%85%A8%E8%AF%B4%E8%B5%B7"><span class="toc-number">1.</span> <span class="toc-text">从UIKit线程不安全说起</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Runloop-%E4%B8%8E%E7%BB%98%E5%9B%BE%E5%BE%AA%E7%8E%AF"><span class="toc-number">2.</span> <span class="toc-text">Runloop 与绘图循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Core-Animation-Pipeline-%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="toc-number">3.</span> <span class="toc-text">Core Animation Pipeline 流水线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VSync"><span class="toc-number">4.</span> <span class="toc-text">VSync:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E7%BC%93%E5%86%B2%E6%9C%BA%E5%88%B6%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">双缓冲机制：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#So%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">So？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Texture-or-ComponentKit"><span class="toc-number">7.</span> <span class="toc-text">Texture or ComponentKit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/12/Hexo%E7%A7%BB%E6%A4%8D%E6%96%B0%E7%B3%BB%E7%BB%9F/" title="Hexo移植新系统">Hexo移植新系统</a><time datetime="2024-11-12T04:35:22.000Z" title="发表于 2024-11-12 12:35:22">2024-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/AI_Practice/" title="如何用AI分析股价变化趋势">如何用AI分析股价变化趋势</a><time datetime="2024-11-01T07:52:13.000Z" title="发表于 2024-11-01 15:52:13">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/01/ai_programming/" title="从零开始理解和拥抱AI编程">从零开始理解和拥抱AI编程</a><time datetime="2024-11-01T05:29:47.000Z" title="发表于 2024-11-01 13:29:47">2024-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/DataStructures_Algorithms/" title="数据结构和算法">数据结构和算法</a><time datetime="2024-09-30T10:48:37.000Z" title="发表于 2024-09-30 18:48:37">2024-09-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/30/HarmonyOSNEXT_Architecture/" title="HarmonyOS NEXT应用开发基础架构">HarmonyOS NEXT应用开发基础架构</a><time datetime="2024-09-29T16:27:38.000Z" title="发表于 2024-09-30 00:27:38">2024-09-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
