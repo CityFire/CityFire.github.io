@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>iOS 中使用 ActivityKit 实现 实时活动 通知功能 | CityFire的技术世界</title><meta name="author" content="CityFire"><meta name="copyright" content="CityFire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LiveActivity 是 iOS 16.1 引入的一项功能，允许应用在锁屏界面或灵动岛（Dynamic Island）区域实时显示动态信息，例如商品订单进度、体育比赛比分或12306火车票状态等.实时活动可以出现在用户锁屏界面，并可实时展示用户关心的一些核心信息。由于使用远程推送通道更新实时活动不需要主 app 保持开启，并且相比小组件需要用户手动添加到桌面这个门槛，实时活动功能是默认开启的，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 中使用 ActivityKit 实现 实时活动 通知功能">
+<meta property="og:url" content="https://cityfire.github.io/2025/08/19/liveActivity/index.html">
+<meta property="og:site_name" content="CityFire的技术世界">
+<meta property="og:description" content="LiveActivity 是 iOS 16.1 引入的一项功能，允许应用在锁屏界面或灵动岛（Dynamic Island）区域实时显示动态信息，例如商品订单进度、体育比赛比分或12306火车票状态等.实时活动可以出现在用户锁屏界面，并可实时展示用户关心的一些核心信息。由于使用远程推送通道更新实时活动不需要主 app 保持开启，并且相比小组件需要用户手动添加到桌面这个门槛，实时活动功能是默认开启的，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2025-08-19T15:02:11.637Z">
+<meta property="article:modified_time" content="2025-08-19T15:37:52.087Z">
+<meta property="article:author" content="CityFire">
+<meta property="article:tag" content="Objective-C、Swift、C、C++、Java、Cangjie、ArkTS、Go、Python、Dart">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://cityfire.github.io/2025/08/19/liveActivity/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'iOS 中使用 ActivityKit 实现 实时活动 通知功能',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-08-19 23:37:52'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">106</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="CityFire的技术世界"><span class="site-name">CityFire的技术世界</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">iOS 中使用 ActivityKit 实现 实时活动 通知功能</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-19T15:02:11.637Z" title="发表于 2025-08-19 23:02:11">2025-08-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-19T15:37:52.087Z" title="更新于 2025-08-19 23:37:52">2025-08-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="iOS 中使用 ActivityKit 实现 实时活动 通知功能"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>LiveActivity 是 iOS 16.1 引入的一项功能，允许应用在锁屏界面或灵动岛（Dynamic Island）区域实时显示动态信息，例如商品订单进度、体育比赛比分或12306火车票状态等.<br>实时活动可以出现在用户锁屏界面，并可实时展示用户关心的一些核心信息。由于使用远程推送通道更新实时活动不需要主 app 保持开启，并且相比小组件需要用户手动添加到桌面这个门槛，实时活动功能是默认开启的，所以这一机制保证了信息的触达概率会远高于小组件。</p>
+<p>实时活动是一种更高级的推送形态，对比传统的推送，实时活动显得灵活许多。传统推动在用户接收并读取到内容的瞬间信息就失效了，如果想要为用户提供持续更新的信息需要依赖一条接一条的推送才可以实现，这无论从成本还是用户体验上，都是难以接受的。而实时活动则会在持续期间，无干扰的保持着信息的更新，并且又会在合适的时机自行消失，因此用户体验极佳。</p>
+<h1 id="核心特性"><a href="#核心特性" class="headerlink" title="核心特性"></a>核心特性</h1><h2 id="‌显示位置‌"><a href="#‌显示位置‌" class="headerlink" title="‌显示位置‌"></a>‌显示位置‌</h2><p>锁屏底部（所有支持 iOS 16.1 的 iPhone）<br>灵动岛区域（仅 iPhone 14 Pro 及以上机型）</p>
+<h2 id="‌数据更新机制‌"><a href="#‌数据更新机制‌" class="headerlink" title="‌数据更新机制‌"></a>‌数据更新机制‌</h2><p>通过 ActivityKit 从应用本地更新，或通过远程推送通知（每次数据 ≤4KB）</p>
+<p>不支持视图内直接发起网络请求</p>
+<h2 id="‌生命周期限制‌"><a href="#‌生命周期限制‌" class="headerlink" title="‌生命周期限制‌"></a>‌生命周期限制‌</h2><p>8 小时内可刷新数据，超过 12 小时强制终止</p>
+<p>Live Activity 的生命周期由 ActivityKit 管理，其中，数据部分的模型类为 ActivityAttributes，自定义数据模型需要继承自 ActivityAttributes，静态数据变量直接生命在结构体内，动态数据变量需要声明在 ActivityAttributes 的 ContentState 中，这部分变量在接收到推送更新数据时，会自动根据 json 数据的 key 值进行解析并更新，而静态数据变量则不会变化.</p>
+<h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><h3 id="静态数据"><a href="#静态数据" class="headerlink" title="静态数据"></a>静态数据</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">OleLockScreenLiveActivityAttrbutes</span>: <span class="title class_">ActivityAttributes</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> title: <span class="type">String</span>  <span class="comment">// 静态数据</span></span><br><span class="line">    <span class="keyword">var</span> totalAmount: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">var</span> orderId: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="动态数据"><a href="#动态数据" class="headerlink" title="动态数据"></a>动态数据</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">OleLockScreenLiveActivityAttrbutes</span>: <span class="title class_">ActivityAttributes</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">typealias</span> <span class="type">ContentState</span> <span class="operator">=</span> <span class="type">State</span></span><br><span class="line">    <span class="comment">// 动态数据,接收到推送时会更新的数据</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">struct</span> <span class="title class_">State</span>: <span class="title class_">Codable</span>, <span class="title class_">Hashable</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> title: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;您的订单已经拣货完成&quot;</span></span><br><span class="line">        <span class="keyword">var</span> subTitle: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;商家正在备货，骑手正在前往&quot;</span></span><br><span class="line">        <span class="keyword">var</span> progress: <span class="type">Double</span> <span class="comment">// 动态更新的数据</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动-Live-Activity"><a href="#启动-Live-Activity" class="headerlink" title="启动 Live Activity"></a>启动 Live Activity</h2><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data <span class="operator">=</span> <span class="type">LiveActivityData</span>(title: <span class="string">&quot;订单进度&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> activity <span class="operator">=</span> <span class="keyword">try?</span> <span class="type">Activity</span>&lt;<span class="type">LiveActivityData</span>&gt;.request(attributes: data, content: .<span class="keyword">init</span>(progress: <span class="number">0</span>, status: <span class="string">&quot;待付款&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> activity <span class="operator">=</span> <span class="keyword">try</span> <span class="type">Activity</span>.request(</span><br><span class="line">            attributes: attributes,</span><br><span class="line">            content: .<span class="keyword">init</span>(state: initialContentState, staleDate: <span class="literal">nil</span>),</span><br><span class="line">            pushType: .token) <span class="comment">// 使用 Activity.request 方法时注意传入 pushType 参数为.token，指定实时活动更新方式为 “基于 token” 的推送更新，这个 token 就标识了是哪部手机的哪个实时活动来接受推送通知。拿到 token 后，前端要把它发送给后端服务器，由后端处理发给苹果进行推送</span></span><br><span class="line"></span><br><span class="line"><span class="type">Task</span> &#123;</span><br><span class="line">        <span class="comment">// 获取实时活动的唯一推送Token  Activity.request 方法后，token 不会立刻生成，而是会异步生成，过一段时间才能取到，所以要建一个 Task 使用 for await 方式来获取</span></span><br><span class="line">        <span class="keyword">for</span> <span class="keyword">await</span> pushToken <span class="keyword">in</span> activity.pushTokenUpdates &#123;</span><br><span class="line">            <span class="keyword">let</span> pushTokenString <span class="operator">=</span> pushToken.map &#123; <span class="type">String</span>(format: <span class="string">&quot;%02x&quot;</span>, <span class="variable">$0</span>) &#125;.joined()</span><br><span class="line">            <span class="comment">// 需要将 PushToken 同步给服务器，这样后续如果有新的信息需要下发，服务器通过该 PushToken 来进行推送操作即可。</span></span><br><span class="line"><span class="comment">//          Logger().log(&quot;New push token: \(pushTokenString)&quot;)</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;New push token: <span class="subst">\(pushTokenString)</span>&quot;</span>)</span><br><span class="line">                </span><br><span class="line">            <span class="keyword">try</span> <span class="keyword">await</span> <span class="keyword">self</span>.sendPushToken(pushTokenString: pushTokenString)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="更新-Live-Activity"><a href="#更新-Live-Activity" class="headerlink" title="更新 Live Activity"></a>更新 Live Activity</h2><p>aps 内的数据就是推送通知内容，timestamp 是时间戳；event 是通知类型，分为 update 和 end 两种；content-state 就是上文中定义的 ActivityAttributes 动态数据属性部分，这里的 key 要与属性名对应，接到通知后就可以自动解析并更新数据</p>
+<p> 所有的属性，在 content-state 里都要有对应的 key-value，就算是空的也要写上，不然会解析失败</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&quot;aps&quot;: &#123;</span><br><span class="line">    &quot;timestamp&quot;:&#x27;$(date +%s)&#x27;,</span><br><span class="line">    &quot;event&quot;:&quot;update&quot;,</span><br><span class="line">    &quot;content-state&quot;:&#123;</span><br><span class="line">        &quot;logo&quot;: &quot;https://img.duoziwang.com/2016/12/17/16485364877.jpg&quot;,</span><br><span class="line">        &quot;title&quot;: &quot;订单已经开始配送&quot;,</span><br><span class="line">        &quot;subTitle&quot;: &quot;快递员正在加急配送&quot;,</span><br><span class="line">        &quot;progress&quot;: 0.6</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> newData <span class="operator">=</span> <span class="type">LiveActivityData</span>(title: <span class="string">&quot;订单进度&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> newContent <span class="operator">=</span> <span class="type">LiveActivityData</span>.<span class="type">ContentState</span>(progress: <span class="number">50</span>, status: <span class="string">&quot;已付款&quot;</span>)</span><br><span class="line"><span class="keyword">try?</span> activity<span class="operator">?</span>.update(using: newContent)</span><br></pre></td></tr></table></figure>
+
+<h2 id="终止-Live-Activity"><a href="#终止-Live-Activity" class="headerlink" title="终止 Live Activity"></a>终止 Live Activity</h2><p>主 APP 调用 end(dismissalPolicy:) 方法关闭指定的实时活动实例，这里可以通过关闭策略参数来控制是立即移除还是指定时间后移除，如果选择默认选项，系统会在 4 小时后进行实时活动的移除。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try?</span> activity<span class="operator">?</span>.end(dismissalPolicy: .immediate)</span><br></pre></td></tr></table></figure>
+
+<p>通过 Push 下发 end 事件，并可以在消息体中通过 dismissal-date 参数来指定实时活动的移除时间点。PUSH 消息体中的内容实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;aps&quot;: &#123;</span><br><span class="line">   &quot;timestamp&quot;:&#x27;$(date +%s)000&#x27;,</span><br><span class="line">   &quot;event&quot;: &quot;end&quot;,</span><br><span class="line">   &quot;content-state&quot;: &#123;&quot;content&quot;:&quot;$JSON_STRING&quot;&#125;,</span><br><span class="line">   &quot;dismissal-date&quot;: &#x27;$endDate&#x27;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实时活动推送配置"><a href="#实时活动推送配置" class="headerlink" title="实时活动推送配置"></a>实时活动推送配置</h2><p> 如果实时活动确定要接入推送能力，以下是需要我们做的：</p>
+<ul>
+<li><ol>
+<li>确保 APP 的推送证书是基于 token 的认证方式 (Token-Based) ，如果现有的认证方式是基于证书的，则需要推送业务来改造成 Token-Based 的。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>客户端获取实时活动的 PushToken。需要注意的是，推送时使用的 Token 并非 App 启动时通过 UIApplication 注册时所获得的 Device Token，而是实时活动启动之后，通过监听实时活动的实例回调（pushTokenUpdates）来获取到的。客户端获取到 PushToken 之后，需要将 PushToken 同步给服务器，这样后续如果有新的信息需要下发，服务器通过该 PushToken 来进行推送操作即可。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>服务器端需要根据实时活动的 PushToken 来进行推送操作。</li>
+</ol>
+</li>
+</ul>
+<h2 id="如何进行实时活动代码的断点调试"><a href="#如何进行实时活动代码的断点调试" class="headerlink" title="如何进行实时活动代码的断点调试"></a>如何进行实时活动代码的断点调试</h2><p> 开发中，如果遇到需要断点调试实时活动来进行问题定位的情况，可以按照如下流程进行：</p>
+<ol>
+<li>模拟器或者真机启动主 APP，在 XCode 中的 Debug 菜单中找到相应实时活动的 Extention Target 的进程进行 Attach</li>
+<li>回到主 APP，触发启动或者更新实时活动操作即可触发断点。</li>
+</ol>
+<h2 id="监测实时活动的状态"><a href="#监测实时活动的状态" class="headerlink" title="监测实时活动的状态"></a>监测实时活动的状态</h2><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">OleLockScreenLiveActivityMonitor</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> taskHandle: <span class="type">Task</span>&lt;<span class="type">Void</span>, <span class="type">Never</span>&gt;?</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> monitoredActivities <span class="operator">=</span> <span class="type">Set</span>&lt;<span class="type">String</span>&gt;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">startMonitoring</span>() &#123;</span><br><span class="line">        taskHandle <span class="operator">=</span> <span class="type">Task</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">#available</span>(<span class="keyword">iOS</span> <span class="number">17.2</span>, <span class="operator">*</span>) &#123;</span><br><span class="line">                <span class="comment">// 监听所有活动更新</span></span><br><span class="line">                <span class="keyword">for</span> <span class="keyword">await</span> activity <span class="keyword">in</span> <span class="type">Activity</span>&lt;<span class="type">OleLockScreenLiveActivityAttrbutes</span>&gt;.activityUpdates &#123;</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">&quot;检测到活动：<span class="subst">\(activity.id)</span>&quot;</span>)</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// 避免重复监听同一个activity</span></span><br><span class="line">                    <span class="keyword">guard</span> <span class="operator">!</span>monitoredActivities.contains(activity.id) <span class="keyword">else</span> &#123; <span class="keyword">continue</span> &#125;</span><br><span class="line">                    monitoredActivities.insert(activity.id)</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// 监听推送令牌变化</span></span><br><span class="line">                    <span class="type">Task</span> &#123;</span><br><span class="line">                        <span class="keyword">var</span> oldPushToken <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">                        <span class="keyword">for</span> <span class="keyword">await</span> tokenData <span class="keyword">in</span> activity.pushTokenUpdates &#123;</span><br><span class="line">                            <span class="keyword">let</span> token <span class="operator">=</span> tokenData.map &#123; <span class="type">String</span>(format: <span class="string">&quot;%02x&quot;</span>, <span class="variable">$0</span>) &#125;.joined()</span><br><span class="line">                            <span class="keyword">if</span> oldPushToken <span class="operator">!=</span> token &#123;</span><br><span class="line">                                oldPushToken <span class="operator">=</span> token</span><br><span class="line">                                <span class="comment">// 上报推送令牌到友盟推送或服务器端</span></span><br><span class="line">                                <span class="comment">// 通过嵌套异步任务监听活动实例的 pushTokenUpdates 和 activityStateUpdates，将活动的令牌和ID上报给阿里云服务器。</span></span><br><span class="line">                                <span class="built_in">print</span>(<span class="string">&quot;token：<span class="subst">\(token)</span> - 活动ID：<span class="subst">\(activity.id)</span>&quot;</span>)</span><br><span class="line">                                <span class="comment">// 发送pushToken至友盟服务器</span></span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// 监听活动状态变化</span></span><br><span class="line">                    <span class="type">Task</span> &#123;</span><br><span class="line">                        <span class="keyword">for</span> <span class="keyword">await</span> state <span class="keyword">in</span> activity.activityStateUpdates &#123;</span><br><span class="line">                            <span class="comment">// 同步状态到服务器端</span></span><br><span class="line">                            <span class="built_in">print</span>(<span class="string">&quot;state: <span class="subst">\(state)</span> - 活动ID：<span class="subst">\(activity.id)</span>&quot;</span>)</span><br><span class="line">                            </span><br><span class="line">                            <span class="comment">// 如果活动结束，从监听列表中移除</span></span><br><span class="line">                            <span class="keyword">if</span> state <span class="operator">==</span> .ended &#123;</span><br><span class="line">                                monitoredActivities.remove(activity.id)</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">stopMonitoring</span>() &#123;</span><br><span class="line">        taskHandle<span class="operator">?</span>.cancel()</span><br><span class="line">        monitoredActivities.removeAll()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://cityfire.github.io">CityFire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://cityfire.github.io/2025/08/19/liveActivity/">https://cityfire.github.io/2025/08/19/liveActivity/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://cityfire.github.io" target="_blank">CityFire的技术世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/08/22/strategyFactoryModern/" title="在SwiftUI中运用策略模式与工厂模式实现灵活登录架构"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">在SwiftUI中运用策略模式与工厂模式实现灵活登录架构</div></div></a></div><div class="next-post pull-right"><a href="/2025/07/31/Swift_Concurrency/" title="Swift Concurrency编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Swift Concurrency编程</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CityFire</div><div class="author-info__description">软件工程 知其然更要知其所以然</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">106</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CityFire"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/CityFire" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:13787697167@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog(全栈技术杂谈)</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7"><span class="toc-number">1.</span> <span class="toc-text">核心特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%8C%E6%98%BE%E7%A4%BA%E4%BD%8D%E7%BD%AE%E2%80%8C"><span class="toc-number">1.1.</span> <span class="toc-text">‌显示位置‌</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%8C%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6%E2%80%8C"><span class="toc-number">1.2.</span> <span class="toc-text">‌数据更新机制‌</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%99%90%E5%88%B6%E2%80%8C"><span class="toc-number">1.3.</span> <span class="toc-text">‌生命周期限制‌</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.4.</span> <span class="toc-text">数据模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE"><span class="toc-number">1.4.1.</span> <span class="toc-text">静态数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE"><span class="toc-number">1.4.2.</span> <span class="toc-text">动态数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-Live-Activity"><span class="toc-number">1.5.</span> <span class="toc-text">启动 Live Activity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0-Live-Activity"><span class="toc-number">1.6.</span> <span class="toc-text">更新 Live Activity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%88%E6%AD%A2-Live-Activity"><span class="toc-number">1.7.</span> <span class="toc-text">终止 Live Activity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%97%B6%E6%B4%BB%E5%8A%A8%E6%8E%A8%E9%80%81%E9%85%8D%E7%BD%AE"><span class="toc-number">1.8.</span> <span class="toc-text">实时活动推送配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E5%AE%9E%E6%97%B6%E6%B4%BB%E5%8A%A8%E4%BB%A3%E7%A0%81%E7%9A%84%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95"><span class="toc-number">1.9.</span> <span class="toc-text">如何进行实时活动代码的断点调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%B5%8B%E5%AE%9E%E6%97%B6%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">1.10.</span> <span class="toc-text">监测实时活动的状态</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/22/strategyFactoryModern/" title="在SwiftUI中运用策略模式与工厂模式实现灵活登录架构">在SwiftUI中运用策略模式与工厂模式实现灵活登录架构</a><time datetime="2025-08-22T15:25:24.908Z" title="发表于 2025-08-22 23:25:24">2025-08-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/19/liveActivity/" title="iOS 中使用 ActivityKit 实现 实时活动 通知功能">iOS 中使用 ActivityKit 实现 实时活动 通知功能</a><time datetime="2025-08-19T15:02:11.637Z" title="发表于 2025-08-19 23:02:11">2025-08-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/31/Swift_Concurrency/" title="Swift Concurrency编程">Swift Concurrency编程</a><time datetime="2025-07-31T14:59:34.262Z" title="发表于 2025-07-31 22:59:34">2025-07-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/05/CoreBluetooth/" title="Core Bluetooth框架">Core Bluetooth框架</a><time datetime="2025-07-05T13:12:51.133Z" title="发表于 2025-07-05 21:12:51">2025-07-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/06/04/h264video/" title="码流结构：原来你是这样的H264">码流结构：原来你是这样的H264</a><time datetime="2025-06-04T15:01:48.125Z" title="发表于 2025-06-04 23:01:48">2025-06-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By CityFire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
