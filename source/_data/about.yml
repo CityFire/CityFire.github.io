@@ -1,0 +1,10 @@
+- class_name: 写博客的目的
+  class_desc: 梳理、总结、分享知识体系。
+  
+- class_name: 联系方式
+  class_desc: 
+  link_list:
+    - name: 邮箱
+      link: mailto:13787697167@163.com
+    - name: Github
+      link: https://github.com/CityFire
