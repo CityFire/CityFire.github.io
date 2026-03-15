@@ -413,7 +413,7 @@ addtoany:
 comments:
   # Up to two comments system, the first will be shown as default
   # Choose: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo/Giscus/Remark42/Artalk
-  use: # Valine,Disqus
+  use: Giscus
   text: true # Display the comment name next to the button
   # lazyload: The comment system will be load when comment element enters the browser's viewport.
   # If you set it to true, the comment count will be invalid
@@ -499,9 +499,10 @@ twikoo:
 # Giscus
 # https://giscus.app/
 giscus:
-  repo:
-  repo_id:
-  category_id:
+  repo: CityFire/CityFire.github.io
+  repo_id: MDEwOlJlcG9zaXRvcnk2NzAyMDcxNQ==
+  category: General
+  category_id: DIC_kwDOA_6nq84C4dJA
   theme:
     light: light
     dark: dark
