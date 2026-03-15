@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 09:01:52
 title: Lambda表达式 条款33:在auto&&参数上使用decltype当std::forward auto&&参数
 categories: C++
 ---

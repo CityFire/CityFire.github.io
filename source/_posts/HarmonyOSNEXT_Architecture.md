@@ -1,4 +1,5 @@
 ---
+date: 2024-09-29 16:27:38
 title: HarmonyOS NEXT应用开发基础架构
 categories: [HarmonyOS NEXT]
 ---

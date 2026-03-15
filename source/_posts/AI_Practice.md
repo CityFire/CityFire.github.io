@@ -1,4 +1,5 @@
 ---
+date: 2024-11-01 07:52:13
 title: 如何用AI分析股价变化趋势
 tags: [AI编程]
 categories: [AI]

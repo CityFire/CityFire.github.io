@@ -1,4 +1,5 @@
 ---
+date: 2023-06-29 08:59:05
 title: auto关键字 条款5:优先考虑auto而非显式类型声明
 categories: C++
 ---

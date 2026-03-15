@@ -1,4 +1,5 @@
 ---
+date: 2023-08-02 09:11:34
 title: spring和springMVC的整合笔记
 ---
 ## 1、不整合：需要将spring所管理的内容都交给springMVC管理，这样会造成业务逻辑混乱

@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 07:48:13
 title: 使用现代C++ 条款14:如果函数不抛出异常请使用noexcept
 categories: C++
 ---

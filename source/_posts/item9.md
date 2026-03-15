@@ -1,4 +1,5 @@
 ---
+date: 2023-06-29 09:06:57
 title: 使用现代C++ 条款9:优先考虑别名声明而非typedefs 
 categories: C++
 ---

@@ -1,4 +1,5 @@
 ---
+date: 2024-12-06 12:04:40
 title: 《AI大模型：从入门到精通》
 tags: LLM，大模型
 categories: 

@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 08:51:29
 title: 并发API 条款39:对于一次性事件通信考虑使用无返回futures
 categories: C++
 ---

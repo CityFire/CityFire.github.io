@@ -1,4 +1,5 @@
 ---
+date: 2023-11-04 16:20:04
 title: iOS——为什么必须在主线程操作UI
 categories:
 - iOS

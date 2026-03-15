@@ -1,4 +1,5 @@
 ---
+date: 2025-12-19 10:40:49
 title: Mac环境下搭建Jenkins CI/CD完整指南（iOS自动打包篇）
 tags: [iOS, Jenkins, CI/CD, 自动化打包]
 ---

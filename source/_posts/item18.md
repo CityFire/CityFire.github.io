@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 08:00:50
 title: 智能指针 条款18:对于独占资源使用std::unique_ptr
 categories: C++
 ---

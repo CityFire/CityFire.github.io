@@ -1,4 +1,5 @@
 ---
+date: 2025-03-06 15:13:02
 title: Manus AI Agent横空出世，为AI领域带来新的机遇
 category: 通用AI智能体
 ---

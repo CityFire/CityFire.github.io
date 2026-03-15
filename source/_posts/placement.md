@@ -1,4 +1,5 @@
 ---
+date: 2023-08-04 14:48:27
 title: placement new
 ---
 ## 一、什么是placement new

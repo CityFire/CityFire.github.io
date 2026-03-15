@@ -1,4 +1,5 @@
 ---
+date: 2025-08-19 15:02:11
 title: iOS 中使用 ActivityKit 实现 实时活动 通知功能
 categories: SwiftUI
 tags: SwiftUI

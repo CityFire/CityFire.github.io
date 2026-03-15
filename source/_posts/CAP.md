@@ -1,4 +1,5 @@
 ---
+date: 2023-11-08 03:40:29
 title: CAP问题
 tags: CAP
 categories: 一致性可用性容错性

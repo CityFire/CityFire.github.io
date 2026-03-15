@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 08:49:41
 title: 并发API 条款37:使得std::thread在所有的路径下无法join
 categories: C++
 ---

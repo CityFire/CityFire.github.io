@@ -1,4 +1,5 @@
 ---
+date: 2023-08-01 14:24:43
 title: volatile关键字
 categories:
   - C/C++

@@ -1,4 +1,5 @@
 ---
+date: 2023-11-13 06:24:29
 title: 设计模式
 tags: 设计模式
 categories: 设计模式

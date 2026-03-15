@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 08:52:37
 title: 并发API 条款40:当需要并发时使用`std::atomic`，特定内存才使用`volatile`
 categories: C++
 ---

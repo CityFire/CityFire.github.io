@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 08:36:38
 title: 右值引用、移动语义和完美转发 条款25:对右值引用使用`std::move`，对通用引用使用`std::forward`
 categories: C++
 ---

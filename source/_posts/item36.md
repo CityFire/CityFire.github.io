@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 09:01:29
 title: 并发API 条款36:确保在异步为必须时，才指定`std::launch::async`
 categories: C++
 ---

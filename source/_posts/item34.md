@@ -1,4 +1,5 @@
 ---
+date: 2023-06-30 08:45:44
 title: Lambda表达式 条款34:优先使用lambda而不是std::bind
 categories: C++
 ---

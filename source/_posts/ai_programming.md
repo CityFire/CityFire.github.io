@@ -1,4 +1,5 @@
 ---
+date: 2024-11-01 05:29:47
 title: 从零开始理解和拥抱AI编程
 tags: [AI编程]
 categories: [AI]
