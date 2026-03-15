@@ -915,7 +915,7 @@ inject:
   head:
     # - <link rel="stylesheet" href="/swiper/swiper.min.css">
     # - <link rel="stylesheet" href="/swiper/swiperstyle.css">
-    - <link rel="stylesheet" href="/css/background.css">
+    # - <link rel="stylesheet" href="/css/background.css">
   bottom:
     # - <script src="/swiper/swiper.min.js"></script>
     # - <script src="/swiper/swiperindex.js"></script>
