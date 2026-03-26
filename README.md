@@ -51,7 +51,7 @@
 - **总文章数**: 73篇
 - **技术分类**: 19个
 - **系列文章**: Effective 系列（42篇）
-- **持续更新**: 每周至少1篇
+- **持续更新**: 尽量每月至少1篇
 
 ## 🚀 快速开始
 
@@ -140,7 +140,7 @@ description: 文章描述
 
 ## 📮 联系方式
 
-- 📧 Email: [your-email@example.com]
+- 📧 Email: [13787697167@163.com]
 - 💬 GitHub Issues: [提交 Issue](https://github.com/CityFire/CityFire.github.io/issues)
 - 📝 博客评论: 每篇文章底部都有评论区域
 
